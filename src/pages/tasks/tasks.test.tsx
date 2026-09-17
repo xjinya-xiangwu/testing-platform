@@ -333,8 +333,10 @@ describe('Tasks', () => {
         await user.click(await screen.findByRole('button', { name: '新建测试任务' }));
 
         expect(screen.getByRole('heading', { name: '创建 Benchmark 评测任务' })).toBeInTheDocument();
-        const scopeTree = screen.getByRole('region', { name: '可展开任务范围表' });
-        await user.click(within(scopeTree).getByRole('checkbox', { name: '漏洞利用 × 浏览器与引擎' }));
+        const scopePicker = screen.getByRole('region', { name: '代码评测范围选择' });
+        await user.click(within(scopePicker).getByRole('combobox', { name: '代码评测范围选择' }));
+        await user.click(await screen.findByText('漏洞利用 → 浏览器与引擎'));
+        expect(within(scopePicker).getAllByText('漏洞利用 → 浏览器与引擎')).not.toHaveLength(0);
         await user.click(screen.getByRole('button', { name: '下一步' }));
         const flow = screen.getByRole('list', { name: '任务创建步骤' });
         expect(flow).toHaveTextContent('1 个交叉组合');

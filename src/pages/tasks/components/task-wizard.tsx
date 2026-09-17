@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react';
-import { Fragment, useState } from 'react';
+import { TreeSelect } from 'antd';
 import { Link } from 'react-router-dom';
 import { ITaskCreationData, ITaskDraftPayload, TaskConstraintKey, TaskType } from '@/api/tasks';
 import useDialogFocus from '@/hooks/useDialogFocus';
@@ -214,7 +214,6 @@ const TaskWizard = ({ data, isSubmitting, onSubmit, submitErrorKey, translate }:
     const setTargetDomains = useTaskDraftStore((state) => state.setTargetDomains);
     const setFirstStageRatio = useTaskDraftStore((state) => state.setFirstStageRatio);
     const setValidationErrorKey = useTaskDraftStore((state) => state.setValidationErrorKey);
-    const [expandedDirections, setExpandedDirections] = useState<readonly TaskEvaluationDirection[]>(() => EVALUATION_DIRECTIONS.map((item) => item.value));
     const dialogRef = useDialogFocus<HTMLElement>(true, closeWizard);
 
     const fixedEvaluation = taskType === 'evaluation' && isTaskTypeFixed;
@@ -230,6 +229,43 @@ const TaskWizard = ({ data, isSubmitting, onSubmit, submitErrorKey, translate }:
             EVALUATION_DATASETS.some((dataset) => dataset.directions.includes(direction.value) && dataset.domains.includes(domain)),
         ),
     );
+    const scopeTreeData = EVALUATION_DIRECTIONS.map((direction) => {
+        const children = availableCombinations.filter((item) => item.direction.value === direction.value);
+        const taskCount = children.reduce(
+            (total, item) =>
+                total +
+                EVALUATION_DATASETS.filter((dataset) => dataset.directions.includes(item.direction.value) && dataset.domains.includes(item.domain)).reduce(
+                    (count, dataset) => count + dataset.taskCount,
+                    0,
+                ),
+            0,
+        );
+
+        return {
+            value: 'direction:' + direction.value,
+            label: direction.title,
+            title: (
+                <span className={style.scopeOptionParent}>
+                    <strong>{direction.title}</strong>
+                    <small>{translate('tasks.wizard.scopeDirectionMeta', { domains: children.length, tasks: taskCount.toLocaleString() })}</small>
+                </span>
+            ),
+            children: children.map((item) => {
+                const datasets = EVALUATION_DATASETS.filter((dataset) => dataset.directions.includes(item.direction.value) && dataset.domains.includes(item.domain));
+                const leafTaskCount = datasets.reduce((total, dataset) => total + dataset.taskCount, 0);
+                return {
+                    value: item.id,
+                    label: item.direction.title + ' → ' + item.domain,
+                    title: (
+                        <span className={style.scopeOptionLeaf}>
+                            <strong>{item.direction.title + ' → ' + item.domain}</strong>
+                            <small>{translate('tasks.wizard.scopeLeafMeta', { datasets: datasets.length, tasks: leafTaskCount.toLocaleString() })}</small>
+                        </span>
+                    ),
+                };
+            }),
+        };
+    });
     const selectedCombinationItems = availableCombinations.filter((item) => selectedCombinations.includes(item.id));
     const activeDirections = evaluationDirections.length ? evaluationDirections : EVALUATION_DIRECTIONS.map((item) => item.value);
     const activeDomains = targetDomains.length ? targetDomains : [...TARGET_DOMAINS];
@@ -282,22 +318,19 @@ const TaskWizard = ({ data, isSubmitting, onSubmit, submitErrorKey, translate }:
     const toggleStratum = (stratum: TaskSamplingStratum) => setSamplingStrata(toggle(samplingStrata, stratum));
 
     const applyCombinations = (combinations: readonly string[]) => {
-        const items = availableCombinations.filter((item) => combinations.includes(item.id));
-        setSelectedCombinations([...combinations]);
+        const normalized = [
+            ...new Set(
+                combinations.flatMap((combination) => {
+                    if (!combination.startsWith('direction:')) return [combination];
+                    const direction = combination.slice('direction:'.length);
+                    return availableCombinations.filter((item) => item.direction.value === direction).map((item) => item.id);
+                }),
+            ),
+        ].filter((combination) => availableCombinations.some((item) => item.id === combination));
+        const items = availableCombinations.filter((item) => normalized.includes(item.id));
+        setSelectedCombinations(normalized);
         setEvaluationDirections([...new Set(items.map((item) => item.direction.value))]);
         setTargetDomains([...new Set(items.map((item) => item.domain))]);
-    };
-
-    const toggleDirectionGroup = (direction: TaskEvaluationDirection) => {
-        const ids = availableCombinations.filter((item) => item.direction.value === direction).map((item) => item.id);
-        const allSelected = ids.every((id) => selectedCombinations.includes(id));
-        applyCombinations(allSelected ? selectedCombinations.filter((id) => !ids.includes(id)) : [...new Set([...selectedCombinations, ...ids])]);
-    };
-
-    const toggleCombinationLeaf = (combination: string) => applyCombinations(toggle(selectedCombinations, combination));
-
-    const toggleDirectionExpand = (direction: TaskEvaluationDirection) => {
-        setExpandedDirections((current) => (current.includes(direction) ? current.filter((item) => item !== direction) : [...current, direction]));
     };
 
     const goForward = () => {
@@ -496,105 +529,45 @@ const TaskWizard = ({ data, isSubmitting, onSubmit, submitErrorKey, translate }:
                     ) : null}
 
                     {fixedEvaluation && step === 1 ? (
-                        <section className={style.scopeTree} aria-label={translate('tasks.wizard.scopeTree')}>
-                            <header className={style.scopeTreeHeader}>
+                        <section className={style.scopePicker} role="region" aria-label={translate('tasks.wizard.scopeTree')}>
+                            <header className={style.scopePickerHeader}>
                                 <div>
+                                    <span>{translate('tasks.wizard.scopeEyebrow')}</span>
                                     <h3>{translate('tasks.wizard.scopeTree')}</h3>
                                     <p>{translate('tasks.wizard.scopeTreeHint')}</p>
                                 </div>
-                                <span>{translate('tasks.wizard.combinationSummary', { count: selectedCombinations.length })}</span>
+                                <strong>{translate('tasks.wizard.combinationSummary', { count: selectedCombinations.length })}</strong>
                             </header>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>{translate('tasks.wizard.tree.select')}</th>
-                                        <th>{translate('tasks.wizard.tree.dimension')}</th>
-                                        <th>{translate('tasks.wizard.tree.available')}</th>
-                                        <th>{translate('tasks.wizard.tree.datasets')}</th>
-                                        <th>{translate('tasks.wizard.tree.drill')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {EVALUATION_DIRECTIONS.map((direction) => {
-                                        const directionItems = availableCombinations.filter((item) => item.direction.value === direction.value);
-                                        const selectedCount = directionItems.filter((item) => selectedCombinations.includes(item.id)).length;
-                                        const isExpanded = expandedDirections.includes(direction.value);
-                                        return (
-                                            <Fragment key={direction.value}>
-                                                <tr className={style.treeParentRow} key={direction.value}>
-                                                    <td>
-                                                        <input
-                                                            className={style.matrixCheck}
-                                                            type="checkbox"
-                                                            aria-label={translate('tasks.wizard.tree.selectDirection', { direction: direction.title })}
-                                                            checked={selectedCount === directionItems.length && directionItems.length > 0}
-                                                            onChange={() => toggleDirectionGroup(direction.value)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <button type="button" className={style.treeExpand} aria-expanded={isExpanded} onClick={() => toggleDirectionExpand(direction.value)}>
-                                                            <span aria-hidden="true">{isExpanded ? '⌄' : '›'}</span>
-                                                            <strong>{direction.title}</strong>
-                                                            <small>{direction.description}</small>
-                                                        </button>
-                                                    </td>
-                                                    <td>
-                                                        {directionItems
-                                                            .reduce(
-                                                                (total, item) =>
-                                                                    total +
-                                                                    EVALUATION_DATASETS.filter(
-                                                                        (dataset) => dataset.directions.includes(item.direction.value) && dataset.domains.includes(item.domain),
-                                                                    ).reduce((count, dataset) => count + dataset.taskCount, 0),
-                                                                0,
-                                                            )
-                                                            .toLocaleString()}
-                                                    </td>
-                                                    <td>{directionItems.length}</td>
-                                                    <td>
-                                                        <span>{translate('tasks.wizard.tree.selected', { count: selectedCount })}</span>
-                                                    </td>
-                                                </tr>
-                                                {isExpanded
-                                                    ? directionItems.map((item, index) => {
-                                                          const datasets = EVALUATION_DATASETS.filter(
-                                                              (dataset) => dataset.directions.includes(item.direction.value) && dataset.domains.includes(item.domain),
-                                                          );
-                                                          const taskCount = datasets.reduce((total, dataset) => total + dataset.taskCount, 0);
-                                                          const isLastLeaf = index === directionItems.length - 1;
-                                                          return (
-                                                              <tr className={[style.treeLeafRow, isLastLeaf && style.treeLeafLast].filter(Boolean).join(' ')} key={item.id}>
-                                                                  <td>
-                                                                      <input
-                                                                          className={style.matrixCheck}
-                                                                          type="checkbox"
-                                                                          aria-label={item.direction.title + ' × ' + item.domain}
-                                                                          checked={selectedCombinations.includes(item.id)}
-                                                                          onChange={() => toggleCombinationLeaf(item.id)}
-                                                                      />
-                                                                  </td>
-                                                                  <td>
-                                                                      <span className={style.treeBranch} aria-hidden="true">
-                                                                          {isLastLeaf ? '└' : '├'}
-                                                                      </span>
-                                                                      <span className={style.treeDomain}>{item.domain}</span>
-                                                                      <small>{item.direction.title}</small>
-                                                                  </td>
-                                                                  <td>{taskCount.toLocaleString()}</td>
-                                                                  <td>{datasets.map((dataset) => dataset.benchmark.replace(' · ', ' ')).join(' / ')}</td>
-                                                                  <td>
-                                                                      <span>{translate('tasks.wizard.tree.availableLeaf')}</span>
-                                                                  </td>
-                                                              </tr>
-                                                          );
-                                                      })
-                                                    : null}
-                                            </Fragment>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            <p className={style.treeFootnote}>{translate('tasks.wizard.scopeTreeFootnote')}</p>
+                            <TreeSelect
+                                aria-label={translate('tasks.wizard.scopeTree')}
+                                className={style.scopeSelect}
+                                classNames={{ popup: { root: style.scopeSelectPopup } }}
+                                value={[...selectedCombinations]}
+                                treeData={scopeTreeData}
+                                treeNodeLabelProp="label"
+                                treeNodeFilterProp="label"
+                                treeCheckable
+                                treeLine={{ showLeafIcon: false }}
+                                treeDefaultExpandAll
+                                showCheckedStrategy={TreeSelect.SHOW_CHILD}
+                                showSearch
+                                allowClear
+                                maxTagCount="responsive"
+                                placeholder={translate('tasks.wizard.scopePlaceholder')}
+                                notFoundContent={translate('tasks.wizard.scopeEmpty')}
+                                popupMatchSelectWidth={false}
+                                listHeight={360}
+                                onChange={(values) => applyCombinations(values as string[])}
+                                getPopupContainer={(trigger) => trigger.parentElement ?? document.body}
+                            />
+                            <div className={style.scopeSelectionPreview} aria-live="polite">
+                                {selectedCombinationItems.length ? (
+                                    selectedCombinationItems.map((item) => <span key={item.id}>{item.direction.title + ' → ' + item.domain}</span>)
+                                ) : (
+                                    <p>{translate('tasks.wizard.scopeEmptySelection')}</p>
+                                )}
+                            </div>
+                            <p className={style.scopeFootnote}>{translate('tasks.wizard.scopeTreeFootnote')}</p>
                         </section>
                     ) : null}
 

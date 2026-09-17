@@ -1328,199 +1328,265 @@
     }
 }
 
-.scopeTree {
-    overflow: hidden;
-    border: 1px solid var(--range-border);
-    background: color-mix(in srgb, var(--range-muted) 24%, transparent);
+.scopePicker {
+    overflow: visible;
+    border: 1px solid color-mix(in srgb, var(--range-primary) 28%, var(--range-border));
+    border-radius: 6px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--range-primary) 8%, transparent), transparent 38%), color-mix(in srgb, var(--range-muted) 45%, transparent);
+    box-shadow: 0 16px 42px rgb(0 0 0 / 16%);
 }
 
-.scopeTreeHeader {
+.scopePickerHeader {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
-    min-height: 62px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--range-border);
+    gap: 18px;
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid color-mix(in srgb, var(--range-primary) 16%, var(--range-border));
+
+    > div {
+        min-width: 0;
+    }
+
+    > div > span {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--range-primary);
+        font-family: var(--range-mono);
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
 
     h3 {
         margin: 0;
         color: var(--range-foreground);
-        font-size: 13px;
+        font-size: 15px;
+        font-weight: 650;
     }
+
     p {
-        margin: 4px 0 0;
+        margin: 5px 0 0;
         color: var(--range-muted-foreground);
         font-size: 10px;
-        line-height: 1.35;
+        line-height: 1.5;
     }
-    > span {
+
+    > strong {
         flex: none;
-        padding: 5px 8px;
+        padding: 6px 10px;
         color: var(--range-primary);
-        border: 1px solid color-mix(in srgb, var(--range-primary) 75%, var(--range-border));
+        background: color-mix(in srgb, var(--range-primary) 9%, transparent);
+        border: 1px solid color-mix(in srgb, var(--range-primary) 52%, var(--range-border));
+        border-radius: 999px;
         font-family: var(--range-mono);
         font-size: 10px;
+        font-weight: 500;
         white-space: nowrap;
     }
 }
 
-.scopeTree table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
+.scopeSelect {
+    width: calc(100% - 36px);
+    margin: 16px 18px 12px;
 
-    th,
-    td {
-        height: 44px;
-        padding: 6px 10px;
-        border-bottom: 1px solid color-mix(in srgb, var(--range-border) 62%, transparent);
-        text-align: left;
-        vertical-align: middle;
+    :global(.ant-select-selector) {
+        min-height: 50px !important;
+        padding: 7px 10px !important;
+        color: var(--range-foreground) !important;
+        background: color-mix(in srgb, var(--range-background) 88%, transparent) !important;
+        border-color: color-mix(in srgb, var(--range-primary) 38%, var(--range-border)) !important;
+        border-radius: 5px !important;
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%) !important;
     }
 
-    th {
-        height: 34px;
+    &:global(.ant-select-focused) :global(.ant-select-selector),
+    &:hover :global(.ant-select-selector) {
+        border-color: var(--range-primary) !important;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--range-primary) 12%, transparent) !important;
+    }
+
+    :global(.ant-select-selection-overflow) {
+        gap: 5px 3px;
+    }
+
+    :global(.ant-select-selection-item) {
+        height: 25px;
+        padding-inline: 8px 5px !important;
+        color: var(--range-foreground) !important;
+        background: color-mix(in srgb, var(--range-primary) 13%, var(--range-card)) !important;
+        border-color: color-mix(in srgb, var(--range-primary) 42%, var(--range-border)) !important;
+        border-radius: 3px !important;
+        font-size: 10px;
+        line-height: 23px;
+    }
+
+    :global(.ant-select-selection-item-remove),
+    :global(.ant-select-arrow),
+    :global(.ant-select-clear) {
         color: var(--range-muted-foreground);
-        background: color-mix(in srgb, var(--range-background) 40%, transparent);
-        font-size: 9px;
-        font-weight: 500;
     }
-    th:nth-child(1),
-    td:nth-child(1) {
-        width: 42px;
-        text-align: center;
-    }
-    th:nth-child(2),
-    td:nth-child(2) {
-        width: 43%;
-    }
-    th:nth-child(3),
-    td:nth-child(3) {
-        width: 15%;
-        color: var(--range-primary);
-        font-family: var(--range-mono);
+
+    :global(.ant-select-selection-placeholder) {
+        color: var(--range-muted-foreground);
         font-size: 11px;
-    }
-    th:nth-child(4),
-    td:nth-child(4) {
-        width: 26%;
-        color: var(--range-muted-foreground);
-        font-size: 10px;
-    }
-    th:nth-child(5),
-    td:nth-child(5) {
-        width: 14%;
-        font-size: 10px;
+        line-height: 34px;
     }
 }
 
-.treeParentRow {
-    background: color-mix(in srgb, var(--range-background) 35%, transparent);
+.scopeSelectPopup {
+    min-width: min(650px, calc(100vw - 48px)) !important;
+    padding: 8px !important;
+    background: color-mix(in srgb, var(--range-card) 96%, black) !important;
+    border: 1px solid color-mix(in srgb, var(--range-primary) 34%, var(--range-border));
+    border-radius: 6px !important;
+    box-shadow: 0 22px 54px rgb(0 0 0 / 48%) !important;
 
-    td {
-        border-top: 1px solid color-mix(in srgb, var(--range-primary) 18%, var(--range-border));
-    }
-}
-.treeParentRow:hover,
-.treeLeafRow:hover {
-    background: color-mix(in srgb, var(--range-primary) 7%, transparent);
-}
-
-.treeExpand {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 18px minmax(92px, 0.35fr) minmax(0, 1fr);
-    gap: 8px;
-    align-items: center;
-    padding: 0;
-    color: inherit;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    text-align: left;
-
-    > span {
-        display: grid;
-        width: 16px;
-        height: 16px;
-        place-items: center;
-        color: var(--range-primary);
-        border: 1px solid color-mix(in srgb, var(--range-primary) 48%, transparent);
-        font-size: 14px;
-        line-height: 1;
-    }
-    strong {
+    :global(.ant-select-tree) {
         color: var(--range-foreground);
-        font-size: 12px;
+        background: transparent;
     }
-    small {
+
+    :global(.ant-select-tree-list-holder-inner) {
+        gap: 2px;
+    }
+
+    :global(.ant-select-tree-treenode) {
+        min-height: 38px;
+        padding: 2px 4px;
+        border-radius: 4px;
+    }
+
+    :global(.ant-select-tree-treenode:hover) {
+        background: color-mix(in srgb, var(--range-primary) 7%, transparent);
+    }
+
+    :global(.ant-select-tree-node-content-wrapper) {
+        flex: 1;
+        min-width: 0;
+        padding: 5px 7px !important;
+        color: inherit !important;
+        background: transparent !important;
+    }
+
+    :global(.ant-select-tree-switcher) {
+        color: var(--range-primary);
+    }
+
+    :global(.ant-select-tree-checkbox) {
+        margin-top: 9px;
+    }
+
+    :global(.ant-select-tree-checkbox-inner) {
+        background: var(--range-background);
+        border-color: color-mix(in srgb, var(--range-primary) 42%, var(--range-border));
+    }
+
+    :global(.ant-select-tree-checkbox-checked .ant-select-tree-checkbox-inner),
+    :global(.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after) {
+        background: var(--range-primary);
+        border-color: var(--range-primary);
+    }
+
+    :global(.ant-select-tree-indent-unit) {
+        width: 22px;
+    }
+
+    :global(.ant-select-tree-show-line .ant-select-tree-indent-unit::before) {
+        border-inline-end-color: color-mix(in srgb, var(--range-primary) 25%, transparent);
+    }
+}
+
+.scopeOptionParent,
+.scopeOptionLeaf {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    strong {
         overflow: hidden;
-        color: var(--range-muted-foreground);
-        font-size: 10px;
+        color: var(--range-foreground);
+        font-size: 11px;
+        font-weight: 600;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+
+    small {
+        flex: none;
+        color: var(--range-muted-foreground);
+        font-family: var(--range-mono);
+        font-size: 9px;
+        white-space: nowrap;
+    }
 }
 
-.treeLeafRow td {
-    background: color-mix(in srgb, var(--range-background) 10%, transparent);
-}
-.treeLeafRow td:nth-child(2) {
-    position: relative;
-    padding-left: 18px;
-}
-.treeLeafRow td:nth-child(2)::before {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 18px;
-    width: 1px;
-    background: color-mix(in srgb, var(--range-primary) 26%, transparent);
-    content: '';
-}
-.treeLeafLast td:nth-child(2)::before {
-    bottom: 50%;
-}
-.treeBranch {
-    position: relative;
-    z-index: 1;
-    display: inline-block;
-    width: 18px;
-    margin-right: 5px;
+.scopeOptionParent strong {
     color: var(--range-primary);
-    background: color-mix(in srgb, var(--range-background) 90%, transparent);
-    font-family: var(--range-mono);
+    font-size: 12px;
 }
-.treeDomain {
-    color: var(--range-foreground);
-    font-size: 11px;
-    font-weight: 500;
+
+.scopeOptionLeaf {
+    padding-left: 3px;
 }
-.treeLeafRow td:nth-child(2) small {
-    display: inline;
-    margin-left: 8px;
-    color: var(--range-muted-foreground);
-    font-size: 9px;
+
+.scopeSelectionPreview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 29px;
+    padding: 0 18px 12px;
+
+    span {
+        padding: 4px 8px;
+        color: var(--range-muted-foreground);
+        background: color-mix(in srgb, var(--range-background) 72%, transparent);
+        border: 1px solid color-mix(in srgb, var(--range-border) 78%, transparent);
+        border-radius: 999px;
+        font-size: 9px;
+    }
+
+    p {
+        margin: 4px 0;
+        color: var(--range-muted-foreground);
+        font-size: 10px;
+    }
 }
-.treeParentRow td:last-child span,
-.treeLeafRow td:last-child span {
-    color: var(--range-primary);
-}
-.treeFootnote {
+
+.scopeFootnote {
     margin: 0;
-    padding: 8px 14px;
+    padding: 9px 18px 11px;
     color: var(--range-muted-foreground);
     border-top: 1px solid color-mix(in srgb, var(--range-border) 62%, transparent);
-    font-size: 10px;
-    line-height: 1.4;
+    font-size: 9px;
+    line-height: 1.45;
 }
 
 @media (max-width: 700px) {
-    .scopeTree {
-        overflow-x: auto;
+    .scopePickerHeader {
+        align-items: flex-start;
+        padding: 14px;
     }
-    .scopeTree table {
-        min-width: 700px;
+
+    .scopeSelect {
+        width: calc(100% - 28px);
+        margin: 14px;
+    }
+
+    .scopeSelectionPreview {
+        padding-inline: 14px;
+    }
+
+    .scopeSelectPopup {
+        min-width: calc(100vw - 32px) !important;
+    }
+
+    .scopeOptionParent,
+    .scopeOptionLeaf {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 2px;
     }
 }
