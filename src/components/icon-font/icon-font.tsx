@@ -1,4 +1,4 @@
-import { CSSProperties, HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import accessGateway from '@/assets/icons/navigation/access-gateway.svg';
 import awareness from '@/assets/icons/navigation/awareness.svg';
 import brandShield from '@/assets/icons/navigation/brand-shield.svg';
@@ -30,16 +30,10 @@ interface IconFontProps extends HTMLAttributes<HTMLSpanElement> {
     type: IconType;
 }
 
-const IconFont = ({ type, className, style: inlineStyle, ...props }: IconFontProps) => {
-    const icon = ICONS[type];
-    const mask = `url(${icon}) center / contain no-repeat`;
-    const iconStyle: CSSProperties = {
-        ...inlineStyle,
-        mask,
-        WebkitMask: mask,
-    };
-
-    return <span {...props} className={[style.icon, className].filter(Boolean).join(' ')} style={iconStyle} />;
-};
+const IconFont = ({ type, className, ...props }: IconFontProps) => (
+    <span {...props} className={[style.icon, className].filter(Boolean).join(' ')}>
+        <img src={ICONS[type]} alt="" aria-hidden="true" />
+    </span>
+);
 
 export default IconFont;
