@@ -1329,16 +1329,18 @@
 }
 
 .scopeTree {
+    overflow: hidden;
     border: 1px solid var(--range-border);
-    background: color-mix(in srgb, var(--range-muted) 32%, transparent);
+    background: color-mix(in srgb, var(--range-muted) 24%, transparent);
 }
 
 .scopeTreeHeader {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    padding: 14px;
+    gap: 14px;
+    min-height: 62px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--range-border);
 
     h3 {
@@ -1347,15 +1349,16 @@
         font-size: 13px;
     }
     p {
-        margin: 5px 0 0;
+        margin: 4px 0 0;
         color: var(--range-muted-foreground);
         font-size: 10px;
-        line-height: 1.45;
+        line-height: 1.35;
     }
     > span {
+        flex: none;
         padding: 5px 8px;
         color: var(--range-primary);
-        border: 1px solid var(--range-primary);
+        border: 1px solid color-mix(in srgb, var(--range-primary) 75%, var(--range-border));
         font-family: var(--range-mono);
         font-size: 10px;
         white-space: nowrap;
@@ -1369,13 +1372,15 @@
 
     th,
     td {
-        padding: 9px 10px;
-        border-bottom: 1px solid color-mix(in srgb, var(--range-border) 68%, transparent);
+        height: 44px;
+        padding: 6px 10px;
+        border-bottom: 1px solid color-mix(in srgb, var(--range-border) 62%, transparent);
         text-align: left;
         vertical-align: middle;
     }
 
     th {
+        height: 34px;
         color: var(--range-muted-foreground);
         background: color-mix(in srgb, var(--range-background) 40%, transparent);
         font-size: 9px;
@@ -1383,7 +1388,7 @@
     }
     th:nth-child(1),
     td:nth-child(1) {
-        width: 44px;
+        width: 42px;
         text-align: center;
     }
     th:nth-child(2),
@@ -1399,7 +1404,7 @@
     }
     th:nth-child(4),
     td:nth-child(4) {
-        width: 24%;
+        width: 26%;
         color: var(--range-muted-foreground);
         font-size: 10px;
     }
@@ -1411,7 +1416,11 @@
 }
 
 .treeParentRow {
-    background: color-mix(in srgb, var(--range-background) 28%, transparent);
+    background: color-mix(in srgb, var(--range-background) 35%, transparent);
+
+    td {
+        border-top: 1px solid color-mix(in srgb, var(--range-primary) 18%, var(--range-border));
+    }
 }
 .treeParentRow:hover,
 .treeLeafRow:hover {
@@ -1421,7 +1430,7 @@
 .treeExpand {
     width: 100%;
     display: grid;
-    grid-template-columns: 18px minmax(90px, 0.35fr) minmax(0, 1fr);
+    grid-template-columns: 18px minmax(92px, 0.35fr) minmax(0, 1fr);
     gap: 8px;
     align-items: center;
     padding: 0;
@@ -1432,8 +1441,14 @@
     text-align: left;
 
     > span {
+        display: grid;
+        width: 16px;
+        height: 16px;
+        place-items: center;
         color: var(--range-primary);
-        font-size: 15px;
+        border: 1px solid color-mix(in srgb, var(--range-primary) 48%, transparent);
+        font-size: 14px;
+        line-height: 1;
     }
     strong {
         color: var(--range-foreground);
@@ -1449,21 +1464,42 @@
 }
 
 .treeLeafRow td {
-    background: color-mix(in srgb, var(--range-background) 15%, transparent);
+    background: color-mix(in srgb, var(--range-background) 10%, transparent);
+}
+.treeLeafRow td:nth-child(2) {
+    position: relative;
+    padding-left: 18px;
+}
+.treeLeafRow td:nth-child(2)::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 18px;
+    width: 1px;
+    background: color-mix(in srgb, var(--range-primary) 26%, transparent);
+    content: '';
+}
+.treeLeafLast td:nth-child(2)::before {
+    bottom: 50%;
 }
 .treeBranch {
-    margin-right: 8px;
-    color: var(--range-border);
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    width: 18px;
+    margin-right: 5px;
+    color: var(--range-primary);
+    background: color-mix(in srgb, var(--range-background) 90%, transparent);
     font-family: var(--range-mono);
 }
 .treeDomain {
     color: var(--range-foreground);
     font-size: 11px;
+    font-weight: 500;
 }
 .treeLeafRow td:nth-child(2) small {
-    display: block;
-    padding-left: 18px;
-    margin-top: 3px;
+    display: inline;
+    margin-left: 8px;
     color: var(--range-muted-foreground);
     font-size: 9px;
 }
@@ -1473,10 +1509,11 @@
 }
 .treeFootnote {
     margin: 0;
-    padding: 10px 14px;
+    padding: 8px 14px;
     color: var(--range-muted-foreground);
+    border-top: 1px solid color-mix(in srgb, var(--range-border) 62%, transparent);
     font-size: 10px;
-    line-height: 1.45;
+    line-height: 1.4;
 }
 
 @media (max-width: 700px) {

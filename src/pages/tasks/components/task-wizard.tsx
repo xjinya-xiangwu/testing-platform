@@ -556,13 +556,14 @@ const TaskWizard = ({ data, isSubmitting, onSubmit, submitErrorKey, translate }:
                                                     </td>
                                                 </tr>
                                                 {isExpanded
-                                                    ? directionItems.map((item) => {
+                                                    ? directionItems.map((item, index) => {
                                                           const datasets = EVALUATION_DATASETS.filter(
                                                               (dataset) => dataset.directions.includes(item.direction.value) && dataset.domains.includes(item.domain),
                                                           );
                                                           const taskCount = datasets.reduce((total, dataset) => total + dataset.taskCount, 0);
+                                                          const isLastLeaf = index === directionItems.length - 1;
                                                           return (
-                                                              <tr className={style.treeLeafRow} key={item.id}>
+                                                              <tr className={[style.treeLeafRow, isLastLeaf && style.treeLeafLast].filter(Boolean).join(' ')} key={item.id}>
                                                                   <td>
                                                                       <input
                                                                           className={style.matrixCheck}
@@ -574,7 +575,7 @@ const TaskWizard = ({ data, isSubmitting, onSubmit, submitErrorKey, translate }:
                                                                   </td>
                                                                   <td>
                                                                       <span className={style.treeBranch} aria-hidden="true">
-                                                                          └
+                                                                          {isLastLeaf ? '└' : '├'}
                                                                       </span>
                                                                       <span className={style.treeDomain}>{item.domain}</span>
                                                                       <small>{item.direction.title}</small>
