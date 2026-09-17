@@ -41,3 +41,5 @@ deploy/
 values/
 ClassDiagram.liveclass
 .vite-evaluation.*.log
+
+docs/
