@@ -83,6 +83,6 @@ export const APP_ROUTES: RouteObject[] = [
     },
 ];
 
-const router = createBrowserRouter(APP_ROUTES);
+const router = createBrowserRouter(APP_ROUTES, { basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/' });
 
 export default router;
