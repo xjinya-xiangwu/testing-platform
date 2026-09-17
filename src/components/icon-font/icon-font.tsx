@@ -32,11 +32,11 @@ interface IconFontProps extends HTMLAttributes<HTMLSpanElement> {
 
 const IconFont = ({ type, className, style: inlineStyle, ...props }: IconFontProps) => {
     const icon = ICONS[type];
-    const mask = `url(${icon})`;
+    const mask = `url(${icon}) center / contain no-repeat`;
     const iconStyle: CSSProperties = {
         ...inlineStyle,
-        maskImage: mask,
-        WebkitMaskImage: mask,
+        mask,
+        WebkitMask: mask,
     };
 
     return <span {...props} className={[style.icon, className].filter(Boolean).join(' ')} style={iconStyle} />;
