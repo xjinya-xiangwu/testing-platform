@@ -1,0 +1,226 @@
+.demoTaskCard {
+    margin-bottom: 18px;
+    overflow: hidden;
+    background: linear-gradient(110deg, rgb(8 37 53 / 96%), rgb(5 20 31 / 98%) 58%, rgb(4 15 24 / 98%));
+    border: 1px solid rgb(89 190 222 / 48%);
+    border-radius: 2px;
+    box-shadow: inset 0 1px rgb(142 203 255 / 4%);
+}
+
+.demoTaskHeader {
+    min-height: 108px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    padding: 15px 20px 16px;
+}
+
+.demoTaskIntro {
+    min-width: 0;
+
+    > span {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--range-primary);
+        font-size: 11px;
+        letter-spacing: 0.04em;
+    }
+
+    h2 {
+        margin: 0;
+        color: #f4fbff;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1.35;
+    }
+
+    p {
+        max-width: 1080px;
+        margin: 7px 0 0;
+        overflow: hidden;
+        color: #a7bdc8;
+        font-size: 12px;
+        line-height: 1.55;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.demoTaskControls {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 10px;
+
+    > a {
+        min-width: 58px;
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 14px;
+        color: #06101a;
+        background: var(--range-primary);
+        border: 1px solid var(--range-primary);
+        border-radius: 2px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+}
+
+.demoTaskProgress {
+    width: 132px;
+    display: grid;
+    grid-template-columns: minmax(48px, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+
+    progress {
+        width: 100%;
+        height: 4px;
+        overflow: hidden;
+        appearance: none;
+        background: rgb(142 203 255 / 14%);
+        border: 0;
+    }
+
+    progress::-webkit-progress-bar {
+        background: rgb(142 203 255 / 14%);
+    }
+
+    progress::-webkit-progress-value {
+        background: linear-gradient(90deg, #4daeff, #73e6ba);
+    }
+
+    progress::-moz-progress-bar {
+        background: linear-gradient(90deg, #4daeff, #73e6ba);
+    }
+
+    span {
+        color: #9db6c2;
+        font-family: var(--range-mono);
+        font-size: 10px;
+        white-space: nowrap;
+    }
+}
+
+.demoRunningStatus {
+    min-height: 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 9px;
+    color: #73e6ba;
+    background: rgb(115 230 186 / 6%);
+    border: 1px solid rgb(115 230 186 / 48%);
+    font-size: 11px;
+    white-space: nowrap;
+
+    i {
+        width: 7px;
+        height: 7px;
+        background: currentcolor;
+        border-radius: 50%;
+        box-shadow: 0 0 8px currentcolor;
+    }
+}
+
+.demoTaskFields {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.1fr 0.82fr 2fr 0.92fr;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid rgb(89 190 222 / 24%);
+
+    > div {
+        min-width: 0;
+        padding: 13px 16px 15px;
+        border-right: 1px solid rgb(89 190 222 / 18%);
+    }
+
+    > div:last-child {
+        border-right: 0;
+    }
+
+    dt {
+        margin-bottom: 7px;
+        color: #77929f;
+        font-size: 11px;
+    }
+
+    dd {
+        margin: 0;
+        overflow: hidden;
+        color: #dceaf1;
+        font-size: 12px;
+        line-height: 1.45;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 900px) {
+    .demoTaskHeader {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .demoTaskControls {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .demoTaskFields {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        > div {
+            border-top: 1px solid rgb(89 190 222 / 14%);
+        }
+
+        > div:nth-child(3n) {
+            border-right: 0;
+        }
+    }
+}
+
+@media (max-width: 700px) {
+    .demoTaskHeader {
+        padding: 16px;
+    }
+
+    .demoTaskIntro p {
+        white-space: normal;
+    }
+
+    .demoTaskControls {
+        align-items: stretch;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+
+        > a {
+            min-height: 44px;
+            margin-left: auto;
+        }
+    }
+
+    .demoTaskProgress {
+        min-width: 150px;
+        flex: 1 1 150px;
+    }
+
+    .demoRunningStatus {
+        min-height: 44px;
+    }
+
+    .demoTaskFields {
+        grid-template-columns: 1fr;
+
+        > div,
+        > div:nth-child(3n) {
+            border-right: 0;
+        }
+    }
+}

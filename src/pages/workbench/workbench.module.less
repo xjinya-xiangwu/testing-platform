@@ -1,0 +1,1299 @@
+.workbenchPage {
+    --wb-canvas: #01050a;
+    --wb-panel: #06131e;
+    --wb-surface: #0a2030;
+    --wb-border: rgb(89 190 222 / 32%);
+    --wb-border-soft: rgb(39 79 97 / 62%);
+    --wb-primary: #8ecbff;
+    --wb-accent: #6defff;
+    --wb-success: #65f5e3;
+    --wb-warning: #ffd267;
+    --wb-danger: #ff746c;
+    --wb-text: #f4fbff;
+    --wb-muted: #d7e9f2;
+    --wb-quiet: #8ba9b8;
+
+    width: calc(100% - 24px);
+    // max-width: 1960px;
+    display: flex;
+    min-width: 0;
+    min-height: 100vh;
+    flex-direction: column;
+    padding: 16px 0;
+    margin: 0 auto;
+    color: var(--wb-text);
+    background: linear-gradient(rgb(77 219 244 / 2.4%) 1px, transparent 1px), linear-gradient(90deg, rgb(77 219 244 / 2.4%) 1px, transparent 1px), var(--wb-canvas);
+    background-size: 32px 32px;
+    font-size: 16px;
+}
+
+.backLink {
+    display: inline-flex;
+    align-self: flex-start;
+    min-height: 32px;
+    align-items: center;
+    color: var(--wb-primary);
+    font-size: 13px;
+    text-decoration: none;
+
+    &::before {
+        margin-right: 5px;
+        content: '‹';
+    }
+}
+
+.header {
+    display: grid;
+    grid-template-columns: minmax(250px, 1fr) auto auto auto;
+    gap: 14px;
+    align-items: center;
+    min-height: 64px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, rgb(10 32 48 / 72%), rgb(6 19 30 / 96%) 50%, rgb(2 8 14 / 72%));
+    border: 1px solid rgb(89 190 222 / 36%);
+    box-shadow: inset 0 0 18px rgb(109 239 255 / 5%);
+}
+
+.taskIdentity {
+    min-width: 0;
+
+    h1 {
+        margin: 0;
+        overflow: hidden;
+        font-size: clamp(17px, 1.3vw, 21px);
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    p {
+        margin: 5px 0 0;
+        overflow: hidden;
+        color: var(--wb-quiet);
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.tags,
+.actions,
+.tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.tags span,
+.tools span {
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 7px;
+    color: var(--wb-muted);
+    border: 1px solid var(--wb-border-soft);
+    font-size: 11px;
+}
+
+.tags span:first-child {
+    color: var(--wb-warning);
+    border-color: rgb(255 210 103 / 46%);
+}
+
+.headerMetrics {
+    display: flex;
+    gap: clamp(12px, 1.5vw, 24px);
+    margin: 0;
+
+    div {
+        display: grid;
+        gap: 4px;
+        text-align: center;
+    }
+
+    dt {
+        color: var(--wb-quiet);
+        font-size: 11px;
+        order: 2;
+    }
+
+    dd {
+        margin: 0;
+        font-family: var(--range-mono);
+        font-size: 16px;
+        order: 1;
+    }
+}
+
+.actions button,
+.primaryButton,
+.secondaryButton {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 11px;
+    color: var(--wb-primary);
+    background: rgb(3 14 24 / 76%);
+    border: 1px solid var(--wb-border);
+    text-decoration: none;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: wait;
+        opacity: 0.55;
+    }
+}
+
+.actions .dangerButton {
+    color: var(--wb-danger);
+    border-color: rgb(255 116 108 / 58%);
+}
+
+.primaryButton {
+    color: var(--wb-canvas);
+    background: var(--wb-primary);
+    border-color: var(--wb-primary);
+}
+
+.executionNotice {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    margin: 0 0 14px;
+    color: var(--wb-muted);
+    background: linear-gradient(90deg, rgb(10 32 48 / 78%), rgb(6 19 30 / 48%));
+    border-left: 2px solid var(--wb-primary);
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.attackChain,
+.panel {
+    min-width: 0;
+    background: rgb(6 19 30 / 94%);
+    border: 1px solid var(--wb-border);
+}
+
+.attackChain {
+    padding: 20px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    box-shadow: inset 0 0 18px rgb(109 239 255 / 4%);
+
+    > .sectionHeading {
+        min-height: 45px;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 15px;
+
+        h2 {
+            font-size: 16px;
+        }
+
+        > span {
+            font-family: inherit;
+            font-size: 16px;
+        }
+    }
+
+    ol {
+        min-width: 880px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+        gap: 1px;
+        padding: 0;
+        margin: 0;
+        background: var(--wb-border-soft);
+        list-style: none;
+    }
+
+    li {
+        min-height: 92px;
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        gap: 7px;
+        padding: 7px;
+        color: var(--wb-quiet);
+        background: var(--wb-panel);
+        text-align: center;
+
+        strong {
+            color: var(--wb-primary);
+            font-family: var(--range-mono);
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        span,
+        small {
+            font-size: 12px;
+        }
+    }
+
+    .isCompleted small {
+        color: var(--wb-success);
+    }
+
+    .isObserved small {
+        color: var(--wb-primary);
+    }
+
+    .isRunning {
+        box-shadow: inset 0 -2px var(--wb-warning);
+
+        small {
+            color: var(--wb-warning);
+        }
+    }
+}
+
+.milestoneState {
+    min-height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    > svg {
+        font-size: 12px;
+    }
+
+    > span {
+        font-size: inherit;
+    }
+}
+
+.sectionHeading {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    h2 {
+        margin: 0;
+        color: var(--wb-text);
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    > span {
+        overflow: hidden;
+        color: var(--wb-quiet);
+        font-family: var(--range-mono);
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.headingCopy {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 10px;
+
+    > span {
+        color: var(--wb-quiet);
+        font-family: var(--range-mono);
+        font-size: 12px;
+    }
+}
+
+.mainGrid {
+    min-height: 832px;
+    display: grid;
+    flex: 1 0 832px;
+    grid-template-columns: minmax(200px, 0.52fr) minmax(620px, 2.4fr) minmax(250px, 0.65fr);
+    gap: 10px;
+    align-items: stretch;
+}
+
+.codeEvaluationGrid {
+    grid-template-columns: minmax(180px, 0.42fr) minmax(760px, 3.2fr) minmax(230px, 0.58fr);
+}
+
+.panel {
+    padding: 16px;
+    box-shadow: inset 0 0 18px rgb(109 239 255 / 3.5%);
+}
+
+.milestonePanel,
+.contextPanel {
+    overflow: auto;
+    min-height: 0;
+}
+
+.contextPanel {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.milestones,
+.observations,
+.riskChecks {
+    display: grid;
+    gap: 6px;
+    padding: 0;
+    margin: 12px 0 0;
+    list-style: none;
+}
+
+.milestones li {
+    padding: 10px 12px;
+    color: var(--wb-quiet);
+    background: rgb(2 8 14 / 30%);
+    border: 1px solid var(--wb-border-soft);
+
+    > div {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    strong {
+        color: var(--wb-muted);
+        font-size: 13px;
+    }
+
+    span {
+        flex: none;
+        font-family: var(--range-mono);
+        font-size: 12px;
+    }
+
+    .milestoneId {
+        color: var(--wb-primary);
+    }
+
+    p {
+        margin: 7px 0 0;
+        font-size: 12px;
+        line-height: 1.55;
+    }
+}
+
+.milestones .isCompleted {
+    border-color: rgb(101 245 227 / 30%);
+}
+
+.milestones .isObserved {
+    border-color: rgb(109 239 255 / 32%);
+}
+
+.milestones .isRunning {
+    border-color: rgb(255 210 103 / 52%);
+    box-shadow: inset 2px 0 var(--wb-warning);
+}
+
+.liveWorkspace {
+    height: auto;
+    display: grid;
+    min-width: 0;
+    min-height: 0;
+    grid-template-rows: auto auto;
+    gap: 10px;
+    align-content: start;
+}
+
+.codeEvaluationWorkspace {
+    height: 100%;
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-content: stretch;
+}
+
+.topologyPanel {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.riskPanel {
+    min-height: 480px;
+}
+
+.topologyCanvas {
+    position: relative;
+    height: clamp(340px, 26vw, 420px);
+    min-height: 340px;
+    flex: none;
+    margin-top: 12px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 42%, rgb(20 71 101 / 22%), transparent 48%), linear-gradient(rgb(109 239 255 / 3%) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(109 239 255 / 3%) 1px, transparent 1px), rgb(2 8 14 / 68%);
+    background-size:
+        auto,
+        28px 28px,
+        28px 28px,
+        auto;
+    border: 1px solid var(--wb-border);
+
+    svg {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        display: block;
+        cursor: grab;
+        touch-action: pan-y;
+        user-select: none;
+    }
+}
+
+.isTopologyPanning svg {
+    cursor: grabbing;
+}
+
+.liveBadge {
+    position: absolute;
+    z-index: 2;
+    top: 12px;
+    left: 14px;
+    color: var(--wb-success);
+    font-family: var(--range-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+
+    &::before {
+        margin-right: 6px;
+        content: '●';
+    }
+}
+
+.topologyControls {
+    position: absolute;
+    z-index: 4;
+    top: 10px;
+    right: 10px;
+    display: inline-flex;
+    overflow: hidden;
+    background: rgb(2 10 17 / 86%);
+    border: 1px solid var(--wb-border-soft);
+
+    button {
+        min-width: 30px;
+        height: 28px;
+        padding: 0 7px;
+        color: var(--wb-muted);
+        background: transparent;
+        border: 0;
+        border-right: 1px solid var(--wb-border-soft);
+        font-family: var(--range-mono);
+        font-size: 11px;
+        cursor: pointer;
+
+        &:last-child {
+            border-right: 0;
+        }
+
+        &:hover,
+        &:focus-visible {
+            color: var(--wb-accent);
+            background: rgb(20 71 101 / 24%);
+            outline: none;
+        }
+    }
+}
+
+.topologyZone {
+    > rect {
+        fill: url('#workbench-zone-fill');
+        stroke: rgb(79 169 201 / 48%);
+        stroke-width: 1;
+    }
+}
+
+.topologyZoneAccent {
+    fill: none;
+    stroke: #59d8e7;
+    stroke-linecap: square;
+    stroke-width: 2;
+}
+
+.topologyZoneHeaderDivider {
+    stroke: rgb(79 169 201 / 28%);
+    stroke-width: 1;
+}
+
+.topologyZoneLabel {
+    fill: #f0fbff;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.topologyZoneSummary {
+    fill: #9ab6c5;
+    font-family: var(--range-mono);
+    font-size: 9.5px;
+}
+
+.topologyNetworkConnector {
+    > rect {
+        fill: rgb(6 26 38 / 96%);
+        stroke: rgb(86 201 218 / 84%);
+        stroke-width: 1;
+    }
+}
+
+.topologyNetworkConnectorAccent {
+    stroke: #59d8e7;
+    stroke-linecap: square;
+    stroke-width: 2;
+}
+
+.topologyNetworkConnectorDivider {
+    stroke: rgb(102 211 229 / 30%);
+    stroke-width: 1;
+}
+
+.topologyNetworkConnectorLabel {
+    fill: #eefaff;
+    font-size: 9.5px;
+    font-weight: 600;
+}
+
+.topologyNetworkConnectorCidr {
+    fill: #88aebf;
+    font-family: var(--range-mono);
+    font-size: 8px;
+}
+
+.topologyNetworkConnectorGlyph {
+    > g {
+        fill: none;
+        stroke: #79dbea;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.35;
+    }
+}
+
+.topologyEdges path {
+    fill: none;
+    stroke: rgb(69 139 174 / 64%);
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.48;
+    vector-effect: non-scaling-stroke;
+}
+
+.topologyNetworkEdges path {
+    fill: none;
+    stroke: rgb(87 205 224 / 82%);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.15;
+    vector-effect: non-scaling-stroke;
+}
+
+.topologyAttackLayer {
+    pointer-events: none;
+}
+
+.topologyAttackPath {
+    fill: none;
+    stroke: rgb(255 126 101 / 88%);
+    stroke-width: 1.55;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 3px rgb(255 102 85 / 52%));
+    vector-effect: non-scaling-stroke;
+}
+
+.topologyAttackPathCompleted {
+    opacity: 0.62;
+    stroke-dasharray: 5 5;
+    animation: workbench-attack-flow 480ms linear infinite;
+}
+
+.topologyAttackPathAttacking {
+    opacity: 0.96;
+}
+
+.topologyAttackArrow {
+    pointer-events: none;
+    filter: drop-shadow(0 0 3px rgb(255 124 94 / 95%)) drop-shadow(0 0 8px rgb(255 86 70 / 40%));
+}
+
+.topologyAttackArrowSolid {
+    fill: #ff8a70;
+    stroke: rgb(255 216 196 / 42%);
+    stroke-width: 0.4;
+}
+
+.topologyAttackArrowMid,
+.topologyAttackArrowFront {
+    fill: none;
+    stroke: rgb(255 150 118 / 96%);
+    stroke-width: 1.35;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.topologyAttackArrowMid {
+    opacity: 0.65;
+}
+
+.topologyAttackArrowFront {
+    opacity: 0.92;
+}
+
+.topologyNode {
+    > rect {
+        fill: rgb(8 31 45 / 92%);
+        stroke: rgb(74 176 206 / 84%);
+        stroke-width: 1;
+    }
+}
+
+.topologyNodeAccent {
+    stroke: #54dfeb;
+    stroke-linecap: square;
+    stroke-width: 2;
+}
+
+.topologyNodeDivider {
+    stroke: rgb(102 211 229 / 32%);
+    stroke-width: 1;
+}
+
+.topologyNodeLabel {
+    fill: #f1f9ff;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.topologyGlyph {
+    > g {
+        fill: none;
+        stroke: #a6d8ff;
+        stroke-width: 1.35;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+}
+
+.topologyNodeCompromised {
+    > rect {
+        fill: rgb(57 27 27 / 78%);
+        stroke: rgb(255 145 105 / 72%);
+    }
+
+    .topologyNodeAccent,
+    .topologyGlyph > g {
+        stroke: #ff9f7c;
+    }
+
+    .topologyNodeLabel {
+        fill: rgb(255 220 207 / 96%);
+    }
+}
+
+.topologyNodeAttacking {
+    > rect {
+        fill: rgb(78 35 30 / 86%);
+        stroke: rgb(255 182 118 / 92%);
+        filter: drop-shadow(0 0 8px rgb(255 116 82 / 52%));
+    }
+
+    .topologyNodeAccent,
+    .topologyGlyph > g {
+        stroke: #ff9465;
+    }
+
+    animation: workbench-node-breach 780ms ease-in-out infinite alternate;
+}
+
+.topologyNodeDetected {
+    > rect {
+        fill: rgb(87 24 29 / 92%);
+        stroke: rgb(255 85 85 / 96%);
+        filter: drop-shadow(0 0 9px rgb(255 74 74 / 72%));
+    }
+
+    .topologyNodeAccent,
+    .topologyGlyph > g {
+        stroke: #ff6f6f;
+    }
+
+    animation: workbench-node-detected 600ms ease-out both;
+}
+
+.topologyNodeExternal {
+    > rect {
+        fill: rgb(48 17 23 / 90%);
+        stroke: rgb(255 91 91 / 72%);
+    }
+
+    .topologyNodeAccent,
+    .topologyGlyph > g {
+        stroke: rgb(255 104 104 / 96%);
+    }
+
+    .topologyNodeLabel {
+        fill: rgb(255 194 194 / 98%);
+    }
+}
+
+.legend {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+    padding: 0 0 2px;
+    margin-top: 8px;
+    color: var(--wb-quiet);
+    font-size: 12px;
+
+    span::before {
+        width: 7px;
+        height: 7px;
+        display: inline-block;
+        margin-right: 6px;
+        background: rgb(39 79 97 / 58%);
+        border: 1px solid var(--wb-border-soft);
+        content: '';
+    }
+
+    span:nth-child(2)::before {
+        background: rgb(255 148 101 / 75%);
+        border-color: rgb(255 182 118 / 90%);
+    }
+
+    span:nth-child(3)::before {
+        background: rgb(255 105 80 / 65%);
+        border-color: rgb(255 145 105 / 78%);
+    }
+
+    span:nth-child(4)::before {
+        background: var(--wb-danger);
+        border-color: var(--wb-danger);
+    }
+}
+
+@keyframes workbench-node-breach {
+    from {
+        filter: brightness(1);
+    }
+
+    to {
+        filter: brightness(1.2);
+    }
+}
+
+@keyframes workbench-attack-flow {
+    to {
+        stroke-dashoffset: -10;
+    }
+}
+
+@keyframes workbench-node-detected {
+    from {
+        filter: brightness(1.5);
+    }
+
+    to {
+        filter: brightness(1);
+    }
+}
+
+.terminalPanel {
+    min-height: 250px;
+}
+
+.fileTabs {
+    display: flex;
+    min-width: 0;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--wb-border-soft);
+
+    button {
+        min-width: max-content;
+        min-height: 31px;
+        padding: 0 11px;
+        color: var(--wb-quiet);
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid transparent;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    button[aria-selected='true'] {
+        color: var(--wb-primary);
+        border-color: var(--wb-primary);
+    }
+}
+
+.console,
+.fileContent {
+    min-height: 190px;
+    max-height: 270px;
+    padding: 12px;
+    margin: 0;
+    overflow: auto;
+    color: #d8f3dc;
+    background: #01070b;
+    font-family: var(--range-mono);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.console p {
+    margin: 0 0 5px;
+    white-space: pre-wrap;
+
+    span {
+        color: var(--wb-primary);
+    }
+}
+
+.console .prompt {
+    color: var(--wb-success);
+}
+
+.contextPanel > h2 {
+    margin: 18px 0 10px;
+    font-size: 16px;
+
+    &:first-child {
+        margin-top: 0;
+    }
+}
+
+.observationSection > h2 {
+    margin: 18px 0 10px;
+    font-size: 16px;
+}
+
+.observationSection {
+    min-height: 132px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.observations {
+    min-height: 0;
+    flex: 1;
+    padding-right: 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: var(--wb-border) transparent;
+    scrollbar-gutter: stable;
+}
+
+.environmentDetails {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    margin: 0;
+    border-top: 1px solid var(--wb-border-soft);
+
+    dt,
+    dd {
+        padding: 8px;
+        margin: 0;
+        border-bottom: 1px solid var(--wb-border-soft);
+        font-size: 12px;
+        line-height: 1.45;
+    }
+
+    dt {
+        color: var(--wb-quiet);
+        background: rgb(10 32 48 / 28%);
+    }
+
+    dd {
+        color: var(--wb-muted);
+        overflow-wrap: anywhere;
+    }
+}
+
+.currentStep {
+    display: grid;
+    gap: 7px;
+    color: var(--wb-muted);
+
+    p,
+    small {
+        margin: 0;
+        color: var(--wb-quiet);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    strong {
+        font-size: 13px;
+    }
+
+    code {
+        color: var(--wb-primary);
+        font-size: 12px;
+        overflow-wrap: anywhere;
+    }
+}
+
+.observations li,
+.riskChecks li {
+    display: grid;
+    gap: 4px;
+    padding: 10px 11px;
+    background: rgb(2 8 14 / 34%);
+    border: 1px solid var(--wb-border-soft);
+
+    strong {
+        color: var(--wb-text);
+        font-size: 12px;
+    }
+
+    span {
+        color: var(--wb-quiet);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+}
+
+.riskChecks {
+    min-height: 0;
+    flex: 1;
+    grid-auto-rows: minmax(48px, auto);
+    align-content: start;
+    gap: 8px;
+    padding-right: 4px;
+    margin-top: 16px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: var(--wb-border) transparent;
+    scrollbar-gutter: stable;
+}
+
+.riskChecks li {
+    min-height: 48px;
+    grid-template-columns: 64px minmax(0, 1fr) minmax(88px, auto);
+    align-items: center;
+    gap: 14px;
+    padding: 9px 12px;
+    border-left-width: 2px;
+
+    &[data-status='pass'],
+    &[data-status='passed'],
+    &[data-status='verified'] {
+        border-color: rgb(101 245 227 / 48%);
+    }
+
+    &[data-status='fail'],
+    &[data-status='failed'] {
+        border-color: rgb(255 116 108 / 58%);
+    }
+
+    &[data-status='partial'] {
+        border-color: rgb(255 210 103 / 58%);
+    }
+
+    &[data-status='running'] {
+        border-color: rgb(142 203 255 / 58%);
+    }
+}
+
+.riskLevel {
+    min-width: 56px;
+    min-height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 9px;
+    color: var(--wb-primary);
+    border: 1px solid rgb(142 203 255 / 48%);
+    font-size: 12px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+[data-level='critical'] .riskLevel,
+[data-level='high'] .riskLevel {
+    color: var(--wb-danger);
+    border-color: rgb(255 116 108 / 58%);
+}
+
+[data-level='medium'] .riskLevel {
+    color: var(--wb-warning);
+    border-color: rgb(255 210 103 / 58%);
+}
+
+.riskName {
+    overflow: hidden;
+    color: var(--wb-muted);
+    font-size: 14px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.riskVerdict {
+    min-width: 88px;
+    justify-self: end;
+    color: var(--wb-quiet);
+    font-size: 12px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+[data-status='pass'] .riskVerdict,
+[data-status='passed'] .riskVerdict,
+[data-status='verified'] .riskVerdict {
+    color: var(--wb-success);
+}
+
+[data-status='fail'] .riskVerdict,
+[data-status='failed'] .riskVerdict {
+    color: var(--wb-danger);
+}
+
+[data-status='partial'] .riskVerdict {
+    color: var(--wb-warning);
+}
+
+[data-status='running'] .riskVerdict {
+    color: var(--wb-primary);
+}
+
+.riskChecks .riskChecksEmpty {
+    grid-template-columns: 1fr;
+    color: var(--wb-quiet);
+    place-items: center;
+}
+
+.tools span {
+    min-height: 22px;
+    color: var(--wb-primary);
+    font-family: var(--range-mono);
+    font-size: 12px;
+}
+
+.empty,
+.feedback {
+    min-height: 60vh;
+    display: grid;
+    color: #a9c2ce;
+    place-items: center;
+    text-align: center;
+}
+
+.feedback {
+    gap: 10px;
+
+    button {
+        min-height: 38px;
+        padding: 7px 12px;
+        color: #01050a;
+        background: #8ecbff;
+        border: 0;
+    }
+}
+
+.dialog {
+    position: fixed;
+    z-index: 70;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    width: min(560px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    gap: 14px;
+    padding: 20px;
+    overflow: auto;
+    color: var(--range-foreground);
+    background: var(--range-card);
+    border: 1px solid var(--range-border);
+    border-radius: var(--range-radius);
+    box-shadow: 0 18px 50px rgb(0 0 0 / 42%);
+    transform: translate(-50%, -50%);
+}
+
+.dialogHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    h2 {
+        margin: 0;
+    }
+}
+
+.dialogClose {
+    width: 32px;
+    height: 32px;
+    display: inline-grid;
+    flex: none;
+    padding: 0;
+    color: var(--wb-muted);
+    background: transparent;
+    border: 1px solid var(--wb-border-soft);
+    cursor: pointer;
+    place-items: center;
+
+    &:hover,
+    &:focus-visible {
+        color: var(--wb-danger);
+        border-color: var(--wb-danger);
+        outline: none;
+    }
+}
+
+.detailList {
+    display: grid;
+    grid-template-columns: minmax(100px, auto) minmax(0, 1fr);
+    gap: 8px;
+
+    dd {
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 1440px) {
+    .header {
+        grid-template-columns: minmax(240px, 1fr) auto auto;
+    }
+
+    .tags {
+        display: none;
+    }
+
+    .mainGrid {
+        height: auto;
+        min-height: 0;
+        flex: none;
+        grid-template-columns: minmax(190px, 0.62fr) minmax(420px, 1.7fr);
+    }
+
+    .codeEvaluationGrid {
+        grid-template-columns: minmax(180px, 0.48fr) minmax(600px, 2fr);
+    }
+
+    .contextPanel {
+        grid-column: 1 / -1;
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+    }
+
+    .observationSection {
+        max-height: 360px;
+    }
+}
+
+@media (max-width: 900px) {
+    .header {
+        grid-template-columns: 1fr auto;
+    }
+
+    .headerMetrics {
+        grid-column: 1;
+        grid-row: 2;
+        justify-content: start;
+    }
+
+    .actions {
+        grid-column: 2;
+        grid-row: 1 / 3;
+    }
+
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .milestonePanel,
+    .contextPanel {
+        min-height: 0;
+    }
+
+    .contextPanel {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 640px) {
+    .workbenchPage {
+        width: 100%;
+        padding: 8px 10px 30px;
+    }
+
+    .header {
+        grid-template-columns: 1fr;
+    }
+
+    .taskIdentity h1,
+    .taskIdentity p {
+        white-space: normal;
+    }
+
+    .headerMetrics,
+    .actions {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .actions button,
+    .primaryButton,
+    .dialogClose {
+        min-height: 44px;
+    }
+
+    .dialogClose {
+        width: 44px;
+        height: 44px;
+    }
+
+    .topologyCanvas {
+        min-height: 250px;
+        height: 250px;
+    }
+
+    .topologyCanvas svg {
+        height: auto;
+        min-height: 0;
+    }
+
+    .environmentDetails {
+        grid-template-columns: 92px minmax(0, 1fr);
+    }
+
+    .riskChecks li {
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 8px 12px;
+    }
+
+    .riskVerdict {
+        min-width: 0;
+        grid-column: 2;
+        justify-self: start;
+        text-align: left;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .topologyAttackPathAttacking,
+    .topologyAttackPathCompleted,
+    .topologyNodeAttacking,
+    .topologyNodeDetected {
+        animation: none;
+    }
+
+    .topologyAttackArrow {
+        display: none;
+    }
+}

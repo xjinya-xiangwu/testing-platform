@@ -1,0 +1,8 @@
+export const AUTH_LOGIN = '/api/v1/auth/login';
+export const AUTH_DEV_LOGIN = '/api/v1/auth/dev-login';
+export const AUTH_ME = '/api/v1/auth/me';
+export const AUTH_LOGOUT = '/api/v1/auth/logout';
+export const API_TOKENS = '/api/v1/api-tokens';
+export const AUDIT_LOGS = '/api/v1/audit-logs';
+export const DASHBOARD_OVERVIEW = '/api/v1/dashboard/overview';
+export const DEMO_JOB = '/api/v1/demo/job';

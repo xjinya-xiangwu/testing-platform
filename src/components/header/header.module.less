@@ -1,0 +1,30 @@
+.header {
+    position: fixed;
+    height: 64px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    box-sizing: border-box;
+    &-nav {
+        flex: 1;
+
+        a {
+            display: inline-block;
+            text-decoration: none;
+            color: black;
+            &:not(:first-of-type) {
+                margin-left: 40px;
+            }
+            &.active {
+                font-weight: bold;
+            }
+        }
+    }
+    &-opt {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+    }
+}

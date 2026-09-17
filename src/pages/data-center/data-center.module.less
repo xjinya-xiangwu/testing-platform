@@ -1,0 +1,269 @@
+.page {
+    width: 100%;
+    max-width: 1500px;
+    padding: 28px clamp(16px, 3vw, 44px) 56px;
+    margin: 0 auto;
+}
+.pageHeader {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--range-border);
+}
+.pageHeader > div > span {
+    color: var(--range-primary);
+    font-family: var(--range-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+}
+.pageHeader h1 {
+    margin: 6px 0;
+    font-family: var(--range-serif);
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 500;
+}
+.pageHeader p {
+    margin: 0;
+    color: var(--range-muted-foreground);
+    font-size: 12px;
+}
+.roleBadge {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    color: var(--range-primary);
+    border: 1px solid var(--range-primary);
+    font-size: 12px;
+    cursor: pointer;
+}
+.summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: 22px 0;
+}
+.summary > div {
+    padding: 15px;
+    background: color-mix(in srgb, var(--range-muted) 55%, transparent);
+    border: 1px solid var(--range-border);
+}
+.summary span,
+.summary small {
+    display: block;
+    color: var(--range-muted-foreground);
+    font-size: 10px;
+}
+.summary strong {
+    display: block;
+    margin: 6px 0;
+    color: var(--range-primary);
+    font-family: var(--range-mono);
+    font-size: 26px;
+}
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+}
+.toolbar input {
+    width: min(420px, 100%);
+    min-height: 42px;
+    padding: 8px 12px;
+    color: var(--range-foreground);
+    background: var(--range-muted);
+    border: 1px solid var(--range-border);
+}
+.toolbar span {
+    color: var(--range-muted-foreground);
+    font-size: 11px;
+}
+.catalog > header,
+.adminPanel > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--range-border);
+}
+.catalog h2,
+.adminPanel h2 {
+    margin: 0;
+    font-family: var(--range-serif);
+    font-size: 20px;
+}
+.catalog > header span {
+    color: var(--range-muted-foreground);
+    font-family: var(--range-mono);
+    font-size: 11px;
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+.card {
+    padding: 16px;
+    background: var(--range-card);
+    border: 1px solid var(--range-border);
+}
+.card header,
+.card footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.card header strong,
+.card header span {
+    display: block;
+}
+.card header strong {
+    color: var(--range-foreground);
+    font-size: 15px;
+}
+.card header span {
+    margin-top: 3px;
+    color: var(--range-primary);
+    font-family: var(--range-mono);
+    font-size: 10px;
+}
+.card header b {
+    padding: 3px 6px;
+    font-size: 10px;
+}
+.ready {
+    color: var(--range-primary);
+    border: 1px solid var(--range-primary);
+}
+.pending {
+    color: var(--range-warning);
+    border: 1px solid var(--range-warning);
+}
+.card > p {
+    color: var(--range-muted-foreground);
+    font-size: 11px;
+}
+.card dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 12px 0;
+}
+.card dl > div {
+    min-width: 0;
+    padding: 8px;
+    background: color-mix(in srgb, var(--range-muted) 55%, transparent);
+}
+.card dt {
+    color: var(--range-muted-foreground);
+    font-size: 9px;
+}
+.card dd {
+    margin: 4px 0 0;
+    overflow: hidden;
+    color: var(--range-foreground);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.card footer {
+    color: var(--range-muted-foreground);
+    font-size: 10px;
+}
+.card footer button,
+.adminPanel button {
+    min-height: 34px;
+    padding: 6px 10px;
+    color: var(--range-primary);
+    background: transparent;
+    border: 1px solid var(--range-primary);
+    cursor: pointer;
+}
+.adminPanel {
+    margin-top: 20px;
+    padding: 16px;
+    background: color-mix(in srgb, var(--range-primary) 7%, var(--range-card));
+    border: 1px solid color-mix(in srgb, var(--range-primary) 45%, var(--range-border));
+}
+.adminPanel p {
+    color: var(--range-muted-foreground);
+    font-size: 11px;
+}
+.adminPanel > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.backdrop {
+    position: fixed;
+    z-index: 100;
+    inset: 0;
+    display: grid;
+    padding: 16px;
+    background: rgb(1 5 10 / 78%);
+    place-items: center;
+}
+.detailDialog {
+    width: min(660px, 100%);
+    padding: 20px;
+    background: var(--range-card);
+    border: 1px solid var(--range-primary);
+}
+.detailDialog header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+.detailDialog h2 {
+    margin: 0;
+}
+.detailDialog header p,
+.detailDialog > p {
+    color: var(--range-muted-foreground);
+    font-size: 11px;
+}
+.detailDialog header button {
+    min-width: 36px;
+    color: var(--range-muted-foreground);
+    background: transparent;
+    border: 0;
+    font-size: 22px;
+}
+.detailDialog dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+.detailDialog dl > div {
+    padding: 10px;
+    background: var(--range-muted);
+}
+.detailDialog dt {
+    color: var(--range-muted-foreground);
+    font-size: 10px;
+}
+.detailDialog dd {
+    margin: 5px 0 0;
+    color: var(--range-primary);
+    font-family: var(--range-mono);
+    font-size: 11px;
+}
+@media (max-width: 700px) {
+    .pageHeader,
+    .toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .summary,
+    .grid,
+    .card dl,
+    .detailDialog dl {
+        grid-template-columns: 1fr;
+    }
+}

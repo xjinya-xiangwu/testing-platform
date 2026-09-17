@@ -1,0 +1,20 @@
+ls:
+    src:
+        .dir: kebab-case # applies to the current directory and all their subdirectories
+        .js: kebab-case
+        .ts: kebab-case
+        .json: kebab-case
+        .vue: kebab-case
+        .tsx: kebab-case
+        .d.ts: kebab-case
+        .module.less: kebab-case
+        .less: kebab-case
+        hooks: # hooks 目录使用 camelCase 命名规范
+            .dir: kebab-case
+            .ts: camelCase
+            .tsx: camelCase
+            .js: camelCase
+
+ignore:
+    - .git
+    - node_modules

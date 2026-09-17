@@ -1,0 +1,13 @@
+dist
+deploy
+values
+node_modules
+.gitignore
+.prettierignore
+.husky
+.governance
+.cursor
+.claude
+CLAUDE.md
+.github/copilot-instructions.md
+pnpm-lock.yaml

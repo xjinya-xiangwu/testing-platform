@@ -1,0 +1,964 @@
+@canvas: #01050a;
+@panel: #06131e;
+@surface: #0a2030;
+@line: #59bede;
+@line-soft: #274f61;
+@primary: #8ecbff;
+@primary-hover: #a6d8ff;
+@interactive: #77bcff;
+@accent: #6defff;
+@success: #65f5e3;
+@warning: #ffd267;
+@danger: #ff746c;
+@ink: #f4fbff;
+@muted: #d7e9f2;
+@quiet: #a9c2ce;
+@paper: #06131e;
+
+.trainingPage {
+    width: 100%;
+    max-width: 1800px;
+    min-height: 100%;
+    padding: 24px 22px 44px;
+    margin: 0 auto;
+    color: @ink;
+    background: linear-gradient(rgb(109 239 255 / 1.8%) 1px, transparent 1px), linear-gradient(90deg, rgb(109 239 255 / 1.8%) 1px, transparent 1px), @canvas;
+    background-size: 32px 32px;
+}
+
+.pageBack {
+    display: inline-flex;
+    margin: 0 0 14px 2px;
+    color: @interactive;
+    font-size: 13px;
+    text-decoration: none;
+
+    &::before {
+        margin-right: 5px;
+        content: '‹';
+    }
+
+    &:hover {
+        color: @primary-hover;
+    }
+}
+
+.pageHeader,
+.pipelineCard > header,
+.dialogHeader,
+.dialogFooter,
+.toolbar,
+.paginationFooter,
+.mockSection > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.pageHeader {
+    min-height: 92px;
+    align-items: flex-start;
+    padding: 4px 2px 18px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid rgb(89 190 222 / 24%);
+
+    h1 {
+        margin: 7px 0;
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 1.25;
+        letter-spacing: 0.015em;
+    }
+
+    p {
+        margin: 0;
+        color: @muted;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    > button {
+        margin-top: 14px;
+    }
+}
+
+.primaryButton,
+.dialogFooter .primaryButton {
+    color: @canvas;
+    background: @primary;
+    border-color: @primary;
+    font-weight: 600;
+
+    &:hover:not(:disabled) {
+        background: @primary-hover;
+        border-color: @primary-hover;
+    }
+}
+
+.pipelineCard,
+.listCard {
+    min-width: 0;
+    padding: 20px;
+    margin-bottom: 16px;
+    background: rgb(6 19 30 / 86%);
+    border: 1px solid rgb(89 190 222 / 24%);
+    box-shadow: 0 14px 38px rgb(0 0 0 / 10%);
+}
+
+.pipelineCard {
+    > header {
+        min-height: 45px;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+
+    h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    header span {
+        color: @quiet;
+        font-size: 12px;
+    }
+
+    ol {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    li {
+        position: relative;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 74px;
+        padding: 12px 24px 12px 14px;
+        background: rgb(2 8 14 / 28%);
+        border: 1px solid rgb(89 190 222 / 24%);
+
+        + li {
+            border-left: 0;
+        }
+
+        &:not(:last-child)::after {
+            position: absolute;
+            z-index: 1;
+            top: 50%;
+            right: -8px;
+            display: grid;
+            width: 16px;
+            height: 24px;
+            color: @primary;
+            background: @panel;
+            content: '›';
+            font: 18px/1 var(--range-mono);
+            place-items: center;
+            transform: translateY(-50%);
+        }
+
+        i {
+            display: grid;
+            width: 28px;
+            height: 28px;
+            flex: none;
+            color: @primary;
+            background: rgb(142 203 255 / 6%);
+            border: 1px solid rgb(142 203 255 / 45%);
+            font: 12px/1 var(--range-mono);
+            font-style: normal;
+            place-items: center;
+        }
+
+        div {
+            display: grid;
+            min-width: 0;
+            gap: 5px;
+        }
+
+        strong {
+            color: @ink;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        span {
+            color: @quiet;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+    }
+}
+
+.trainingPage button,
+.rowActions a {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 12px;
+    color: @muted;
+    text-decoration: none;
+    background: rgb(10 32 48 / 78%);
+    border: 1px solid rgb(89 190 222 / 48%);
+    border-radius: 2px;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        color: @ink;
+        background: #062131;
+        border-color: @interactive;
+    }
+}
+
+.trainingPage button:disabled {
+    color: #718692;
+    background: #16232b;
+    border-color: #31434d;
+    cursor: not-allowed;
+}
+
+.toolbar {
+    min-width: 0;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.statusFilters {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 3px;
+    padding: 3px;
+    overflow-x: auto;
+    background: rgb(2 8 14 / 70%);
+    border: 1px solid rgb(89 190 222 / 18%);
+
+    button {
+        min-height: 38px;
+        padding: 0 18px;
+        color: @quiet;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        font-size: 15px;
+        font-weight: 500;
+
+        &:hover:not(:disabled) {
+            color: @ink;
+            background: transparent;
+            border-color: transparent;
+        }
+    }
+}
+
+.statusFilters .activeFilter,
+.paginationFooter .activePage {
+    color: @primary;
+    background: rgb(142 203 255 / 10%);
+    border-color: transparent;
+}
+
+.searchField {
+    display: flex;
+    width: min(330px, 100%);
+    height: 40px;
+    flex: 0 1 330px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 13px;
+    background: rgb(2 8 14 / 65%);
+    border: 1px solid rgb(89 190 222 / 30%);
+
+    span {
+        color: @quiet;
+        font-size: 0;
+
+        &::before {
+            content: '⌕';
+            font-size: 19px;
+        }
+    }
+}
+
+.searchField input {
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+    padding: 0;
+    background: transparent;
+    border: 0;
+
+    &:focus {
+        border: 0;
+        box-shadow: none;
+    }
+
+    &::placeholder {
+        color: @quiet;
+        opacity: 0.76;
+    }
+}
+
+.wizardFields input,
+.wizardFields textarea,
+.wizardFields select,
+.hyperparameterGrid input {
+    width: 100%;
+    min-height: 40px;
+    padding: 0 13px;
+    color: @ink;
+    outline: 0;
+    background: rgb(1 5 10 / 72%);
+    border: 1px solid rgb(89 190 222 / 32%);
+    border-radius: 0;
+
+    &:focus {
+        border-color: @interactive;
+        box-shadow: 0 0 0 2px rgb(119 188 255 / 8%);
+    }
+}
+
+.tableWrap {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-gutter: stable;
+}
+
+.taskTable {
+    width: 100%;
+    min-width: 1060px;
+    border-collapse: collapse;
+
+    th,
+    td {
+        padding: 12px;
+        text-align: left;
+        vertical-align: middle;
+        border-bottom: 1px solid rgb(39 79 97 / 50%);
+    }
+
+    th {
+        height: 40px;
+        padding-block: 0;
+        color: @quiet;
+        background: rgb(10 32 48 / 40%);
+        border-top: 1px solid rgb(89 190 222 / 20%);
+        border-bottom: 1px solid rgb(89 190 222 / 20%);
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    td {
+        min-height: 54px;
+        color: @muted;
+        white-space: nowrap;
+    }
+
+    td > strong,
+    td > small {
+        display: block;
+    }
+
+    td > small {
+        margin-top: 5px;
+        color: @quiet;
+        font-size: 12px;
+    }
+
+    tbody tr:hover td {
+        background: rgb(10 32 48 / 32%);
+    }
+}
+
+.taskId {
+    color: @ink;
+    font-family: var(--range-mono);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.featured {
+    width: fit-content;
+    padding: 3px 8px;
+    color: @primary !important;
+    background: rgb(142 203 255 / 8%);
+    border: 1px solid rgb(142 203 255 / 42%);
+}
+
+.progressCell {
+    display: grid;
+    grid-template-columns: minmax(100px, 1fr) auto;
+    gap: 4px 8px;
+    min-width: 170px;
+
+    progress,
+    small {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    small {
+        color: @quiet;
+        font-size: 11px;
+    }
+
+    progress {
+        height: 5px;
+        overflow: hidden;
+        appearance: none;
+
+        &::-webkit-progress-bar {
+            background: rgb(39 79 97 / 48%);
+        }
+
+        &::-webkit-progress-value {
+            background: linear-gradient(90deg, @interactive, @accent);
+            box-shadow: 0 0 10px rgb(109 239 255 / 32%);
+        }
+    }
+}
+
+.status0,
+.status1,
+.status2,
+.status3,
+.status4 {
+    display: inline-flex;
+    min-height: 24px;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    border: 1px solid;
+}
+
+.status0 {
+    color: @warning;
+    background: rgb(255 210 103 / 7%);
+    border-color: rgb(255 210 103 / 40%);
+}
+
+.status1 {
+    color: @success;
+    background: rgb(101 245 227 / 7%);
+    border-color: rgb(101 245 227 / 36%);
+}
+
+.status2 {
+    color: @primary;
+    background: rgb(142 203 255 / 8%);
+    border-color: rgb(142 203 255 / 42%);
+}
+
+.status3 {
+    color: @success;
+    background: rgb(101 245 227 / 7%);
+    border-color: rgb(101 245 227 / 36%);
+}
+
+.status4 {
+    color: @quiet;
+    background: rgb(169 194 206 / 5%);
+    border-color: rgb(169 194 206 / 22%);
+}
+
+.rowActions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+
+    button,
+    a {
+        min-height: 30px;
+        padding: 0 9px;
+        font-size: 12px;
+    }
+}
+
+.disabledAction {
+    display: inline-flex;
+    cursor: not-allowed;
+
+    button {
+        pointer-events: none;
+    }
+}
+
+.paginationFooter {
+    min-height: 48px;
+    align-items: flex-end;
+    padding-top: 12px;
+    color: @quiet;
+    font-size: 12px;
+
+    nav {
+        display: flex;
+        gap: 5px;
+    }
+
+    button {
+        min-width: 32px;
+        height: 32px;
+        min-height: 32px;
+        padding: 0 9px;
+        font: 12px/1 var(--range-mono);
+    }
+}
+
+.paginationFooter .activePage {
+    color: @canvas;
+    background: @primary;
+    border-color: @primary;
+}
+
+.actionError,
+.feedback,
+.empty {
+    padding: 14px 16px;
+    margin: 0 0 18px;
+    color: @muted;
+    background: rgb(255 210 103 / 6%);
+    border: 1px solid rgb(255 210 103 / 45%);
+}
+
+.actionError {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.feedback,
+.empty {
+    text-align: center;
+}
+
+.dialogBackdrop {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+    background: rgb(1 5 10 / 78%);
+    backdrop-filter: blur(5px);
+}
+
+.wizardDialog,
+.detailDialog {
+    display: flex;
+    flex-direction: column;
+    width: min(980px, 100%);
+    max-height: calc(100vh - 56px);
+    overflow: hidden;
+    background: linear-gradient(145deg, @surface, @panel 42%);
+    border: 1px solid rgb(89 190 222 / 48%);
+    box-shadow:
+        0 28px 90px rgb(0 0 0 / 54%),
+        0 0 42px rgb(89 190 222 / 7%);
+}
+
+.detailDialog {
+    width: min(1320px, 100%);
+}
+
+.dialogHeader,
+.dialogFooter {
+    flex: 0 0 auto;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgb(39 79 97 / 52%);
+
+    h2,
+    p {
+        margin: 0;
+    }
+
+    p {
+        margin-top: 4px;
+        color: @muted;
+        font-size: 13px;
+    }
+}
+
+.dialogFooter {
+    border-top: 1px solid rgb(39 79 97 / 52%);
+    border-bottom: 0;
+
+    > span {
+        flex: 1;
+    }
+}
+
+.wizardSteps {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    padding: 16px 22px;
+    margin: 0;
+    list-style: none;
+    border-bottom: 1px solid rgb(39 79 97 / 52%);
+
+    li {
+        display: grid;
+        justify-items: center;
+        gap: 5px;
+        position: relative;
+        color: @quiet;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    span {
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        color: @quiet;
+        border: 1px solid @line-soft;
+        border-radius: 50%;
+    }
+
+    li:not(:last-child)::before {
+        position: absolute;
+        z-index: 1;
+        top: 14px;
+        right: -9px;
+        display: grid;
+        width: 18px;
+        height: 25px;
+        color: @line;
+        content: '›';
+        font: 15px/1 var(--range-mono);
+        place-items: center;
+        transform: translateY(-50%);
+    }
+}
+
+.wizardSteps .currentStep,
+.wizardSteps .completedStep {
+    color: @ink;
+
+    span {
+        color: @canvas;
+        background: @primary;
+        border-color: @primary;
+    }
+}
+
+.wizardSteps .completedStep span {
+    color: @success;
+    background: transparent;
+    border-color: rgb(101 245 227 / 50%);
+}
+
+.wizardBody,
+.detailBody {
+    flex: 1 1 auto;
+    padding: 22px;
+    overflow-y: auto;
+}
+
+.wizardFields {
+    display: grid;
+    gap: 18px;
+
+    > label {
+        display: grid;
+        gap: 7px;
+    }
+
+    fieldset {
+        padding: 0;
+        margin: 0;
+        border: 0;
+    }
+
+    legend {
+        margin-bottom: 8px;
+        color: @muted;
+        font-size: 13px;
+    }
+
+    textarea {
+        min-height: 92px;
+        resize: vertical;
+    }
+}
+
+.optionButtons,
+.checkboxOptions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    label {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 9px 14px;
+        color: @muted;
+        background: rgb(2 8 14 / 34%);
+        border: 1px solid rgb(89 190 222 / 23%);
+        cursor: pointer;
+    }
+
+    input {
+        width: auto;
+        min-height: auto;
+        margin-right: 8px;
+    }
+}
+
+.optionButtons .selectedOption {
+    color: @primary;
+    background: rgb(142 203 255 / 7%);
+    border-color: @primary;
+}
+
+.hyperparameterGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+
+    label {
+        display: grid;
+        gap: 7px;
+    }
+
+    i {
+        display: inline-grid;
+        width: 18px;
+        height: 18px;
+        place-items: center;
+        margin-left: 4px;
+        color: @primary;
+        font-size: 11px;
+        font-style: normal;
+        border: 1px solid @primary;
+        border-radius: 50%;
+    }
+}
+
+.confirmationGrid,
+.configurationGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+
+    div {
+        padding: 14px;
+        background: rgb(1 5 10 / 44%);
+        border: 1px solid rgb(89 190 222 / 25%);
+    }
+
+    dt {
+        color: @quiet;
+        font-size: 12px;
+    }
+
+    dd {
+        margin: 6px 0 0;
+        color: @ink;
+        font-weight: 600;
+    }
+}
+
+.validationError {
+    padding: 0 22px;
+    color: @danger;
+}
+
+.detailBody {
+    display: grid;
+    gap: 24px;
+}
+
+.detailSummary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+
+    div {
+        display: grid;
+        gap: 5px;
+        padding: 14px;
+        background: @panel;
+        border: 1px solid rgb(89 190 222 / 20%);
+    }
+
+    span,
+    small {
+        color: @quiet;
+        font-size: 12px;
+    }
+}
+
+.mockSection {
+    padding: 18px;
+    background: rgb(2 8 14 / 28%);
+    border: 1px solid rgb(89 190 222 / 24%);
+
+    h3,
+    h4 {
+        margin: 0;
+    }
+
+    > header > span {
+        padding: 4px 8px;
+        color: @warning;
+        font-size: 11px;
+        background: rgb(255 210 103 / 7%);
+        border: 1px solid rgb(255 210 103 / 40%);
+    }
+}
+
+.metricGroup {
+    margin-top: 18px;
+
+    h4 {
+        margin-bottom: 10px;
+        color: @quiet;
+        font-size: 13px;
+    }
+}
+
+.metricGrid,
+.gpuGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.metricCard,
+.gpuGrid article {
+    padding: 12px;
+    color: @ink;
+    background: rgb(2 8 14 / 35%);
+    border: 1px solid rgb(39 79 97 / 55%);
+}
+
+.metricCard {
+    header {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 11px;
+    }
+
+    svg {
+        width: 100%;
+        height: 58px;
+        margin-top: 8px;
+    }
+
+    polyline {
+        fill: none;
+        stroke: @accent;
+        stroke-width: 1.5;
+    }
+}
+
+.gpuGrid article {
+    display: grid;
+    gap: 7px;
+
+    progress {
+        width: 100%;
+    }
+
+    small {
+        color: @quiet;
+    }
+}
+
+.terminal {
+    max-height: 240px;
+    padding: 14px;
+    margin-top: 14px;
+    overflow-y: auto;
+    color: @muted;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 12px;
+    background: @canvas;
+    border: 1px solid rgb(89 190 222 / 18%);
+
+    p {
+        margin: 0 0 7px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .pipelineCard ol,
+    .metricGrid,
+    .gpuGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .searchField {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .trainingPage {
+        padding: 18px 12px 32px;
+    }
+
+    .pageHeader,
+    .paginationFooter {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .pageHeader button,
+    .dialogFooter button,
+    .statusFilters button {
+        min-height: 44px;
+    }
+
+    .pipelineCard ol,
+    .metricGrid,
+    .gpuGrid,
+    .hyperparameterGrid,
+    .confirmationGrid,
+    .configurationGrid,
+    .detailSummary {
+        grid-template-columns: 1fr;
+    }
+
+    .pipelineCard li {
+        min-height: auto;
+    }
+
+    .wizardSteps {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .dialogBackdrop {
+        padding: 0;
+    }
+
+    .wizardDialog,
+    .detailDialog {
+        width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+}

@@ -1,0 +1,797 @@
+{
+    "zones": [
+        {
+            "id": "public-access",
+            "label": "公网接入区"
+        },
+        {
+            "id": "business-application",
+            "label": "业务应用区"
+        },
+        {
+            "id": "gis-service",
+            "label": "GIS服务区"
+        },
+        {
+            "id": "gis-data",
+            "label": "GIS数据区"
+        },
+        {
+            "id": "ops-monitoring",
+            "label": "运维监控区"
+        },
+        {
+            "id": "monitoring-data",
+            "label": "监控数据区"
+        },
+        {
+            "id": "internet",
+            "label": "互联网区"
+        }
+    ],
+    "networks": [
+        {
+            "id": "dmz",
+            "label": "dmz_net",
+            "zoneId": "public-access",
+            "cidr": "172.110.1.0/24"
+        },
+        {
+            "id": "react_dubbo",
+            "label": "react_to_dubbo_net",
+            "zoneId": "business-application",
+            "cidr": "172.110.2.0/24"
+        },
+        {
+            "id": "dubbo_geoserver",
+            "label": "dubbo_to_geoserver_net",
+            "zoneId": "gis-service",
+            "cidr": "172.110.3.0/24"
+        },
+        {
+            "id": "geoserver_postgres",
+            "label": "geoserver_to_postgres_net",
+            "zoneId": "gis-data",
+            "cidr": "172.110.4.0/24"
+        },
+        {
+            "id": "dubbo_cacti",
+            "label": "dubbo_to_cacti_net",
+            "zoneId": "ops-monitoring",
+            "cidr": "172.110.5.0/24"
+        },
+        {
+            "id": "cacti_neo4j",
+            "label": "cacti_to_neo4j_net",
+            "zoneId": "monitoring-data",
+            "cidr": "172.110.6.0/24"
+        }
+    ],
+    "nodes": [
+        {
+            "id": "attacker",
+            "label": "External Attacker",
+            "kind": "external_actor",
+            "zoneId": "internet",
+            "interfaces": [
+                {
+                    "networkId": "dmz"
+                }
+            ]
+        },
+        {
+            "id": "gitea",
+            "label": "gitea",
+            "kind": "service",
+            "zoneId": "public-access",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.110.1.10"
+                }
+            ],
+            "technology": "initialized Gitea",
+            "purpose": "real"
+        },
+        {
+            "id": "react",
+            "label": "react",
+            "kind": "service",
+            "zoneId": "public-access",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.110.1.18",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": 3000
+                        }
+                    ]
+                },
+                {
+                    "networkId": "react_dubbo",
+                    "address": "172.110.2.18",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": 3000
+                        }
+                    ]
+                }
+            ],
+            "technology": "Next.js 15.5.6",
+            "purpose": "real"
+        },
+        {
+            "id": "dubbo",
+            "label": "dubbo-provider",
+            "kind": "service",
+            "zoneId": "business-application",
+            "interfaces": [
+                {
+                    "networkId": "react_dubbo",
+                    "address": "172.110.2.20"
+                },
+                {
+                    "networkId": "dubbo_geoserver",
+                    "address": "172.110.3.20"
+                },
+                {
+                    "networkId": "dubbo_cacti",
+                    "address": "172.110.5.20"
+                }
+            ],
+            "technology": "Dubbo 2.7.3",
+            "purpose": "real"
+        },
+        {
+            "id": "zookeeper",
+            "label": "dubbo-zookeeper",
+            "kind": "service",
+            "zoneId": "business-application",
+            "interfaces": [
+                {
+                    "networkId": "react_dubbo",
+                    "address": "172.110.2.21"
+                }
+            ],
+            "technology": "service registry",
+            "purpose": "real"
+        },
+        {
+            "id": "geoserver",
+            "label": "geoserver",
+            "kind": "service",
+            "zoneId": "gis-service",
+            "interfaces": [
+                {
+                    "networkId": "dubbo_geoserver",
+                    "address": "172.110.3.30"
+                },
+                {
+                    "networkId": "geoserver_postgres",
+                    "address": "172.110.4.30"
+                }
+            ],
+            "technology": "GeoServer 2.22.1",
+            "purpose": "real"
+        },
+        {
+            "id": "postgres",
+            "label": "postgres-rce",
+            "kind": "service",
+            "zoneId": "gis-data",
+            "interfaces": [
+                {
+                    "networkId": "geoserver_postgres",
+                    "address": "172.110.4.31"
+                }
+            ],
+            "technology": "PostgreSQL 10.7",
+            "purpose": "real"
+        },
+        {
+            "id": "cacti",
+            "label": "cacti-web",
+            "kind": "service",
+            "zoneId": "ops-monitoring",
+            "interfaces": [
+                {
+                    "networkId": "dubbo_cacti",
+                    "address": "172.110.5.40"
+                },
+                {
+                    "networkId": "cacti_neo4j",
+                    "address": "172.110.6.40"
+                }
+            ],
+            "technology": "Cacti 1.2.28",
+            "purpose": "real"
+        },
+        {
+            "id": "cactidb",
+            "label": "cacti-db",
+            "kind": "service",
+            "zoneId": "monitoring-data",
+            "interfaces": [
+                {
+                    "networkId": "cacti_neo4j",
+                    "address": "172.110.6.41"
+                }
+            ],
+            "technology": "MySQL 5.7",
+            "purpose": "real"
+        },
+        {
+            "id": "neo4j",
+            "label": "neo4j",
+            "kind": "service",
+            "zoneId": "monitoring-data",
+            "interfaces": [
+                {
+                    "networkId": "cacti_neo4j",
+                    "address": "172.110.6.50"
+                }
+            ],
+            "technology": "Neo4j 3.4.18",
+            "purpose": "real"
+        },
+        {
+            "id": "postfix",
+            "label": "10_decoy_postfix_dmz",
+            "kind": "service",
+            "zoneId": "public-access",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.110.1.170"
+                }
+            ],
+            "technology": "SMTP",
+            "purpose": "decoy"
+        },
+        {
+            "id": "dovecot",
+            "label": "11_decoy_dovecot_dmz",
+            "kind": "service",
+            "zoneId": "public-access",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.110.1.171"
+                }
+            ],
+            "technology": "IMAP",
+            "purpose": "decoy"
+        },
+        {
+            "id": "redis",
+            "label": "22_decoy_redis_dmz",
+            "kind": "service",
+            "zoneId": "public-access",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.110.1.172"
+                }
+            ],
+            "technology": "Redis",
+            "purpose": "decoy"
+        },
+        {
+            "id": "rabbitmq",
+            "label": "23_decoy_rabbitmq_dmz",
+            "kind": "service",
+            "zoneId": "public-access",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.110.1.173"
+                }
+            ],
+            "technology": "RabbitMQ",
+            "purpose": "decoy"
+        },
+        {
+            "id": "snmp",
+            "label": "12_decoy_snmp_react",
+            "kind": "service",
+            "zoneId": "business-application",
+            "interfaces": [
+                {
+                    "networkId": "react_dubbo",
+                    "address": "172.110.2.170"
+                }
+            ],
+            "technology": "SNMP",
+            "purpose": "decoy"
+        },
+        {
+            "id": "syslog",
+            "label": "13_decoy_syslog_react",
+            "kind": "service",
+            "zoneId": "business-application",
+            "interfaces": [
+                {
+                    "networkId": "react_dubbo",
+                    "address": "172.110.2.171"
+                }
+            ],
+            "technology": "syslog",
+            "purpose": "decoy"
+        },
+        {
+            "id": "consul",
+            "label": "14_decoy_consul_geoserver",
+            "kind": "service",
+            "zoneId": "gis-service",
+            "interfaces": [
+                {
+                    "networkId": "dubbo_geoserver",
+                    "address": "172.110.3.170"
+                }
+            ],
+            "technology": "Consul",
+            "purpose": "decoy"
+        },
+        {
+            "id": "squid",
+            "label": "15_decoy_squid_geoserver",
+            "kind": "service",
+            "zoneId": "gis-service",
+            "interfaces": [
+                {
+                    "networkId": "dubbo_geoserver",
+                    "address": "172.110.3.171"
+                }
+            ],
+            "technology": "Squid",
+            "purpose": "decoy"
+        },
+        {
+            "id": "cassandra",
+            "label": "16_decoy_cassandra_postgres",
+            "kind": "service",
+            "zoneId": "gis-data",
+            "interfaces": [
+                {
+                    "networkId": "geoserver_postgres",
+                    "address": "172.110.4.170"
+                }
+            ],
+            "technology": "Cassandra",
+            "purpose": "decoy"
+        },
+        {
+            "id": "influx",
+            "label": "17_decoy_influxdb_postgres",
+            "kind": "service",
+            "zoneId": "gis-data",
+            "interfaces": [
+                {
+                    "networkId": "geoserver_postgres",
+                    "address": "172.110.4.171"
+                }
+            ],
+            "technology": "InfluxDB",
+            "purpose": "decoy"
+        },
+        {
+            "id": "gitdecoy",
+            "label": "18_decoy_git_cacti",
+            "kind": "service",
+            "zoneId": "ops-monitoring",
+            "interfaces": [
+                {
+                    "networkId": "dubbo_cacti",
+                    "address": "172.110.5.170"
+                }
+            ],
+            "technology": "Git daemon",
+            "purpose": "decoy"
+        },
+        {
+            "id": "clickhouse",
+            "label": "19_decoy_clickhouse_cacti",
+            "kind": "service",
+            "zoneId": "ops-monitoring",
+            "interfaces": [
+                {
+                    "networkId": "dubbo_cacti",
+                    "address": "172.110.5.171"
+                }
+            ],
+            "technology": "ClickHouse",
+            "purpose": "decoy"
+        },
+        {
+            "id": "cups",
+            "label": "20_decoy_cups_neo4j",
+            "kind": "service",
+            "zoneId": "monitoring-data",
+            "interfaces": [
+                {
+                    "networkId": "cacti_neo4j",
+                    "address": "172.110.6.170"
+                }
+            ],
+            "technology": "CUPS",
+            "purpose": "decoy"
+        },
+        {
+            "id": "iperf",
+            "label": "21_decoy_iperf_neo4j",
+            "kind": "service",
+            "zoneId": "monitoring-data",
+            "interfaces": [
+                {
+                    "networkId": "cacti_neo4j",
+                    "address": "172.110.6.171"
+                }
+            ],
+            "technology": "iperf3",
+            "purpose": "decoy"
+        }
+    ],
+    "links": [
+        {
+            "id": "attacker-dmz",
+            "source": {
+                "type": "node",
+                "id": "attacker"
+            },
+            "target": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "directed": true
+        },
+        {
+            "id": "dmz-gitea",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "gitea"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-react",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "react"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-postfix",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "postfix"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-dovecot",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "dovecot"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-redis",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "redis"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-rabbitmq",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "rabbitmq"
+            },
+            "directed": false
+        },
+        {
+            "id": "react-react_dubbo",
+            "source": {
+                "type": "node",
+                "id": "react"
+            },
+            "target": {
+                "type": "network",
+                "id": "react_dubbo"
+            },
+            "directed": false
+        },
+        {
+            "id": "react_dubbo-dubbo",
+            "source": {
+                "type": "network",
+                "id": "react_dubbo"
+            },
+            "target": {
+                "type": "node",
+                "id": "dubbo"
+            },
+            "directed": false
+        },
+        {
+            "id": "react_dubbo-zookeeper",
+            "source": {
+                "type": "network",
+                "id": "react_dubbo"
+            },
+            "target": {
+                "type": "node",
+                "id": "zookeeper"
+            },
+            "directed": false
+        },
+        {
+            "id": "react_dubbo-snmp",
+            "source": {
+                "type": "network",
+                "id": "react_dubbo"
+            },
+            "target": {
+                "type": "node",
+                "id": "snmp"
+            },
+            "directed": false
+        },
+        {
+            "id": "react_dubbo-syslog",
+            "source": {
+                "type": "network",
+                "id": "react_dubbo"
+            },
+            "target": {
+                "type": "node",
+                "id": "syslog"
+            },
+            "directed": false
+        },
+        {
+            "id": "dubbo-dubbo_geoserver",
+            "source": {
+                "type": "node",
+                "id": "dubbo"
+            },
+            "target": {
+                "type": "network",
+                "id": "dubbo_geoserver"
+            },
+            "directed": false
+        },
+        {
+            "id": "dubbo_geoserver-geoserver",
+            "source": {
+                "type": "network",
+                "id": "dubbo_geoserver"
+            },
+            "target": {
+                "type": "node",
+                "id": "geoserver"
+            },
+            "directed": false
+        },
+        {
+            "id": "dubbo_geoserver-consul",
+            "source": {
+                "type": "network",
+                "id": "dubbo_geoserver"
+            },
+            "target": {
+                "type": "node",
+                "id": "consul"
+            },
+            "directed": false
+        },
+        {
+            "id": "dubbo_geoserver-squid",
+            "source": {
+                "type": "network",
+                "id": "dubbo_geoserver"
+            },
+            "target": {
+                "type": "node",
+                "id": "squid"
+            },
+            "directed": false
+        },
+        {
+            "id": "geoserver-geoserver_postgres",
+            "source": {
+                "type": "node",
+                "id": "geoserver"
+            },
+            "target": {
+                "type": "network",
+                "id": "geoserver_postgres"
+            },
+            "directed": false
+        },
+        {
+            "id": "geoserver_postgres-postgres",
+            "source": {
+                "type": "network",
+                "id": "geoserver_postgres"
+            },
+            "target": {
+                "type": "node",
+                "id": "postgres"
+            },
+            "directed": false
+        },
+        {
+            "id": "geoserver_postgres-cassandra",
+            "source": {
+                "type": "network",
+                "id": "geoserver_postgres"
+            },
+            "target": {
+                "type": "node",
+                "id": "cassandra"
+            },
+            "directed": false
+        },
+        {
+            "id": "geoserver_postgres-influx",
+            "source": {
+                "type": "network",
+                "id": "geoserver_postgres"
+            },
+            "target": {
+                "type": "node",
+                "id": "influx"
+            },
+            "directed": false
+        },
+        {
+            "id": "dubbo-dubbo_cacti",
+            "source": {
+                "type": "node",
+                "id": "dubbo"
+            },
+            "target": {
+                "type": "network",
+                "id": "dubbo_cacti"
+            },
+            "directed": false
+        },
+        {
+            "id": "dubbo_cacti-cacti",
+            "source": {
+                "type": "network",
+                "id": "dubbo_cacti"
+            },
+            "target": {
+                "type": "node",
+                "id": "cacti"
+            },
+            "directed": false
+        },
+        {
+            "id": "dubbo_cacti-gitdecoy",
+            "source": {
+                "type": "network",
+                "id": "dubbo_cacti"
+            },
+            "target": {
+                "type": "node",
+                "id": "gitdecoy"
+            },
+            "directed": false
+        },
+        {
+            "id": "dubbo_cacti-clickhouse",
+            "source": {
+                "type": "network",
+                "id": "dubbo_cacti"
+            },
+            "target": {
+                "type": "node",
+                "id": "clickhouse"
+            },
+            "directed": false
+        },
+        {
+            "id": "cacti-cacti_neo4j",
+            "source": {
+                "type": "node",
+                "id": "cacti"
+            },
+            "target": {
+                "type": "network",
+                "id": "cacti_neo4j"
+            },
+            "directed": false
+        },
+        {
+            "id": "cacti_neo4j-cactidb",
+            "source": {
+                "type": "network",
+                "id": "cacti_neo4j"
+            },
+            "target": {
+                "type": "node",
+                "id": "cactidb"
+            },
+            "directed": false
+        },
+        {
+            "id": "cacti_neo4j-neo4j",
+            "source": {
+                "type": "network",
+                "id": "cacti_neo4j"
+            },
+            "target": {
+                "type": "node",
+                "id": "neo4j"
+            },
+            "directed": false
+        },
+        {
+            "id": "cacti_neo4j-cups",
+            "source": {
+                "type": "network",
+                "id": "cacti_neo4j"
+            },
+            "target": {
+                "type": "node",
+                "id": "cups"
+            },
+            "directed": false
+        },
+        {
+            "id": "cacti_neo4j-iperf",
+            "source": {
+                "type": "network",
+                "id": "cacti_neo4j"
+            },
+            "target": {
+                "type": "node",
+                "id": "iperf"
+            },
+            "directed": false
+        }
+    ],
+    "attackPaths": [
+        {
+            "id": "range3-data-path",
+            "nodeIds": ["attacker", "react", "dubbo", "geoserver", "postgres"]
+        },
+        {
+            "id": "range3-monitoring-path",
+            "nodeIds": ["attacker", "react", "dubbo", "cacti", "neo4j"]
+        }
+    ]
+}

@@ -1,0 +1,777 @@
+{
+    "zones": [
+        {
+            "id": "dmz",
+            "label": "dmz_net"
+        },
+        {
+            "id": "dmzMq",
+            "label": "dmz_to_mq_net"
+        },
+        {
+            "id": "mqXinhu",
+            "label": "mq_to_xinhu_net"
+        },
+        {
+            "id": "xinhuDb",
+            "label": "xinhu_to_db_net"
+        },
+        {
+            "id": "mqSuperset",
+            "label": "mq_to_superset_net"
+        },
+        {
+            "id": "supersetRedis",
+            "label": "superset_to_redis_net"
+        },
+        {
+            "id": "internet",
+            "label": "互联网区"
+        }
+    ],
+    "networks": [
+        {
+            "id": "dmz",
+            "label": "dmz_net",
+            "zoneId": "dmz",
+            "cidr": "172.140.1.0/24"
+        },
+        {
+            "id": "dmzMq",
+            "label": "dmz_to_mq_net",
+            "zoneId": "dmzMq",
+            "cidr": "172.140.2.0/24"
+        },
+        {
+            "id": "mqXinhu",
+            "label": "mq_to_xinhu_net",
+            "zoneId": "mqXinhu",
+            "cidr": "172.140.3.0/24"
+        },
+        {
+            "id": "xinhuDb",
+            "label": "xinhu_to_db_net",
+            "zoneId": "xinhuDb",
+            "cidr": "172.140.4.0/24"
+        },
+        {
+            "id": "mqSuperset",
+            "label": "mq_to_superset_net",
+            "zoneId": "mqSuperset",
+            "cidr": "172.140.5.0/24"
+        },
+        {
+            "id": "supersetRedis",
+            "label": "superset_to_redis_net",
+            "zoneId": "supersetRedis",
+            "cidr": "172.140.6.0/24"
+        }
+    ],
+    "nodes": [
+        {
+            "id": "attacker",
+            "label": "External Attacker",
+            "kind": "external_actor",
+            "zoneId": "internet",
+            "interfaces": [
+                {
+                    "networkId": "dmz"
+                }
+            ]
+        },
+        {
+            "id": "gogs",
+            "label": "gogs",
+            "kind": "service",
+            "zoneId": "dmz",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.140.1.10"
+                }
+            ],
+            "technology": "Gogs distraction",
+            "purpose": "real"
+        },
+        {
+            "id": "cmsdb",
+            "label": "cmsms-db",
+            "kind": "service",
+            "zoneId": "dmz",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.140.1.11"
+                }
+            ],
+            "technology": "CMSMS support database",
+            "purpose": "real"
+        },
+        {
+            "id": "cmsms",
+            "label": "cmsms-web",
+            "kind": "service",
+            "zoneId": "dmz",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.140.1.4",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": 80
+                        }
+                    ]
+                },
+                {
+                    "networkId": "dmzMq",
+                    "address": "172.140.2.3",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": 80
+                        }
+                    ]
+                }
+            ],
+            "technology": "CMSMS 2.2.9.1",
+            "purpose": "real"
+        },
+        {
+            "id": "activemq",
+            "label": "activemq",
+            "kind": "service",
+            "zoneId": "dmz",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.140.1.12"
+                },
+                {
+                    "networkId": "dmzMq",
+                    "address": "172.140.2.2"
+                },
+                {
+                    "networkId": "mqXinhu",
+                    "address": "172.140.3.2"
+                },
+                {
+                    "networkId": "mqSuperset",
+                    "address": "172.140.5.2"
+                }
+            ],
+            "technology": "ActiveMQ 5.17.3",
+            "purpose": "real"
+        },
+        {
+            "id": "xinhu",
+            "label": "xinhu-oa",
+            "kind": "service",
+            "zoneId": "mqXinhu",
+            "interfaces": [
+                {
+                    "networkId": "mqXinhu",
+                    "address": "172.140.3.3"
+                },
+                {
+                    "networkId": "xinhuDb",
+                    "address": "172.140.4.3"
+                }
+            ],
+            "technology": "Xinhu OA v2.6.3",
+            "purpose": "real"
+        },
+        {
+            "id": "mysql",
+            "label": "mysql-udf",
+            "kind": "service",
+            "zoneId": "xinhuDb",
+            "interfaces": [
+                {
+                    "networkId": "xinhuDb",
+                    "address": "172.140.4.2"
+                }
+            ],
+            "technology": "MySQL 5.7",
+            "purpose": "real"
+        },
+        {
+            "id": "superset",
+            "label": "superset",
+            "kind": "service",
+            "zoneId": "mqSuperset",
+            "interfaces": [
+                {
+                    "networkId": "mqSuperset",
+                    "address": "172.140.5.3"
+                },
+                {
+                    "networkId": "supersetRedis",
+                    "address": "172.140.6.3"
+                }
+            ],
+            "technology": "Superset 2.0.1",
+            "purpose": "real"
+        },
+        {
+            "id": "redis",
+            "label": "redis",
+            "kind": "service",
+            "zoneId": "supersetRedis",
+            "interfaces": [
+                {
+                    "networkId": "supersetRedis",
+                    "address": "172.140.6.2"
+                }
+            ],
+            "technology": "Redis 4.0.14",
+            "purpose": "real"
+        },
+        {
+            "id": "ssh",
+            "label": "9_decoy_openssh_dmz",
+            "kind": "service",
+            "zoneId": "dmz",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.140.1.170"
+                }
+            ],
+            "technology": "SSH",
+            "purpose": "decoy"
+        },
+        {
+            "id": "bind",
+            "label": "10_decoy_bind_dmz",
+            "kind": "service",
+            "zoneId": "dmz",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.140.1.171"
+                }
+            ],
+            "technology": "DNS",
+            "purpose": "decoy"
+        },
+        {
+            "id": "pg",
+            "label": "21_decoy_postgres_dmz",
+            "kind": "service",
+            "zoneId": "dmz",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.140.1.172"
+                }
+            ],
+            "technology": "PostgreSQL",
+            "purpose": "decoy"
+        },
+        {
+            "id": "zk",
+            "label": "22_decoy_zookeeper_dmz",
+            "kind": "service",
+            "zoneId": "dmz",
+            "interfaces": [
+                {
+                    "networkId": "dmz",
+                    "address": "172.140.1.173"
+                }
+            ],
+            "technology": "ZooKeeper",
+            "purpose": "decoy"
+        },
+        {
+            "id": "coturn",
+            "label": "11_decoy_coturn_mq",
+            "kind": "service",
+            "zoneId": "dmzMq",
+            "interfaces": [
+                {
+                    "networkId": "dmzMq",
+                    "address": "172.140.2.170"
+                }
+            ],
+            "technology": "TURN",
+            "purpose": "decoy"
+        },
+        {
+            "id": "prosody",
+            "label": "12_decoy_prosody_mq",
+            "kind": "service",
+            "zoneId": "dmzMq",
+            "interfaces": [
+                {
+                    "networkId": "dmzMq",
+                    "address": "172.140.2.171"
+                }
+            ],
+            "technology": "XMPP",
+            "purpose": "decoy"
+        },
+        {
+            "id": "couch",
+            "label": "13_decoy_couchdb_xinhu",
+            "kind": "service",
+            "zoneId": "mqXinhu",
+            "interfaces": [
+                {
+                    "networkId": "mqXinhu",
+                    "address": "172.140.3.170"
+                }
+            ],
+            "technology": "CouchDB",
+            "purpose": "decoy"
+        },
+        {
+            "id": "solr",
+            "label": "14_decoy_solr_xinhu",
+            "kind": "service",
+            "zoneId": "mqXinhu",
+            "interfaces": [
+                {
+                    "networkId": "mqXinhu",
+                    "address": "172.140.3.171"
+                }
+            ],
+            "technology": "Solr",
+            "purpose": "decoy"
+        },
+        {
+            "id": "manticore",
+            "label": "15_decoy_manticore_db",
+            "kind": "service",
+            "zoneId": "xinhuDb",
+            "interfaces": [
+                {
+                    "networkId": "xinhuDb",
+                    "address": "172.140.4.170"
+                }
+            ],
+            "technology": "Manticore",
+            "purpose": "decoy"
+        },
+        {
+            "id": "orient",
+            "label": "16_decoy_orientdb_db",
+            "kind": "service",
+            "zoneId": "xinhuDb",
+            "interfaces": [
+                {
+                    "networkId": "xinhuDb",
+                    "address": "172.140.4.171"
+                }
+            ],
+            "technology": "OrientDB",
+            "purpose": "decoy"
+        },
+        {
+            "id": "registry",
+            "label": "17_decoy_registry_superset",
+            "kind": "service",
+            "zoneId": "mqSuperset",
+            "interfaces": [
+                {
+                    "networkId": "mqSuperset",
+                    "address": "172.140.5.170"
+                }
+            ],
+            "technology": "Registry",
+            "purpose": "decoy"
+        },
+        {
+            "id": "vault",
+            "label": "18_decoy_vault_superset",
+            "kind": "service",
+            "zoneId": "mqSuperset",
+            "interfaces": [
+                {
+                    "networkId": "mqSuperset",
+                    "address": "172.140.5.171"
+                }
+            ],
+            "technology": "Vault",
+            "purpose": "decoy"
+        },
+        {
+            "id": "teamspeak",
+            "label": "19_decoy_teamspeak_redis",
+            "kind": "service",
+            "zoneId": "supersetRedis",
+            "interfaces": [
+                {
+                    "networkId": "supersetRedis",
+                    "address": "172.140.6.170"
+                }
+            ],
+            "technology": "TeamSpeak",
+            "purpose": "decoy"
+        },
+        {
+            "id": "arango",
+            "label": "20_decoy_arangodb_redis",
+            "kind": "service",
+            "zoneId": "supersetRedis",
+            "interfaces": [
+                {
+                    "networkId": "supersetRedis",
+                    "address": "172.140.6.171"
+                }
+            ],
+            "technology": "ArangoDB",
+            "purpose": "decoy"
+        }
+    ],
+    "links": [
+        {
+            "id": "attacker-dmz",
+            "source": {
+                "type": "node",
+                "id": "attacker"
+            },
+            "target": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "directed": true
+        },
+        {
+            "id": "dmz-gogs",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "gogs"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-cmsdb",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "cmsdb"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-cmsms",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "cmsms"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-activemq",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "activemq"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-ssh",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "ssh"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-bind",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "bind"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-pg",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "pg"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmz-zk",
+            "source": {
+                "type": "network",
+                "id": "dmz"
+            },
+            "target": {
+                "type": "node",
+                "id": "zk"
+            },
+            "directed": false
+        },
+        {
+            "id": "cmsms-dmzMq",
+            "source": {
+                "type": "node",
+                "id": "cmsms"
+            },
+            "target": {
+                "type": "network",
+                "id": "dmzMq"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmzMq-activemq",
+            "source": {
+                "type": "network",
+                "id": "dmzMq"
+            },
+            "target": {
+                "type": "node",
+                "id": "activemq"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmzMq-coturn",
+            "source": {
+                "type": "network",
+                "id": "dmzMq"
+            },
+            "target": {
+                "type": "node",
+                "id": "coturn"
+            },
+            "directed": false
+        },
+        {
+            "id": "dmzMq-prosody",
+            "source": {
+                "type": "network",
+                "id": "dmzMq"
+            },
+            "target": {
+                "type": "node",
+                "id": "prosody"
+            },
+            "directed": false
+        },
+        {
+            "id": "activemq-mqXinhu",
+            "source": {
+                "type": "node",
+                "id": "activemq"
+            },
+            "target": {
+                "type": "network",
+                "id": "mqXinhu"
+            },
+            "directed": false
+        },
+        {
+            "id": "mqXinhu-xinhu",
+            "source": {
+                "type": "network",
+                "id": "mqXinhu"
+            },
+            "target": {
+                "type": "node",
+                "id": "xinhu"
+            },
+            "directed": false
+        },
+        {
+            "id": "mqXinhu-couch",
+            "source": {
+                "type": "network",
+                "id": "mqXinhu"
+            },
+            "target": {
+                "type": "node",
+                "id": "couch"
+            },
+            "directed": false
+        },
+        {
+            "id": "mqXinhu-solr",
+            "source": {
+                "type": "network",
+                "id": "mqXinhu"
+            },
+            "target": {
+                "type": "node",
+                "id": "solr"
+            },
+            "directed": false
+        },
+        {
+            "id": "xinhu-xinhuDb",
+            "source": {
+                "type": "node",
+                "id": "xinhu"
+            },
+            "target": {
+                "type": "network",
+                "id": "xinhuDb"
+            },
+            "directed": false
+        },
+        {
+            "id": "xinhuDb-mysql",
+            "source": {
+                "type": "network",
+                "id": "xinhuDb"
+            },
+            "target": {
+                "type": "node",
+                "id": "mysql"
+            },
+            "directed": false
+        },
+        {
+            "id": "xinhuDb-manticore",
+            "source": {
+                "type": "network",
+                "id": "xinhuDb"
+            },
+            "target": {
+                "type": "node",
+                "id": "manticore"
+            },
+            "directed": false
+        },
+        {
+            "id": "xinhuDb-orient",
+            "source": {
+                "type": "network",
+                "id": "xinhuDb"
+            },
+            "target": {
+                "type": "node",
+                "id": "orient"
+            },
+            "directed": false
+        },
+        {
+            "id": "activemq-mqSuperset",
+            "source": {
+                "type": "node",
+                "id": "activemq"
+            },
+            "target": {
+                "type": "network",
+                "id": "mqSuperset"
+            },
+            "directed": false
+        },
+        {
+            "id": "mqSuperset-superset",
+            "source": {
+                "type": "network",
+                "id": "mqSuperset"
+            },
+            "target": {
+                "type": "node",
+                "id": "superset"
+            },
+            "directed": false
+        },
+        {
+            "id": "mqSuperset-registry",
+            "source": {
+                "type": "network",
+                "id": "mqSuperset"
+            },
+            "target": {
+                "type": "node",
+                "id": "registry"
+            },
+            "directed": false
+        },
+        {
+            "id": "mqSuperset-vault",
+            "source": {
+                "type": "network",
+                "id": "mqSuperset"
+            },
+            "target": {
+                "type": "node",
+                "id": "vault"
+            },
+            "directed": false
+        },
+        {
+            "id": "superset-supersetRedis",
+            "source": {
+                "type": "node",
+                "id": "superset"
+            },
+            "target": {
+                "type": "network",
+                "id": "supersetRedis"
+            },
+            "directed": false
+        },
+        {
+            "id": "supersetRedis-redis",
+            "source": {
+                "type": "network",
+                "id": "supersetRedis"
+            },
+            "target": {
+                "type": "node",
+                "id": "redis"
+            },
+            "directed": false
+        },
+        {
+            "id": "supersetRedis-teamspeak",
+            "source": {
+                "type": "network",
+                "id": "supersetRedis"
+            },
+            "target": {
+                "type": "node",
+                "id": "teamspeak"
+            },
+            "directed": false
+        },
+        {
+            "id": "supersetRedis-arango",
+            "source": {
+                "type": "network",
+                "id": "supersetRedis"
+            },
+            "target": {
+                "type": "node",
+                "id": "arango"
+            },
+            "directed": false
+        }
+    ]
+}

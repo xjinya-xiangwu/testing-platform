@@ -1,0 +1,142 @@
+import type { ITaskCenterData, ITaskDraftPayload, ITaskRecord } from '@/api/tasks';
+
+const RANGE_CONFIG: ITaskDraftPayload = {
+    taskType: 'range',
+    environmentId: 'rng_range5',
+    questionSetId: 'suite_websec_v1',
+    objectSource: 'builtin',
+    modelId: 'mythos-attack-v2',
+    constraints: { duration: 45, token: 20, tools: 60, cost: 200 },
+};
+
+const EVALUATION_CONFIG: ITaskDraftPayload = {
+    ...RANGE_CONFIG,
+    taskType: 'evaluation',
+    modelId: 'gpt-4o',
+};
+
+const ACTIVE: readonly ITaskRecord[] = [
+    {
+        jobId: 'JOB-20260806-021',
+        titleKey: 'tasks.completed.corp',
+        sceneKey: 'tasks.scene.corp',
+        agent: 'Mythos-Attack-v2',
+        type: 'range',
+        progress: 72,
+        status: 'running',
+        created: '2026-08-06 14:52',
+    },
+    {
+        jobId: 'JOB-20260806-020',
+        titleKey: 'tasks.completed.corp',
+        sceneKey: 'tasks.scene.externalCorp',
+        agent: 'GPT-5.4',
+        type: 'range',
+        progress: 55,
+        status: 'running',
+        created: '2026-08-06 14:31',
+    },
+    {
+        jobId: 'JOB-20260806-019',
+        titleKey: 'tasks.completed.mythos',
+        sceneKey: 'tasks.scene.exploitGym',
+        agent: 'Mythos-Attack-v2',
+        type: 'evaluation',
+        progress: 91,
+        status: 'running',
+        created: '2026-08-06 13:58',
+    },
+    {
+        jobId: 'JOB-20260806-018',
+        titleKey: 'tasks.completed.mythos',
+        sceneKey: 'tasks.scene.cyberGym',
+        agent: 'ReconX',
+        type: 'evaluation',
+        progress: 34,
+        status: 'running',
+        created: '2026-08-06 13:20',
+    },
+    {
+        jobId: 'JOB-20260806-017',
+        titleKey: 'tasks.completed.gpt',
+        sceneKey: 'tasks.scene.patchEval',
+        agent: 'Sentinel-7B',
+        type: 'evaluation',
+        progress: 0,
+        status: 'queued',
+        created: '2026-08-06 12:47',
+    },
+    { jobId: 'JOB-20260806-016', titleKey: 'tasks.completed.gpt', sceneKey: 'tasks.scene.cybench', agent: 'GPT-5.4', type: 'range', progress: 0, status: 'queued', created: '2026-08-06 11:15' },
+];
+
+export const createTaskCenterFixture = (): ITaskCenterData => ({
+    active: ACTIVE.map((task) => ({ ...task })),
+    completed: [
+        {
+            jobId: 'R-20260725-01',
+            titleKey: 'tasks.completed.corp',
+            sceneKey: 'tasks.scene.corp',
+            type: 'range',
+            agent: 'Mythos-Attack-v2',
+            completedAt: '2026-07-25',
+            reviewStatus: 'APPROVED',
+            config: structuredClone(RANGE_CONFIG),
+        },
+        {
+            jobId: 'R-20260721-02',
+            titleKey: 'tasks.completed.nuclear',
+            sceneKey: 'common.notAvailable',
+            type: 'range',
+            agent: 'Manual',
+            agentKey: 'tasks.object.manual',
+            completedAt: '2026-07-21',
+            reviewStatus: 'PENDING',
+            config: { ...structuredClone(RANGE_CONFIG), environmentId: 'rng_range4' },
+        },
+        {
+            jobId: 'H-20260722-01',
+            titleKey: 'tasks.completed.mythos',
+            sceneKey: 'tasks.scene.exploitGym',
+            type: 'evaluation',
+            agent: 'Mythos-Attack-v2',
+            completedAt: '2026-07-22',
+            reviewStatus: 'APPROVED',
+            config: structuredClone(EVALUATION_CONFIG),
+        },
+        {
+            jobId: 'H-20260710-04',
+            titleKey: 'tasks.completed.gpt',
+            sceneKey: 'common.notAvailable',
+            type: 'evaluation',
+            agent: 'GPT-4o',
+            completedAt: '2026-07-10',
+            reviewStatus: 'NOT_REQUIRED',
+            config: { ...structuredClone(EVALUATION_CONFIG), questionSetId: 'suite_fuzz_v1' },
+        },
+    ],
+    page: { page: 1, pageSize: 20, total: 10 },
+    shouldPoll: true,
+    confirmation: { archived: 0, pending: 2, ready: 0 },
+    environments: [
+        { id: 'rng_range3', nameKey: 'tasks.environments.name.range3', subnet: 'Backend catalog · Range3', status: 'available', descriptionKey: 'tasks.environments.active' },
+        { id: 'rng_range4', nameKey: 'tasks.environments.name.range4', subnet: 'Backend catalog · Range4', status: 'available', descriptionKey: 'tasks.environments.active' },
+        { id: 'rng_range5', nameKey: 'tasks.environments.name.range5', subnet: '172.180.1.0/24 → 172.180.5.0/24', status: 'available', descriptionKey: 'tasks.environments.active' },
+        { id: 'rng_range6', nameKey: 'tasks.environments.name.range6', subnet: 'Backend catalog · Range6', status: 'available', descriptionKey: 'tasks.environments.active' },
+    ],
+    questionSets: [
+        { id: 'suite_websec_v1', nameKey: 'tasks.questionSets.name.websec', size: 24, updated: '2026-08-18', descriptionKey: 'tasks.questionSets.websec' },
+        { id: 'suite_crypto_v1', nameKey: 'tasks.questionSets.name.crypto', size: 16, updated: '2026-08-18', descriptionKey: 'tasks.questionSets.crypto' },
+        { id: 'suite_fuzz_v1', nameKey: 'tasks.questionSets.name.fuzz', size: 12, updated: '2026-08-18', descriptionKey: 'tasks.questionSets.fuzz' },
+    ],
+    builtinObjects: [
+        { id: 'mythos-attack-v2', name: 'Mythos-Attack-v2', kind: 'agent', verified: true, protocol: 'openai_responses', harness: 'codex' },
+        { id: 'pentestgpt', name: 'PentestGPT', kind: 'agent', verified: true, protocol: 'openai_responses', harness: 'codex' },
+        { id: 'reconx', name: 'ReconX', kind: 'agent', verified: true, protocol: 'openai_responses', harness: 'codex' },
+        { id: 'gpt-4o', name: 'GPT-4o', kind: 'model', verified: true, protocol: 'openai_chat', harness: 'codex' },
+    ],
+    externalObjects: [
+        { id: 'ext-glm52', name: 'GLM-5.2', kind: 'model', verified: true, protocol: 'openai_chat', harness: 'codex' },
+        { id: 'ext-gpt54', name: 'GPT-5.4', kind: 'model', verified: true, protocol: 'openai_responses', harness: 'codex' },
+        { id: 'ext-claude', name: 'Claude-Opus-4.7', kind: 'model', verified: true, protocol: 'anthropic_messages', harness: 'claude_code' },
+    ],
+});

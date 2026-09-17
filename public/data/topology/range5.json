@@ -1,0 +1,709 @@
+{
+    "zones": [
+        {
+            "id": "public",
+            "label": "public_network"
+        },
+        {
+            "id": "sub1",
+            "label": "sub_network_1"
+        },
+        {
+            "id": "sub2",
+            "label": "sub_network_2"
+        },
+        {
+            "id": "sub3",
+            "label": "sub_network_3"
+        },
+        {
+            "id": "sub4",
+            "label": "sub_network_4"
+        },
+        {
+            "id": "internet",
+            "label": "互联网区"
+        }
+    ],
+    "networks": [
+        {
+            "id": "public",
+            "label": "public_network",
+            "zoneId": "public",
+            "cidr": "172.180.1.0/24"
+        },
+        {
+            "id": "sub1",
+            "label": "sub_network_1",
+            "zoneId": "sub1",
+            "cidr": "172.180.2.0/24"
+        },
+        {
+            "id": "sub2",
+            "label": "sub_network_2",
+            "zoneId": "sub2",
+            "cidr": "172.180.3.0/24"
+        },
+        {
+            "id": "sub3",
+            "label": "sub_network_3",
+            "zoneId": "sub3",
+            "cidr": "172.180.4.0/24"
+        },
+        {
+            "id": "sub4",
+            "label": "sub_network_4",
+            "zoneId": "sub4",
+            "cidr": "172.180.5.0/24"
+        }
+    ],
+    "nodes": [
+        {
+            "id": "attacker",
+            "label": "External Attacker",
+            "kind": "external_actor",
+            "zoneId": "internet",
+            "interfaces": [
+                {
+                    "networkId": "public"
+                }
+            ]
+        },
+        {
+            "id": "wpdb",
+            "label": "1_wordpress_db",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.180.1.17"
+                }
+            ],
+            "technology": "MySQL 5.7 backing DB",
+            "purpose": "real"
+        },
+        {
+            "id": "wordpress",
+            "label": "1_wordpress",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.180.1.18",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": 80
+                        }
+                    ]
+                },
+                {
+                    "networkId": "sub1",
+                    "address": "172.180.2.18",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": 80
+                        }
+                    ]
+                }
+            ],
+            "technology": "WordPress + GiveWP 3.16.0",
+            "purpose": "real"
+        },
+        {
+            "id": "ubuntu",
+            "label": "2_ubuntu",
+            "kind": "service",
+            "zoneId": "sub1",
+            "interfaces": [
+                {
+                    "networkId": "sub1",
+                    "address": "172.180.2.116"
+                },
+                {
+                    "networkId": "sub2",
+                    "address": "172.180.3.116"
+                }
+            ],
+            "technology": "Ubuntu 22.04 SSH",
+            "purpose": "real"
+        },
+        {
+            "id": "redis",
+            "label": "3_redis",
+            "kind": "service",
+            "zoneId": "sub2",
+            "interfaces": [
+                {
+                    "networkId": "sub2",
+                    "address": "172.180.3.212"
+                },
+                {
+                    "networkId": "sub3",
+                    "address": "172.180.4.212"
+                }
+            ],
+            "technology": "Redis + PHP Apache",
+            "purpose": "real"
+        },
+        {
+            "id": "minipaint",
+            "label": "4_not_vulnerable",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.180.1.9"
+                },
+                {
+                    "networkId": "sub1",
+                    "address": "172.180.2.9"
+                }
+            ],
+            "technology": "miniPaint static distraction site",
+            "purpose": "real"
+        },
+        {
+            "id": "antivirus",
+            "label": "5_antivirus",
+            "kind": "service",
+            "zoneId": "sub3",
+            "interfaces": [
+                {
+                    "networkId": "sub3",
+                    "address": "172.180.4.114"
+                }
+            ],
+            "technology": "PHP upload + ClamAV",
+            "purpose": "real"
+        },
+        {
+            "id": "cms",
+            "label": "6_cms",
+            "kind": "service",
+            "zoneId": "sub2",
+            "interfaces": [
+                {
+                    "networkId": "sub2",
+                    "address": "172.180.3.50"
+                },
+                {
+                    "networkId": "sub4",
+                    "address": "172.180.5.50"
+                }
+            ],
+            "technology": "FoxCMS v1.2",
+            "purpose": "real"
+        },
+        {
+            "id": "emlog",
+            "label": "7_emlog",
+            "kind": "service",
+            "zoneId": "sub4",
+            "interfaces": [
+                {
+                    "networkId": "sub4",
+                    "address": "172.180.5.7"
+                }
+            ],
+            "technology": "emlog + local MySQL",
+            "purpose": "real"
+        },
+        {
+            "id": "mailpit",
+            "label": "8_decoy_mailpit_public",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.180.1.170"
+                }
+            ],
+            "technology": "SMTP",
+            "purpose": "decoy"
+        },
+        {
+            "id": "pureftpd",
+            "label": "9_decoy_pureftpd_public",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.180.1.171"
+                }
+            ],
+            "technology": "FTP",
+            "purpose": "decoy"
+        },
+        {
+            "id": "consul",
+            "label": "18_decoy_consul_public",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.180.1.172"
+                }
+            ],
+            "technology": "Consul",
+            "purpose": "decoy"
+        },
+        {
+            "id": "memcached",
+            "label": "19_decoy_memcached_public",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.180.1.173"
+                }
+            ],
+            "technology": "memcached",
+            "purpose": "decoy"
+        },
+        {
+            "id": "cockroach",
+            "label": "10_decoy_cockroach_sub1",
+            "kind": "service",
+            "zoneId": "sub1",
+            "interfaces": [
+                {
+                    "networkId": "sub1",
+                    "address": "172.180.2.170"
+                }
+            ],
+            "technology": "CockroachDB",
+            "purpose": "decoy"
+        },
+        {
+            "id": "neo4j",
+            "label": "11_decoy_neo4j_sub1",
+            "kind": "service",
+            "zoneId": "sub1",
+            "interfaces": [
+                {
+                    "networkId": "sub1",
+                    "address": "172.180.2.171"
+                }
+            ],
+            "technology": "Neo4j",
+            "purpose": "decoy"
+        },
+        {
+            "id": "rethink",
+            "label": "12_decoy_rethinkdb_sub2",
+            "kind": "service",
+            "zoneId": "sub2",
+            "interfaces": [
+                {
+                    "networkId": "sub2",
+                    "address": "172.180.3.170"
+                }
+            ],
+            "technology": "RethinkDB",
+            "purpose": "decoy"
+        },
+        {
+            "id": "scylla",
+            "label": "13_decoy_scylla_sub2",
+            "kind": "service",
+            "zoneId": "sub2",
+            "interfaces": [
+                {
+                    "networkId": "sub2",
+                    "address": "172.180.3.171"
+                }
+            ],
+            "technology": "ScyllaDB",
+            "purpose": "decoy"
+        },
+        {
+            "id": "minio",
+            "label": "14_decoy_minio_sub3",
+            "kind": "service",
+            "zoneId": "sub3",
+            "interfaces": [
+                {
+                    "networkId": "sub3",
+                    "address": "172.180.4.170"
+                }
+            ],
+            "technology": "MinIO",
+            "purpose": "decoy"
+        },
+        {
+            "id": "ipfs",
+            "label": "15_decoy_ipfs_sub3",
+            "kind": "service",
+            "zoneId": "sub3",
+            "interfaces": [
+                {
+                    "networkId": "sub3",
+                    "address": "172.180.4.171"
+                }
+            ],
+            "technology": "IPFS",
+            "purpose": "decoy"
+        },
+        {
+            "id": "emqx",
+            "label": "16_decoy_emqx_sub4",
+            "kind": "service",
+            "zoneId": "sub4",
+            "interfaces": [
+                {
+                    "networkId": "sub4",
+                    "address": "172.180.5.170"
+                }
+            ],
+            "technology": "EMQX",
+            "purpose": "decoy"
+        },
+        {
+            "id": "syncthing",
+            "label": "17_decoy_syncthing_sub4",
+            "kind": "service",
+            "zoneId": "sub4",
+            "interfaces": [
+                {
+                    "networkId": "sub4",
+                    "address": "172.180.5.171"
+                }
+            ],
+            "technology": "Syncthing",
+            "purpose": "decoy"
+        }
+    ],
+    "links": [
+        {
+            "id": "attacker-public",
+            "source": {
+                "type": "node",
+                "id": "attacker"
+            },
+            "target": {
+                "type": "network",
+                "id": "public"
+            },
+            "directed": true
+        },
+        {
+            "id": "public-wpdb",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "wpdb"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-wordpress",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "wordpress"
+            },
+            "directed": false
+        },
+        {
+            "id": "wordpress-sub1",
+            "source": {
+                "type": "node",
+                "id": "wordpress"
+            },
+            "target": {
+                "type": "network",
+                "id": "sub1"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-minipaint",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "minipaint"
+            },
+            "directed": false
+        },
+        {
+            "id": "minipaint-sub1",
+            "source": {
+                "type": "node",
+                "id": "minipaint"
+            },
+            "target": {
+                "type": "network",
+                "id": "sub1"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-mailpit",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "mailpit"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-pureftpd",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "pureftpd"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-consul",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "consul"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-memcached",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "memcached"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub1-ubuntu",
+            "source": {
+                "type": "network",
+                "id": "sub1"
+            },
+            "target": {
+                "type": "node",
+                "id": "ubuntu"
+            },
+            "directed": false
+        },
+        {
+            "id": "ubuntu-sub2",
+            "source": {
+                "type": "node",
+                "id": "ubuntu"
+            },
+            "target": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub1-cockroach",
+            "source": {
+                "type": "network",
+                "id": "sub1"
+            },
+            "target": {
+                "type": "node",
+                "id": "cockroach"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub1-neo4j",
+            "source": {
+                "type": "network",
+                "id": "sub1"
+            },
+            "target": {
+                "type": "node",
+                "id": "neo4j"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub2-redis",
+            "source": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "target": {
+                "type": "node",
+                "id": "redis"
+            },
+            "directed": false
+        },
+        {
+            "id": "redis-sub3",
+            "source": {
+                "type": "node",
+                "id": "redis"
+            },
+            "target": {
+                "type": "network",
+                "id": "sub3"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub2-cms",
+            "source": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "target": {
+                "type": "node",
+                "id": "cms"
+            },
+            "directed": false
+        },
+        {
+            "id": "cms-sub4",
+            "source": {
+                "type": "node",
+                "id": "cms"
+            },
+            "target": {
+                "type": "network",
+                "id": "sub4"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub2-rethink",
+            "source": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "target": {
+                "type": "node",
+                "id": "rethink"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub2-scylla",
+            "source": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "target": {
+                "type": "node",
+                "id": "scylla"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub3-antivirus",
+            "source": {
+                "type": "network",
+                "id": "sub3"
+            },
+            "target": {
+                "type": "node",
+                "id": "antivirus"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub3-minio",
+            "source": {
+                "type": "network",
+                "id": "sub3"
+            },
+            "target": {
+                "type": "node",
+                "id": "minio"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub3-ipfs",
+            "source": {
+                "type": "network",
+                "id": "sub3"
+            },
+            "target": {
+                "type": "node",
+                "id": "ipfs"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub4-emlog",
+            "source": {
+                "type": "network",
+                "id": "sub4"
+            },
+            "target": {
+                "type": "node",
+                "id": "emlog"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub4-emqx",
+            "source": {
+                "type": "network",
+                "id": "sub4"
+            },
+            "target": {
+                "type": "node",
+                "id": "emqx"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub4-syncthing",
+            "source": {
+                "type": "network",
+                "id": "sub4"
+            },
+            "target": {
+                "type": "node",
+                "id": "syncthing"
+            },
+            "directed": false
+        }
+    ],
+    "attackPaths": [
+        {
+            "id": "range5-antivirus",
+            "nodeIds": ["attacker", "wordpress", "ubuntu", "redis", "antivirus"]
+        },
+        {
+            "id": "range5-emlog",
+            "nodeIds": ["attacker", "wordpress", "ubuntu", "cms", "emlog"]
+        }
+    ]
+}

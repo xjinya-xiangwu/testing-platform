@@ -1,0 +1,769 @@
+.page {
+    max-width: 1440px;
+    min-height: 100vh;
+    padding: 28px 32px 56px;
+    color: var(--range-foreground);
+    background: var(--range-background);
+}
+.tabs {
+    display: flex;
+    gap: 6px;
+    margin: -8px 0 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--range-border);
+    overflow-x: auto;
+}
+.tabs button,
+.textButton {
+    border: 0;
+    color: var(--range-muted-foreground);
+    background: transparent;
+    cursor: pointer;
+}
+.tabs button {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+.tabs button:hover,
+.tabs .activeTab {
+    color: var(--range-primary);
+    background: color-mix(in srgb, var(--range-primary) 10%, transparent);
+}
+.hero,
+.sectionHeader,
+.card > header,
+.assetCard > header,
+.integrationCard,
+.comparisonGate,
+.replayCard {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+.hero {
+    padding: 20px 0 30px;
+    border-bottom: 1px solid var(--range-border);
+}
+.eyebrow,
+.sectionHeader > div > span,
+.card header span,
+.assetCard header span,
+.integrationCard > div > span,
+.comparisonGate span,
+.replayCard > div > span,
+.snapshot > span {
+    color: var(--range-primary);
+    font-family: var(--range-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+h1,
+h2,
+p {
+    margin-top: 0;
+}
+.hero h1 {
+    max-width: 720px;
+    margin: 7px 0 10px;
+    font-family: var(--range-serif);
+    font-size: clamp(28px, 4vw, 46px);
+    line-height: 1.15;
+}
+.hero p,
+.sectionHeader p {
+    max-width: 720px;
+    margin-bottom: 0;
+    color: var(--range-muted-foreground);
+    font-size: 13px;
+    line-height: 1.8;
+}
+.primaryButton,
+.secondaryButton {
+    min-height: 40px;
+    padding: 0 15px;
+    border: 1px solid var(--range-border);
+    font-size: 12px;
+    cursor: pointer;
+}
+.primaryButton {
+    color: var(--range-primary-foreground);
+    background: var(--range-primary);
+    border-color: var(--range-primary);
+}
+.secondaryButton {
+    color: var(--range-foreground);
+    background: transparent;
+}
+.primaryButton:hover {
+    filter: brightness(1.1);
+}
+.secondaryButton:hover {
+    border-color: var(--range-primary);
+    color: var(--range-primary);
+}
+.secondaryButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.demoNotice {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 22px 0;
+    padding: 11px 14px;
+    color: #e9c17d;
+    background: color-mix(in srgb, var(--range-gold) 11%, transparent);
+    border: 1px solid color-mix(in srgb, var(--range-gold) 35%, var(--range-border));
+    font-size: 11px;
+}
+.demoNotice span {
+    color: var(--range-muted-foreground);
+}
+.metrics,
+.splitGrid,
+.assetGrid,
+.reportGrid {
+    display: grid;
+    gap: 12px;
+}
+.metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.metrics article,
+.card,
+.assetCard,
+.reportGrid article,
+.replayCard,
+.integrationCard,
+.comparisonGate,
+.wizardPanel,
+.snapshot {
+    border: 1px solid var(--range-border);
+    background: var(--range-card);
+}
+.metrics article {
+    min-height: 124px;
+    padding: 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.metrics span,
+.metrics small {
+    color: var(--range-muted-foreground);
+    font-size: 10px;
+}
+.metrics b {
+    margin-top: 6px;
+    color: var(--range-primary);
+    font-family: var(--range-mono);
+    font-size: 28px;
+}
+.metrics small {
+    margin-top: auto;
+}
+.section {
+    margin-top: 34px;
+}
+.sectionHeader {
+    margin-bottom: 16px;
+}
+.sectionHeader h1,
+.sectionHeader h2 {
+    margin: 6px 0 8px;
+    font-family: var(--range-serif);
+    font-size: 24px;
+}
+.textButton {
+    padding: 8px 0;
+    color: var(--range-primary);
+    font-size: 12px;
+}
+.textButton:hover {
+    text-decoration: underline;
+}
+.flow {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid var(--range-border);
+    background: var(--range-card);
+}
+.flow li {
+    min-height: 100px;
+    padding: 14px;
+    border-right: 1px solid var(--range-border);
+}
+.flow li:last-child {
+    border-right: 0;
+}
+.flow b {
+    display: block;
+    margin-bottom: 15px;
+    color: var(--range-primary);
+    font-family: var(--range-mono);
+    font-size: 10px;
+}
+.flow span {
+    font-size: 12px;
+}
+.splitGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 14px;
+}
+.card {
+    padding: 18px;
+}
+.card h2,
+.assetCard h2,
+.integrationCard h2,
+.comparisonGate h2,
+.replayCard h2 {
+    margin: 5px 0 0;
+    font-family: var(--range-serif);
+    font-size: 18px;
+}
+.statusPending,
+.demoPill {
+    display: inline-flex;
+    align-items: center;
+    width: max-content;
+    padding: 3px 7px;
+    color: var(--range-gold);
+    background: color-mix(in srgb, var(--range-gold) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--range-gold) 35%, var(--range-border));
+    font-family: var(--range-mono);
+    font-size: 10px;
+    font-style: normal;
+}
+.definitionList,
+.summaryList,
+.snapshot dl {
+    margin: 16px 0;
+}
+.definitionList > div,
+.summaryList > div,
+.snapshot dl > div {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--range-border);
+}
+.definitionList dt,
+.summaryList dt,
+.snapshot dt,
+.assetCard dt,
+.integrationCard dt,
+.replayCard dt {
+    color: var(--range-muted-foreground);
+    font-size: 10px;
+}
+.definitionList dd,
+.summaryList dd,
+.snapshot dd,
+.assetCard dd,
+.integrationCard dd,
+.replayCard dd {
+    margin: 0;
+    font-family: var(--range-mono);
+    font-size: 10px;
+}
+.guardList {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+.guardList li {
+    position: relative;
+    padding: 0 0 12px 17px;
+    color: var(--range-muted-foreground);
+    font-size: 11px;
+    line-height: 1.7;
+}
+.guardList li::before {
+    content: '•';
+    position: absolute;
+    left: 2px;
+    color: var(--range-primary);
+}
+.creation {
+    max-width: 1180px;
+}
+.stepper {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 28px 0 16px;
+    padding: 0;
+    list-style: none;
+}
+.stepper li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--range-muted-foreground);
+    font-size: 11px;
+}
+.stepper b {
+    display: grid;
+    width: 23px;
+    height: 23px;
+    place-items: center;
+    border: 1px solid var(--range-border);
+    border-radius: 50%;
+    font-family: var(--range-mono);
+    font-size: 10px;
+}
+.stepper .current,
+.stepper .done {
+    color: var(--range-primary);
+}
+.stepper .current b,
+.stepper .done b {
+    border-color: var(--range-primary);
+    background: color-mix(in srgb, var(--range-primary) 14%, transparent);
+}
+.wizardLayout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 14px;
+}
+.wizardPanel {
+    padding: 22px;
+}
+.choiceFieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.choiceFieldset legend {
+    margin-bottom: 7px;
+    font-family: var(--range-serif);
+    font-size: 20px;
+}
+.choiceFieldset > p {
+    margin-bottom: 18px;
+    color: var(--range-muted-foreground);
+    font-size: 12px;
+    line-height: 1.8;
+}
+.choiceGrid,
+.benchmarkChoices {
+    display: grid;
+    gap: 10px;
+}
+.choiceGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.choiceCard,
+.benchmarkChoice {
+    padding: 14px;
+    color: var(--range-foreground);
+    text-align: left;
+    background: color-mix(in srgb, var(--range-muted) 60%, transparent);
+    border: 1px solid var(--range-border);
+    cursor: pointer;
+}
+.choiceCard:hover,
+.benchmarkChoice:hover,
+.choiceCard.selected,
+.benchmarkChoice.selected {
+    border-color: var(--range-primary);
+    background: color-mix(in srgb, var(--range-primary) 9%, var(--range-muted));
+}
+.choiceCard b,
+.choiceCard span,
+.benchmarkChoice b,
+.benchmarkChoice span,
+.benchmarkChoice small {
+    display: block;
+}
+.choiceCard b,
+.benchmarkChoice b {
+    margin-bottom: 5px;
+    font-family: var(--range-serif);
+    font-size: 15px;
+}
+.choiceCard span,
+.benchmarkChoice span,
+.benchmarkChoice small {
+    color: var(--range-muted-foreground);
+    font-size: 10px;
+    line-height: 1.6;
+}
+.benchmarkChoice {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+}
+.benchmarkChoice small {
+    text-align: right;
+}
+.counts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin: 0 0 18px;
+    border: 1px solid var(--range-border);
+}
+.counts > div {
+    padding: 12px;
+    border-right: 1px solid var(--range-border);
+}
+.counts > div:last-child {
+    border-right: 0;
+}
+.counts dt {
+    color: var(--range-muted-foreground);
+    font-size: 10px;
+}
+.counts dd {
+    margin: 5px 0 0;
+    color: var(--range-primary);
+    font-family: var(--range-mono);
+    font-size: 20px;
+}
+.inputLabel {
+    display: grid;
+    gap: 8px;
+    color: var(--range-muted-foreground);
+    font-size: 10px;
+}
+.inputLabel input {
+    min-height: 40px;
+    padding: 0 11px;
+    color: var(--range-foreground);
+    background: var(--range-background);
+    border: 1px solid var(--range-border);
+    outline: none;
+}
+.inputLabel input:focus {
+    border-color: var(--range-primary);
+}
+.policyGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 18px 0;
+}
+.policyGrid span {
+    padding: 11px;
+    background: color-mix(in srgb, var(--range-muted) 60%, transparent);
+    color: var(--range-muted-foreground);
+    font-family: var(--range-mono);
+    font-size: 10px;
+}
+.policyGrid b {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--range-foreground);
+    font-family: inherit;
+}
+.connectionLine {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding-top: 16px;
+    border-top: 1px solid var(--range-border);
+    color: var(--range-muted-foreground);
+    font-size: 11px;
+}
+.wizardFooter {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--range-border);
+}
+.wizardFooter span {
+    flex: 1;
+}
+.snapshot {
+    padding: 18px;
+}
+.snapshot h2 {
+    margin: 7px 0 0;
+    font-family: var(--range-serif);
+    font-size: 17px;
+}
+.snapshot dl {
+    margin-bottom: 0;
+}
+.snapshot dl > div {
+    grid-template-columns: 95px 1fr;
+}
+.snapshot dd {
+    text-align: right;
+}
+.runTable {
+    border: 1px solid var(--range-border);
+    background: var(--range-card);
+}
+.runTable [role='row'] {
+    display: grid;
+    grid-template-columns: 1.1fr 1.5fr 1.2fr 0.8fr 0.7fr;
+    gap: 12px;
+    align-items: center;
+    min-height: 72px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--range-border);
+}
+.runTable .tableHeader {
+    min-height: auto;
+    color: var(--range-muted-foreground);
+    background: var(--range-muted);
+    border-top: 0;
+    font-size: 10px;
+}
+.runTable b,
+.runTable small {
+    display: block;
+}
+.runTable b {
+    font-family: var(--range-mono);
+    font-size: 11px;
+}
+.runTable small {
+    margin-top: 4px;
+    color: var(--range-muted-foreground);
+    font-size: 10px;
+}
+.runTable [role='row'] > span {
+    font-family: var(--range-mono);
+    font-size: 10px;
+}
+.runTable [role='row'] > span:nth-child(2) {
+    font-family: inherit;
+}
+.replayCard {
+    margin-top: 14px;
+    padding: 18px;
+}
+.replayCard p,
+.comparisonGate p,
+.integrationCard p,
+.assetCard p {
+    margin: 8px 0 0;
+    color: var(--range-muted-foreground);
+    font-size: 11px;
+    line-height: 1.8;
+}
+.replayCard dl {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    min-width: 370px;
+    margin: 0;
+}
+.replayCard dl > div {
+    padding: 8px 11px;
+    border-left: 1px solid var(--range-border);
+}
+.replayCard dd {
+    margin-top: 5px;
+}
+.reportGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.reportGrid article {
+    padding: 17px;
+}
+.reportGrid article span,
+.reportGrid article small {
+    display: block;
+    color: var(--range-muted-foreground);
+    font-size: 10px;
+}
+.reportGrid article b {
+    display: block;
+    margin-top: 18px;
+    color: var(--range-foreground);
+    font-family: var(--range-serif);
+    font-size: 16px;
+}
+.reportGrid article strong {
+    display: block;
+    margin: 8px 0;
+    color: var(--range-primary);
+    font-family: var(--range-mono);
+    font-size: 28px;
+}
+.comparisonGate,
+.integrationCard {
+    align-items: center;
+    margin-top: 14px;
+    padding: 19px;
+}
+.comparisonGate p {
+    max-width: 760px;
+}
+.assetGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.assetCard {
+    padding: 17px;
+}
+.assetCard header {
+    gap: 10px;
+}
+.assetCard dl {
+    margin: 17px 0;
+}
+.assetCard dl > div,
+.integrationCard dl > div {
+    display: grid;
+    grid-template-columns: 82px 1fr;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--range-border);
+}
+.assetCard footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+.readiness {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 6px;
+    font-family: var(--range-mono);
+    font-size: 9px;
+    border: 1px solid var(--range-border);
+}
+.readiness i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+}
+.ready {
+    color: var(--range-green);
+}
+.ready i {
+    background: var(--range-green);
+}
+.notReady {
+    color: var(--range-gold);
+}
+.notReady i {
+    background: var(--range-gold);
+}
+.integrationCard {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr auto;
+}
+.integrationCard dl {
+    margin: 0;
+}
+@media (max-width: 1100px) {
+    .flow {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .flow li:nth-child(4) {
+        border-right: 0;
+    }
+    .flow li:nth-child(n + 5) {
+        border-top: 1px solid var(--range-border);
+    }
+    .metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .wizardLayout {
+        grid-template-columns: 1fr;
+    }
+    .snapshot {
+        display: none;
+    }
+    .integrationCard {
+        grid-template-columns: 1fr;
+    }
+    .integrationCard dl {
+        width: 100%;
+    }
+    .integrationCard button {
+        width: max-content;
+    }
+}
+@media (max-width: 760px) {
+    .page {
+        padding: 20px 15px 38px;
+    }
+    .hero,
+    .sectionHeader,
+    .replayCard,
+    .comparisonGate {
+        flex-direction: column;
+    }
+    .hero .primaryButton {
+        width: 100%;
+    }
+    .demoNotice {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .metrics,
+    .splitGrid,
+    .assetGrid,
+    .reportGrid,
+    .choiceGrid,
+    .policyGrid {
+        grid-template-columns: 1fr;
+    }
+    .flow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .flow li {
+        border-top: 1px solid var(--range-border);
+    }
+    .flow li:nth-child(odd) {
+        border-right: 1px solid var(--range-border);
+    }
+    .flow li:nth-child(even) {
+        border-right: 0;
+    }
+    .flow li:first-child,
+    .flow li:nth-child(2) {
+        border-top: 0;
+    }
+    .stepper {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .counts {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .counts > div:nth-child(2) {
+        border-right: 0;
+    }
+    .counts > div:nth-child(n + 3) {
+        border-top: 1px solid var(--range-border);
+    }
+    .benchmarkChoice {
+        flex-direction: column;
+    }
+    .benchmarkChoice small {
+        text-align: left;
+    }
+    .runTable {
+        overflow-x: auto;
+    }
+    .runTable [role='row'] {
+        min-width: 760px;
+    }
+    .replayCard dl {
+        min-width: 0;
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .replayCard dl > div:nth-child(3) {
+        border-top: 1px solid var(--range-border);
+        border-left: 0;
+    }
+    .definitionList > div,
+    .summaryList > div {
+        grid-template-columns: 100px 1fr;
+    }
+}

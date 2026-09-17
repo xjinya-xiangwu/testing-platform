@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Iconfont Preview</title>
+        <style>
+            :root {
+                color-scheme: light;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            }
+            body {
+                margin: 0;
+                color: #1f2937;
+                background: #f8fafc;
+            }
+            header {
+                padding: 24px 32px 16px;
+                background: #ffffff;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            h1 {
+                margin: 0 0 12px;
+                font-size: 24px;
+                line-height: 1.2;
+            }
+            #iconfont-preview-search {
+                width: min(480px, 100%);
+                box-sizing: border-box;
+                padding: 10px 12px;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
+                font-size: 14px;
+            }
+            main {
+                padding: 24px 32px;
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 12px;
+            }
+            .icon-card {
+                min-height: 132px;
+                padding: 14px;
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+                background: #ffffff;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .icon-preview {
+                width: 32px;
+                height: 32px;
+                color: #111827;
+                fill: currentColor;
+            }
+            .icon-type {
+                font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                font-size: 13px;
+                overflow-wrap: anywhere;
+            }
+            .icon-source,
+            .icon-size {
+                color: #64748b;
+                font-size: 12px;
+                overflow-wrap: anywhere;
+            }
+            .warning-badge {
+                align-self: flex-start;
+                border-radius: 999px;
+                padding: 3px 8px;
+                font-size: 12px;
+                color: #92400e;
+                background: #fef3c7;
+            }
+            .skipped {
+                margin-top: 28px;
+            }
+            .skipped li {
+                margin: 6px 0;
+            }
+        </style>
+        <script src="./iconfont.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>Iconfont Preview</h1>
+            <input id="iconfont-preview-search" type="search" placeholder="Search icon type or source" aria-label="Search icons" />
+        </header>
+        <main>
+            <section class="grid" id="icon-grid">
+                <article class="icon-card" data-search="icon-access-gateway access-gateway.svg">
+                    <svg class="icon-preview" aria-hidden="true"><use href="#icon-access-gateway" xlink:href="#icon-access-gateway"></use></svg>
+                    <div class="icon-type">icon-access-gateway</div>
+                    <div class="icon-source">access-gateway.svg</div>
+                    <div class="icon-size">0.4 KiB</div>
+                </article>
+                <article class="icon-card" data-search="icon-awareness awareness.svg">
+                    <svg class="icon-preview" aria-hidden="true"><use href="#icon-awareness" xlink:href="#icon-awareness"></use></svg>
+                    <div class="icon-type">icon-awareness</div>
+                    <div class="icon-source">awareness.svg</div>
+                    <div class="icon-size">0.4 KiB</div>
+                </article>
+                <article class="icon-card" data-search="icon-brand-shield brand-shield.svg">
+                    <svg class="icon-preview" aria-hidden="true"><use href="#icon-brand-shield" xlink:href="#icon-brand-shield"></use></svg>
+                    <div class="icon-type">icon-brand-shield</div>
+                    <div class="icon-source">brand-shield.svg</div>
+                    <div class="icon-size">0.3 KiB</div>
+                </article>
+                <article class="icon-card" data-search="icon-data-center data-center.svg">
+                    <svg class="icon-preview" aria-hidden="true"><use href="#icon-data-center" xlink:href="#icon-data-center"></use></svg>
+                    <div class="icon-type">icon-data-center</div>
+                    <div class="icon-source">data-center.svg</div>
+                    <div class="icon-size">0.3 KiB</div>
+                </article>
+                <article class="icon-card" data-search="icon-range-hall range-hall.svg">
+                    <svg class="icon-preview" aria-hidden="true"><use href="#icon-range-hall" xlink:href="#icon-range-hall"></use></svg>
+                    <div class="icon-type">icon-range-hall</div>
+                    <div class="icon-source">range-hall.svg</div>
+                    <div class="icon-size">0.6 KiB</div>
+                </article>
+                <article class="icon-card" data-search="icon-status-completed status-completed.svg">
+                    <svg class="icon-preview" aria-hidden="true"><use href="#icon-status-completed" xlink:href="#icon-status-completed"></use></svg>
+                    <div class="icon-type">icon-status-completed</div>
+                    <div class="icon-source">status-completed.svg</div>
+                    <div class="icon-size">0.2 KiB</div>
+                </article>
+                <article class="icon-card" data-search="icon-status-running status-running.svg">
+                    <svg class="icon-preview" aria-hidden="true"><use href="#icon-status-running" xlink:href="#icon-status-running"></use></svg>
+                    <div class="icon-type">icon-status-running</div>
+                    <div class="icon-source">status-running.svg</div>
+                    <div class="icon-size">0.1 KiB</div>
+                </article>
+                <article class="icon-card" data-search="icon-test-tasks test-tasks.svg">
+                    <svg class="icon-preview" aria-hidden="true"><use href="#icon-test-tasks" xlink:href="#icon-test-tasks"></use></svg>
+                    <div class="icon-type">icon-test-tasks</div>
+                    <div class="icon-source">test-tasks.svg</div>
+                    <div class="icon-size">0.4 KiB</div>
+                </article>
+                <article class="icon-card" data-search="icon-training-tasks training-tasks.svg">
+                    <svg class="icon-preview" aria-hidden="true"><use href="#icon-training-tasks" xlink:href="#icon-training-tasks"></use></svg>
+                    <div class="icon-type">icon-training-tasks</div>
+                    <div class="icon-source">training-tasks.svg</div>
+                    <div class="icon-size">0.3 KiB</div>
+                </article>
+                <article class="icon-card" data-search="icon-user-settings user-settings.svg">
+                    <svg class="icon-preview" aria-hidden="true"><use href="#icon-user-settings" xlink:href="#icon-user-settings"></use></svg>
+                    <div class="icon-type">icon-user-settings</div>
+                    <div class="icon-source">user-settings.svg</div>
+                    <div class="icon-size">0.5 KiB</div>
+                </article>
+            </section>
+        </main>
+        <script>
+            var search = document.getElementById('iconfont-preview-search');
+            var cards = Array.prototype.slice.call(document.querySelectorAll('.icon-card'));
+            search.addEventListener('input', function () {
+                var query = search.value.trim().toLowerCase();
+                cards.forEach(function (card) {
+                    card.hidden = query && !card.dataset.search.includes(query);
+                });
+            });
+            window.__iconfontPreviewReady = true;
+        </script>
+    </body>
+</html>

@@ -1,0 +1,511 @@
+{
+    "zones": [
+        {
+            "id": "public",
+            "label": "public_network"
+        },
+        {
+            "id": "sub1",
+            "label": "sub_network_1"
+        },
+        {
+            "id": "sub2",
+            "label": "sub_network_2"
+        },
+        {
+            "id": "internet",
+            "label": "互联网区"
+        }
+    ],
+    "networks": [
+        {
+            "id": "public",
+            "label": "public_network",
+            "zoneId": "public",
+            "cidr": "172.200.1.0/24"
+        },
+        {
+            "id": "sub1",
+            "label": "sub_network_1",
+            "zoneId": "sub1",
+            "cidr": "172.200.2.0/24"
+        },
+        {
+            "id": "sub2",
+            "label": "sub_network_2",
+            "zoneId": "sub2",
+            "cidr": "172.200.3.0/24"
+        }
+    ],
+    "nodes": [
+        {
+            "id": "attacker",
+            "label": "External Attacker",
+            "kind": "external_actor",
+            "zoneId": "internet",
+            "interfaces": [
+                {
+                    "networkId": "public"
+                }
+            ]
+        },
+        {
+            "id": "halo",
+            "label": "1_halo",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.200.1.10",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": 8090
+                        }
+                    ]
+                },
+                {
+                    "networkId": "sub1",
+                    "address": "172.200.2.10",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": 8090
+                        }
+                    ]
+                }
+            ],
+            "technology": "Halo 2.24.2",
+            "purpose": "real"
+        },
+        {
+            "id": "drawio",
+            "label": "2_drawio",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.200.1.20"
+                }
+            ],
+            "technology": "draw.io on Tomcat 9",
+            "purpose": "real"
+        },
+        {
+            "id": "confluence",
+            "label": "3_confluence",
+            "kind": "service",
+            "zoneId": "sub1",
+            "interfaces": [
+                {
+                    "networkId": "sub1",
+                    "address": "172.200.2.30"
+                },
+                {
+                    "networkId": "sub2",
+                    "address": "172.200.3.30"
+                }
+            ],
+            "technology": "Confluence 8.5.3",
+            "purpose": "real"
+        },
+        {
+            "id": "confluencedb",
+            "label": "3_confluence_db",
+            "kind": "service",
+            "zoneId": "sub1",
+            "interfaces": [
+                {
+                    "networkId": "sub1",
+                    "address": "172.200.2.31"
+                }
+            ],
+            "technology": "PostgreSQL support DB",
+            "purpose": "real"
+        },
+        {
+            "id": "gitlab",
+            "label": "4_gitlab",
+            "kind": "service",
+            "zoneId": "sub2",
+            "interfaces": [
+                {
+                    "networkId": "sub2",
+                    "address": "172.200.3.40"
+                }
+            ],
+            "technology": "GitLab CE",
+            "purpose": "real"
+        },
+        {
+            "id": "jenkins",
+            "label": "5_jenkins",
+            "kind": "service",
+            "zoneId": "sub2",
+            "interfaces": [
+                {
+                    "networkId": "sub2",
+                    "address": "172.200.3.50"
+                }
+            ],
+            "technology": "Jenkins 2.441",
+            "purpose": "real"
+        },
+        {
+            "id": "kod",
+            "label": "6_kod",
+            "kind": "service",
+            "zoneId": "sub2",
+            "interfaces": [
+                {
+                    "networkId": "sub2",
+                    "address": "172.200.3.60"
+                }
+            ],
+            "technology": "KODExplorer on PHP 7.4 / Apache",
+            "purpose": "real"
+        },
+        {
+            "id": "qdrant",
+            "label": "7_decoy_qdrant_public",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.200.1.170"
+                }
+            ],
+            "technology": "Qdrant",
+            "purpose": "decoy"
+        },
+        {
+            "id": "typesense",
+            "label": "8_decoy_typesense_public",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.200.1.171"
+                }
+            ],
+            "technology": "Typesense",
+            "purpose": "decoy"
+        },
+        {
+            "id": "rabbitmq",
+            "label": "13_decoy_rabbitmq_public",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.200.1.172"
+                }
+            ],
+            "technology": "RabbitMQ",
+            "purpose": "decoy"
+        },
+        {
+            "id": "gitdaemon",
+            "label": "14_decoy_git_public",
+            "kind": "service",
+            "zoneId": "public",
+            "interfaces": [
+                {
+                    "networkId": "public",
+                    "address": "172.200.1.173"
+                }
+            ],
+            "technology": "Git daemon",
+            "purpose": "decoy"
+        },
+        {
+            "id": "prometheus",
+            "label": "9_decoy_prometheus_sub1",
+            "kind": "service",
+            "zoneId": "sub1",
+            "interfaces": [
+                {
+                    "networkId": "sub1",
+                    "address": "172.200.2.170"
+                }
+            ],
+            "technology": "Prometheus",
+            "purpose": "decoy"
+        },
+        {
+            "id": "loki",
+            "label": "10_decoy_loki_sub1",
+            "kind": "service",
+            "zoneId": "sub1",
+            "interfaces": [
+                {
+                    "networkId": "sub1",
+                    "address": "172.200.2.171"
+                }
+            ],
+            "technology": "Loki",
+            "purpose": "decoy"
+        },
+        {
+            "id": "redpanda",
+            "label": "11_decoy_redpanda_sub2",
+            "kind": "service",
+            "zoneId": "sub2",
+            "interfaces": [
+                {
+                    "networkId": "sub2",
+                    "address": "172.200.3.170"
+                }
+            ],
+            "technology": "Redpanda",
+            "purpose": "decoy"
+        },
+        {
+            "id": "mumble",
+            "label": "12_decoy_mumble_sub2",
+            "kind": "service",
+            "zoneId": "sub2",
+            "interfaces": [
+                {
+                    "networkId": "sub2",
+                    "address": "172.200.3.171"
+                }
+            ],
+            "technology": "Mumble",
+            "purpose": "decoy"
+        }
+    ],
+    "links": [
+        {
+            "id": "attacker-public",
+            "source": {
+                "type": "node",
+                "id": "attacker"
+            },
+            "target": {
+                "type": "network",
+                "id": "public"
+            },
+            "directed": true
+        },
+        {
+            "id": "public-halo",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "halo"
+            },
+            "directed": false
+        },
+        {
+            "id": "halo-sub1",
+            "source": {
+                "type": "node",
+                "id": "halo"
+            },
+            "target": {
+                "type": "network",
+                "id": "sub1"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-drawio",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "drawio"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-qdrant",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "qdrant"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-typesense",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "typesense"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-rabbitmq",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "rabbitmq"
+            },
+            "directed": false
+        },
+        {
+            "id": "public-gitdaemon",
+            "source": {
+                "type": "network",
+                "id": "public"
+            },
+            "target": {
+                "type": "node",
+                "id": "gitdaemon"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub1-confluence",
+            "source": {
+                "type": "network",
+                "id": "sub1"
+            },
+            "target": {
+                "type": "node",
+                "id": "confluence"
+            },
+            "directed": false
+        },
+        {
+            "id": "confluence-sub2",
+            "source": {
+                "type": "node",
+                "id": "confluence"
+            },
+            "target": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub1-confluencedb",
+            "source": {
+                "type": "network",
+                "id": "sub1"
+            },
+            "target": {
+                "type": "node",
+                "id": "confluencedb"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub1-prometheus",
+            "source": {
+                "type": "network",
+                "id": "sub1"
+            },
+            "target": {
+                "type": "node",
+                "id": "prometheus"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub1-loki",
+            "source": {
+                "type": "network",
+                "id": "sub1"
+            },
+            "target": {
+                "type": "node",
+                "id": "loki"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub2-gitlab",
+            "source": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "target": {
+                "type": "node",
+                "id": "gitlab"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub2-jenkins",
+            "source": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "target": {
+                "type": "node",
+                "id": "jenkins"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub2-kod",
+            "source": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "target": {
+                "type": "node",
+                "id": "kod"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub2-redpanda",
+            "source": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "target": {
+                "type": "node",
+                "id": "redpanda"
+            },
+            "directed": false
+        },
+        {
+            "id": "sub2-mumble",
+            "source": {
+                "type": "network",
+                "id": "sub2"
+            },
+            "target": {
+                "type": "node",
+                "id": "mumble"
+            },
+            "directed": false
+        }
+    ],
+    "attackPaths": [
+        {
+            "id": "range6-jenkins",
+            "nodeIds": ["attacker", "halo", "confluence", "jenkins"]
+        },
+        {
+            "id": "range6-kod",
+            "nodeIds": ["attacker", "halo", "confluence", "kod"]
+        }
+    ]
+}
