@@ -10,6 +10,7 @@ export interface IDashboardMetric {
     trendKey: string;
     unitKey: string;
     value?: number;
+    displayValue?: string;
 }
 
 export interface IDashboardModelRankEntry {
@@ -83,12 +84,11 @@ interface IDashboardOverview {
 
 const DASHBOARD_PRESENTATION_DATA: IDashboardData = {
     metrics: [
-        { id: 'sandboxes', labelKey: 'dashboard.metrics.sandboxes', unitKey: 'unit.items', trendKey: 'dashboard.trend.assetScope', value: 2500 },
-        { id: 'benchmarks', labelKey: 'dashboard.metrics.benchmarks', unitKey: 'unit.items', trendKey: 'dashboard.trend.published', value: 5 },
-        { id: 'subjects', labelKey: 'dashboard.metrics.subjects', unitKey: 'unit.items', trendKey: 'dashboard.trend.verified', value: 3 },
-        { id: 'runs', labelKey: 'dashboard.metrics.runs', unitKey: 'unit.entries', trendKey: 'dashboard.trend.running', value: 7 },
-        { id: 'reviews', labelKey: 'dashboard.metrics.reviews', unitKey: 'unit.entries', trendKey: 'dashboard.trend.review', value: 3 },
-        { id: 'reports', labelKey: 'dashboard.metrics.reports', unitKey: 'unit.items', trendKey: 'dashboard.trend.deliverable', value: 2 },
+        { id: 'sandboxes', labelKey: 'dashboard.home.metrics.environments', unitKey: 'unit.items', trendKey: 'dashboard.trend.assetScope', displayValue: '10+' },
+        { id: 'benchmarks', labelKey: 'dashboard.home.metrics.benchmarks', unitKey: 'unit.items', trendKey: 'dashboard.trend.published', displayValue: '100+' },
+        { id: 'subjects', labelKey: 'dashboard.home.metrics.tasks', unitKey: 'unit.entries', trendKey: 'dashboard.trend.verified', displayValue: '10,000+' },
+        { id: 'runs', labelKey: 'dashboard.home.metrics.running', unitKey: 'unit.entries', trendKey: 'dashboard.trend.running', value: 7 },
+        { id: 'reports', labelKey: 'dashboard.home.metrics.completed', unitKey: 'unit.entries', trendKey: 'dashboard.trend.deliverable', value: 3 },
     ],
     modelLeaderboards: [],
     radar: { dimensionKeys: [], baseline: [] },
@@ -156,7 +156,11 @@ export const adaptDashboardOverview = (overview: unknown): IDashboardData => {
 
     return {
         ...data,
-        metrics: data.metrics.map((metric) => (metric.id === 'runs' ? { ...metric, value: overview.evaluation_status.running } : metric)),
+        metrics: data.metrics.map((metric) => {
+            if (metric.id === 'runs') return { ...metric, value: overview.evaluation_status.running };
+            if (metric.id === 'reports') return { ...metric, value: overview.evaluation_status.completed_today };
+            return metric;
+        }),
         taskRing: {
             total: overview.evaluation_status.total,
             running: overview.evaluation_status.running,

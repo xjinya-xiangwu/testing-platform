@@ -23,17 +23,16 @@ describe('dashboard API facade', () => {
         vi.mocked(Http.get).mockResolvedValue({ code: 0, data: OVERVIEW_RESPONSE, msg: '' });
     });
 
-    it('keeps PRD-scoped presentation metrics and maps the backend-owned Run status', async () => {
+    it('keeps the requested static asset totals and maps backend-owned task status', async () => {
         const data = await getDashboardData();
 
         expect(Http.get).toHaveBeenCalledWith('/api/v1/dashboard/overview', { forbidMsg: true });
-        expect(data.metrics.map(({ id, value }) => [id, value])).toEqual([
-            ['sandboxes', 2500],
-            ['benchmarks', 5],
-            ['subjects', 3],
-            ['runs', 7],
-            ['reviews', 3],
-            ['reports', 2],
+        expect(data.metrics.map(({ id, value, displayValue }) => [id, value, displayValue])).toEqual([
+            ['sandboxes', undefined, '10+'],
+            ['benchmarks', undefined, '100+'],
+            ['subjects', undefined, '10,000+'],
+            ['runs', 7, undefined],
+            ['reports', 3, undefined],
         ]);
         expect(data.taskRing).toEqual({ total: 12, running: 7, queued: 2, doneToday: 3, completionPercent: 25 });
     });
@@ -50,7 +49,7 @@ describe('dashboard API facade', () => {
         expect(data.metrics.find((metric) => metric.id === 'runs')?.value).toBe(0);
     });
 
-    it('accepts an overview without the retired summary while preserving evaluation-scope metrics', async () => {
+    it('accepts an overview without the retired summary while preserving the code-evaluation metrics', async () => {
         vi.mocked(Http.get).mockResolvedValue({
             code: 0,
             data: { evaluation_status: { total: 4, running: 2, queued: 1, completed_today: 1 }, generated_at: OVERVIEW_RESPONSE.generated_at },
@@ -58,7 +57,13 @@ describe('dashboard API facade', () => {
         });
 
         const data = await getDashboardData();
-        expect(data.metrics.map((metric) => metric.value)).toEqual([2500, 5, 3, 2, 3, 2]);
+        expect(data.metrics.map(({ value, displayValue }) => [value, displayValue])).toEqual([
+            [undefined, '10+'],
+            [undefined, '100+'],
+            [undefined, '10,000+'],
+            [2, undefined],
+            [1, undefined],
+        ]);
         expect(data.taskRing).toEqual({ total: 4, running: 2, queued: 1, doneToday: 1, completionPercent: 25 });
     });
 

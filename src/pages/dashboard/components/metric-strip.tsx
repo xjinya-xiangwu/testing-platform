@@ -30,7 +30,7 @@ const MetricStrip = ({ metrics, translate }: MetricStripProps) => {
                         <img src={METRIC_ICONS[metric.id]} alt="" />
                     </span>
                     <span>{translate(metric.labelKey)}</span>
-                    <strong>{metric.value === undefined ? translate('common.notAvailable') : metric.value.toLocaleString()}</strong>
+                    <strong>{metric.displayValue ?? (metric.value === undefined ? translate('common.notAvailable') : metric.value.toLocaleString())}</strong>
                     <small>
                         {translate(metric.unitKey)} · {translate(metric.trendKey)}
                     </small>
