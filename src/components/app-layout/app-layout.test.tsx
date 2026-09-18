@@ -63,7 +63,7 @@ describe('AppLayout', () => {
         expect(within(navigation).getByText('操作中心')).toBeInTheDocument();
 
         const links = within(navigation).getAllByRole('link');
-        expect(links.map((link) => link.textContent)).toEqual(['态势感知', '代码评测', '靶场评测', '数据中心', '靶场大厅', '接入网关', '用户设置']);
+        expect(links.map((link) => link.textContent)).toEqual(['首页', '代码评测', '靶场评测', '数据中心', '靶场大厅', '接入网关', '用户设置']);
         expect(links.map((link) => link.getAttribute('href'))).toEqual(['/dashboard', '/tasks?type=code', '/tasks?type=range', '/data', '/range-hall', '/gateway', '/settings']);
         expect(within(navigation).queryByText('训练任务')).not.toBeInTheDocument();
     });

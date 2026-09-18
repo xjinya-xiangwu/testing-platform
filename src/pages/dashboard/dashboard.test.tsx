@@ -1,13 +1,8 @@
-import { act, screen, within } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { screen, within } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Dashboard from '@/pages/dashboard/dashboard';
-import DashboardCenterColumn from '@/pages/dashboard/components/dashboard-center-column';
-import { createDashboardFallbackData } from '@/api/dashboard';
-import { resetSimulationStore, useSimulationStore } from '@/stores/simulation-store';
 import { renderRangePage } from '@/test/render-range-page';
 import Http from '@/utils/axios';
-import { LocaleMessages } from '@/locale';
-import { ZH } from '@/locale/zh';
 
 vi.mock('@/utils/axios', () => ({
     default: { get: vi.fn() },
@@ -26,82 +21,53 @@ const OVERVIEW_RESPONSE = {
     generated_at: '2026-09-16T03:00:00Z',
 };
 
-const translate = (key: string) => (ZH as LocaleMessages)[key] ?? key;
-
 describe('Dashboard', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(Http.get).mockResolvedValue({ code: 0, data: OVERVIEW_RESPONSE, msg: '' });
-        resetSimulationStore();
     });
 
-    afterEach(() => {
-        useSimulationStore.getState().stopTimers();
-        vi.unstubAllGlobals();
-    });
-
-    it('keeps the original situational-awareness stage while replacing its content with the PRD evaluation scope', async () => {
+    it('renders the P0 and P1 project data board modules', async () => {
         renderRangePage(<Dashboard />);
 
-        expect(await screen.findAllByTestId('dashboard-metric')).toHaveLength(5);
-        expect(screen.getByRole('main', { name: '中心化评测服务态势感知' })).toBeInTheDocument();
-        expect(screen.getByRole('navigation', { name: '系统运行状态' })).toBeInTheDocument();
-        expect(screen.getByRole('region', { name: 'Benchmark 就绪态势' })).toBeInTheDocument();
-        expect(screen.getByRole('region', { name: '中心化评测闭环' })).toBeInTheDocument();
-        expect(screen.getByRole('region', { name: '评测运行事件流' })).toBeInTheDocument();
-        expect(screen.getByRole('region', { name: '评测 Run 状态' })).toBeInTheDocument();
-        expect(screen.getByRole('region', { name: '接入与治理状态' })).toBeInTheDocument();
+        expect(await screen.findByRole('main', { name: '项目数据看板' })).toBeInTheDocument();
+        expect(screen.getByText('实际使用视角')).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: '核心状态指标' })).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: '我的任务与执行状态' })).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: '需要处理' })).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: '资源可用性' })).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: '当前任务观察' })).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: '结果与结论摘要' })).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: '报告与交付' })).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: '数据与回流' })).toBeInTheDocument();
 
-        ['项目与授权', 'Benchmark 就绪', '对象接入', '创建评测', 'Run 与取证', '结果与复核', '报告与交付'].forEach((label) => expect(screen.getByText(label)).toBeInTheDocument());
-        expect(screen.getByText('演示数据 · 非真实运行')).toBeInTheDocument();
-        expect(screen.queryByText('今日训练')).not.toBeInTheDocument();
-        expect(screen.queryByText('模型排行榜')).not.toBeInTheDocument();
+        expect(screen.getByRole('link', { name: '新建代码评测' })).toHaveAttribute('href', '/tasks?type=code');
+        expect(screen.getByRole('link', { name: '新建靶场评测' })).toHaveAttribute('href', '/tasks?type=range');
+        expect(screen.getByRole('link', { name: '打开工作台' })).toHaveAttribute('href', '/workbench?job=RUN-1024');
+        expect(screen.getByText('RUN-1019 环境启动失败')).toBeInTheDocument();
+        expect(screen.getByText('3 条低置信 Finding')).toBeInTheDocument();
     });
 
-    it('shows the two evaluation task entries and maps backend Run status without changing PRD asset counts', async () => {
+    it('maps the task overview into the four user-facing KPIs', async () => {
         renderRangePage(<Dashboard />);
 
-        expect(screen.getByRole('link', { name: '代码评测' })).toHaveAttribute('href', '/tasks?type=code');
-        expect(screen.getByRole('link', { name: '靶场评测' })).toHaveAttribute('href', '/tasks?type=range');
-
-        const taskStatus = screen.getByRole('region', { name: '评测 Run 状态' });
-        expect(await within(taskStatus).findByLabelText('总任务 12，完成进度 25.0%')).toBeInTheDocument();
-        expect(within(taskStatus).getByText('运行中').closest('li')).toHaveTextContent('7');
-        expect(within(taskStatus).getByText('排队中').closest('li')).toHaveTextContent('2');
-        expect(within(taskStatus).getByText('已完成').closest('li')).toHaveTextContent('3');
-
-        const metrics = await screen.findAllByTestId('dashboard-metric');
-        expect(metrics.map((metric) => metric.textContent)).toEqual(
-            expect.arrayContaining([expect.stringContaining('10+'), expect.stringContaining('100+'), expect.stringContaining('10,000+'), expect.stringContaining('7'), expect.stringContaining('3')]),
-        );
+        const kpis = screen.getByRole('region', { name: '核心状态指标' });
+        await within(kpis).findByText('排队 2 · 异常 1 · 平均耗时 18m');
+        expect(within(kpis).getAllByRole('article')).toHaveLength(4);
+        expect(within(kpis).getByText('运行中任务')).toBeInTheDocument();
+        expect(within(kpis).getByText('7')).toBeInTheDocument();
+        expect(within(kpis).getByText('今日完成')).toBeInTheDocument();
+        expect(within(kpis).getByText('3')).toBeInTheDocument();
+        expect(within(kpis).getByText('等待我处理')).toBeInTheDocument();
+        expect(within(kpis).getByText('资源可用')).toBeInTheDocument();
+        expect(within(kpis).getByText('排队 2 · 异常 1 · 平均耗时 18m')).toBeInTheDocument();
     });
 
-    it('advances the evaluation event stream without mutating KPI content', async () => {
-        const callbacks = new Map<number, () => void>();
-        vi.spyOn(window, 'setInterval').mockImplementation(((handler: TimerHandler, timeout?: number) => {
-            if (typeof handler === 'function') callbacks.set(timeout ?? 0, handler as () => void);
-            return (timeout ?? 0) as unknown as ReturnType<typeof window.setInterval>;
-        }) as unknown as typeof window.setInterval);
-
+    it('keeps data source failures visible instead of replacing them with demo numbers', async () => {
+        vi.mocked(Http.get).mockRejectedValueOnce(new Error('network failed'));
         renderRangePage(<Dashboard />);
-        const [firstMetric] = await screen.findAllByTestId('dashboard-metric');
-        const initialMetric = firstMetric.textContent;
-        const initialCursor = useSimulationStore.getState().eventCursor;
 
-        act(() => callbacks.get(2000)?.());
-        expect(firstMetric.textContent).toBe(initialMetric);
-        expect(useSimulationStore.getState().eventCursor).toBe(initialCursor + 1);
-        expect(screen.getAllByText('INFO').length).toBeGreaterThan(0);
-        expect(screen.getAllByText('WARN').length).toBeGreaterThan(0);
-        expect(screen.getAllByText('ERROR').length).toBeGreaterThan(0);
-    });
-
-    it('renders safely when the evaluation event feed is empty', () => {
-        const data = createDashboardFallbackData();
-        renderRangePage(
-            <DashboardCenterColumn data={{ ...data, events: [] }} eventCursor={0} eventTimelineEnteredAt={Date.now()} eventTimelineSeed={1} eventTimelineStartCursor={0} translate={translate} />,
-        );
-
-        expect(screen.getByRole('region', { name: '评测运行事件流' })).toBeInTheDocument();
+        expect(await screen.findByText(/数据源异常/)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: '刷新' })).toBeInTheDocument();
     });
 });
