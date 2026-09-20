@@ -1,6 +1,7 @@
 import Http from '@/utils/axios';
 import { IS_DEMO_MODE } from '@/config/demo-mode';
 import { createTaskCenterFixture } from '@/test/fixtures/task-center';
+import { getGatewayTaskObjects } from '@/api/gateway-providers';
 
 export type TaskStatus = 'queued' | 'running';
 export type TaskListFilter = 'all' | 'completed' | TaskStatus;
@@ -175,15 +176,12 @@ const DEFAULT_EVALUATION_CONFIG: ITaskDraftPayload = {
     modelId: 'gpt-4o',
 };
 
+// Builtin candidates only; external candidates derive from the gateway provider registry.
 const OBJECTS: readonly ITaskObject[] = [
     { id: 'mythos-attack-v2', name: 'Mythos-Attack-v2', kind: 'agent', verified: true, protocol: 'openai_responses', harness: 'codex' },
     { id: 'pentestgpt', name: 'PentestGPT', kind: 'agent', verified: true, protocol: 'openai_responses', harness: 'codex' },
     { id: 'reconx', name: 'ReconX', kind: 'agent', verified: true, protocol: 'openai_responses', harness: 'codex' },
     { id: 'gpt-4o', name: 'GPT-4o', kind: 'model', verified: true, protocol: 'openai_chat', harness: 'codex' },
-    { id: 'ext-glm52', name: 'GLM-5.2', kind: 'model', verified: true, protocol: 'openai_chat', harness: 'codex' },
-    { id: 'ext-gpt54', name: 'GPT-5.4', kind: 'model', verified: true, protocol: 'openai_responses', harness: 'codex' },
-    { id: 'ext-claude', name: 'Claude-Opus-4.7', kind: 'model', verified: true, protocol: 'anthropic_messages', harness: 'claude_code' },
-    { id: 'ext-redbot', name: 'RedBot-X', kind: 'agent', verified: false, protocol: 'openai_responses', harness: 'codex' },
 ];
 
 const isTaskType = (value: TaskType | null): value is TaskType => value === 'evaluation' || value === 'range';
@@ -373,9 +371,12 @@ export const getTaskCenterData = async (input: ITaskListQuery): Promise<ITaskLis
 };
 
 export const getTaskCreationData = async (): Promise<ITaskCreationData> => {
+    // External candidates always derive from the gateway provider registry (single source);
+    // the gateway verifies objects before they become selectable here.
+    const externalObjects = await getGatewayTaskObjects();
     if (IS_DEMO_MODE) {
         const fixture = createTaskCenterFixture();
-        return { environments: fixture.environments, questionSets: fixture.questionSets, builtinObjects: fixture.builtinObjects, externalObjects: fixture.externalObjects };
+        return { environments: fixture.environments, questionSets: fixture.questionSets, builtinObjects: fixture.builtinObjects, externalObjects };
     }
     const [ranges, suites] = await Promise.all([getAllListPages<IBackendRangeRow>('/api/v1/ranges', {}, 'Ranges'), getAllListPages<IBackendSuiteRow>('/api/v1/code-suites', {}, 'Code suites')]);
 
@@ -394,8 +395,8 @@ export const getTaskCreationData = async (): Promise<ITaskCreationData> => {
             updated: '',
             descriptionKey: suite.name,
         })),
-        builtinObjects: OBJECTS.filter((object) => !object.id.startsWith('ext-')).map((object) => ({ ...object })),
-        externalObjects: OBJECTS.filter((object) => object.id.startsWith('ext-') && object.verified).map((object) => ({ ...object })),
+        builtinObjects: OBJECTS.map((object) => ({ ...object })),
+        externalObjects,
     };
 };
 

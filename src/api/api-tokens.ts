@@ -3,11 +3,13 @@ import Http from '@/utils/axios';
 import { IS_DEMO_MODE } from '@/config/demo-mode';
 
 export type ApiTokenStatus = 'ACTIVE' | 'EXPIRED' | 'REVOKED';
+export type ApiTokenPurpose = 'adversarial' | 'evaluation' | 'training';
 
 export interface IApiToken {
     credentialId: string;
     name: string;
     keyPrefix: string;
+    purpose?: ApiTokenPurpose;
     status: ApiTokenStatus;
     expiresAt: string;
     createdAt: string;
@@ -39,15 +41,17 @@ interface IApiTokenQuery {
 }
 
 const API_TOKEN_STATUSES = new Set<ApiTokenStatus>(['ACTIVE', 'EXPIRED', 'REVOKED']);
+const API_TOKEN_PURPOSES: readonly ApiTokenPurpose[] = ['adversarial', 'evaluation', 'training'];
 const API_TOKEN_PREFIX_LENGTH = 8;
 const API_TOKEN_NAME_MAX_LENGTH = 128;
 const DEMO_API_TOKENS: readonly IApiToken[] = [
-    { credentialId: 'demo-cli', name: 'CLI 接入凭证', keyPrefix: 'sk-demo1', status: 'ACTIVE', expiresAt: '2027-09-16T00:00:00Z', createdAt: '2026-09-10T02:30:00Z' },
-    { credentialId: 'demo-ci', name: '评测流水线凭证', keyPrefix: 'sk-demo2', status: 'ACTIVE', expiresAt: '2027-09-16T00:00:00Z', createdAt: '2026-09-12T06:15:00Z' },
+    { credentialId: 'demo-cli', name: 'CLI 接入凭证', keyPrefix: 'sk-demo1', purpose: 'evaluation', status: 'ACTIVE', expiresAt: '2027-09-16T00:00:00Z', createdAt: '2026-09-10T02:30:00Z' },
+    { credentialId: 'demo-ci', name: '评测流水线凭证', keyPrefix: 'sk-demo2', purpose: 'training', status: 'ACTIVE', expiresAt: '2027-09-16T00:00:00Z', createdAt: '2026-09-12T06:15:00Z' },
 ];
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
 const isFiniteInteger = (value: unknown): value is number => typeof value === 'number' && Number.isInteger(value) && value >= 0;
 const isApiTokenStatus = (value: unknown): value is ApiTokenStatus => typeof value === 'string' && API_TOKEN_STATUSES.has(value as ApiTokenStatus);
+const isApiTokenPurpose = (value: unknown): value is ApiTokenPurpose => typeof value === 'string' && (API_TOKEN_PURPOSES as readonly string[]).includes(value);
 
 const parseApiToken = (value: unknown): IApiToken => {
     if (
@@ -58,7 +62,8 @@ const parseApiToken = (value: unknown): IApiToken => {
         !isApiTokenStatus(value.status) ||
         typeof value.expires_at !== 'string' ||
         typeof value.created_at !== 'string' ||
-        (value.revoked_at !== undefined && typeof value.revoked_at !== 'string')
+        (value.revoked_at !== undefined && typeof value.revoked_at !== 'string') ||
+        (value.purpose !== undefined && !isApiTokenPurpose(value.purpose))
     ) {
         throw new Error('Invalid API token response');
     }
@@ -70,6 +75,7 @@ const parseApiToken = (value: unknown): IApiToken => {
         status: value.status,
         expiresAt: value.expires_at,
         createdAt: value.created_at,
+        ...(isApiTokenPurpose(value.purpose) ? { purpose: value.purpose } : {}),
         ...(typeof value.revoked_at === 'string' ? { revokedAt: value.revoked_at } : {}),
     };
 };
@@ -121,25 +127,31 @@ export const getApiTokens = async ({ page = 1, pageSize = 20 }: IApiTokenQuery =
     return parseApiTokenPage(response.data);
 };
 
-export const createApiToken = async (name: string): Promise<ICreatedApiToken> => {
+export interface ICreateApiTokenInput {
+    name: string;
+    purpose?: ApiTokenPurpose;
+}
+
+export const createApiToken = async ({ name, purpose }: ICreateApiTokenInput): Promise<ICreatedApiToken> => {
+    const normalizedName = typeof name === 'string' ? name.trim() : '';
+    if (!normalizedName || normalizedName.length > API_TOKEN_NAME_MAX_LENGTH) throw new Error('Token name is invalid');
+    if (purpose !== undefined && !isApiTokenPurpose(purpose)) throw new Error('Token purpose is invalid');
+
     if (IS_DEMO_MODE) {
-        const normalizedName = typeof name === 'string' ? name.trim() : '';
-        if (!normalizedName || normalizedName.length > API_TOKEN_NAME_MAX_LENGTH) throw new Error('Token name is invalid');
         return {
             credentialId: 'demo-created',
             name: normalizedName,
             keyPrefix: 'sk-demo3',
+            purpose: purpose ?? 'evaluation',
             status: 'ACTIVE',
             expiresAt: '2027-09-16T00:00:00Z',
             createdAt: new Date().toISOString(),
             token: 'sk-demo-not-a-real-secret',
         };
     }
-    const normalizedName = typeof name === 'string' ? name.trim() : '';
-    if (!normalizedName || normalizedName.length > API_TOKEN_NAME_MAX_LENGTH) throw new Error('Token name is invalid');
 
-    const response = await Http.post<{ name: string }, unknown>(API_TOKENS, {
-        data: { name: normalizedName },
+    const response = await Http.post<{ name: string; purpose?: ApiTokenPurpose }, unknown>(API_TOKENS, {
+        data: { name: normalizedName, ...(purpose ? { purpose } : {}) },
         forbidMsg: true,
     });
     if (response.code !== 0) throw new Error('API token creation failed');

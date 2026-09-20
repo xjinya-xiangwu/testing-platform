@@ -113,24 +113,24 @@ describe('API token facade', () => {
             msg: '',
         });
 
-        const result = await createApiToken('  CLI 接入凭证  ');
+        const result = await createApiToken({ name: '  CLI 接入凭证  ', purpose: 'evaluation' });
 
         expect(Http.post).toHaveBeenCalledWith('/api/v1/api-tokens', {
-            data: { name: 'CLI 接入凭证' },
+            data: { name: 'CLI 接入凭证', purpose: 'evaluation' },
             forbidMsg: true,
         });
         expect(result).toMatchObject({ credentialId: 'cred_01M9G4T7XR2Z', token: 'sk-mock-one-time-secret' });
     });
 
     it('rejects an invalid token name before sending a request', async () => {
-        await expect(createApiToken('   ')).rejects.toThrow('Token name is invalid');
+        await expect(createApiToken({ name: '   ' })).rejects.toThrow('Token name is invalid');
         expect(Http.post).not.toHaveBeenCalled();
     });
 
     it('rejects a creation response without the one-time plaintext token', async () => {
         vi.mocked(Http.post).mockResolvedValue({ code: 0, data: BACKEND_PAGE.list[0], msg: '' });
 
-        await expect(createApiToken('CLI 接入凭证')).rejects.toThrow('Invalid API token creation response');
+        await expect(createApiToken({ name: 'CLI 接入凭证' })).rejects.toThrow('Invalid API token creation response');
     });
 
     it('revokes an encoded credential id and maps the result', async () => {

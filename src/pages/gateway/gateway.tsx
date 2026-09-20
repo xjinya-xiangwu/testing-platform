@@ -1,62 +1,84 @@
 import { useContext, useState } from 'react';
 import classNames from 'classnames';
-import GatewayAgentPanel from '@/pages/gateway/components/gateway-agent-panel';
 import GatewayApiPanel from '@/pages/gateway/components/gateway-api-panel';
 import GatewayDocsPanel from '@/pages/gateway/components/gateway-docs-panel';
+import { GatewayProviderDialog, GatewayRemoveProviderDialog, type GatewayProviderDialogMode } from '@/pages/gateway/components/gateway-provider-dialog';
+import GatewayProviderPanel from '@/pages/gateway/components/gateway-provider-panel';
 import GatewaySessionsPanel from '@/pages/gateway/components/gateway-sessions-panel';
 import { GatewayCreateTokenDialog, GatewayRevokeTokenDialog, GatewayTokenSecretDialog } from '@/pages/gateway/components/gateway-token-dialogs';
 import GatewayTokenPanel from '@/pages/gateway/components/gateway-token-panel';
-import GatewayVerificationPanel from '@/pages/gateway/components/gateway-verification-panel';
-import { GATEWAY_AGENTS, GATEWAY_TABS, type GatewayTab } from '@/pages/gateway/gateway-mock';
 import { useApiTokens, useCreateApiToken, useRevokeApiToken } from '@/hooks/useApiTokens';
+import { useGatewayProviders, useRegisterGatewayProvider, useRemoveGatewayProvider, useVerifyGatewayProvider } from '@/hooks/useGatewayProviders';
 import useTranslate from '@/hooks/useTranslate';
 import { InfoContext } from '@/provider/global-provider';
 import style from '@/pages/gateway/gateway.module.less';
 
+type GatewayTab = 'providers' | 'keys' | 'docs' | 'sessions' | 'api';
+
+const GATEWAY_TABS: readonly GatewayTab[] = ['providers', 'keys', 'docs', 'sessions', 'api'];
+
 const Gateway = () => {
     const { lang } = useContext(InfoContext);
     const translate = useTranslate();
-    const [activeTab, setActiveTab] = useState<GatewayTab>('agents');
-    const [agents, setAgents] = useState(() => GATEWAY_AGENTS.map((agent) => ({ ...agent })));
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState<GatewayTab>('providers');
+    const [isCreateTokenOpen, setIsCreateTokenOpen] = useState(false);
     const [plaintextToken, setPlaintextToken] = useState<string | null>(null);
-    const [revokingId, setRevokingId] = useState<string | null>(null);
     const [pendingRevokeId, setPendingRevokeId] = useState<string | null>(null);
-    const tokenQuery = useApiTokens();
-    const createMutation = useCreateApiToken();
-    const revokeMutation = useRevokeApiToken();
+    const [providerDialog, setProviderDialog] = useState<GatewayProviderDialogMode | null>(null);
+    const [pendingRemoveId, setPendingRemoveId] = useState<string | null>(null);
 
-    const handleCreate = async (name: string) => {
+    const tokenQuery = useApiTokens();
+    const createTokenMutation = useCreateApiToken();
+    const revokeTokenMutation = useRevokeApiToken();
+    const providerQuery = useGatewayProviders();
+    const registerProviderMutation = useRegisterGatewayProvider();
+    const verifyProviderMutation = useVerifyGatewayProvider();
+    const removeProviderMutation = useRemoveGatewayProvider();
+
+    const handleCreateToken = async (name: string, purpose?: 'adversarial' | 'evaluation' | 'training') => {
         try {
-            const created = await createMutation.mutateAsync(name);
+            const created = await createTokenMutation.mutateAsync({ name, purpose });
             setPlaintextToken(created.token);
-            setIsCreateOpen(false);
+            setIsCreateTokenOpen(false);
             setActiveTab('keys');
-            createMutation.reset();
+            createTokenMutation.reset();
         } catch {
             // Mutation state renders the localized error inside the dialog.
         }
     };
 
-    const handleRevoke = async (credentialId: string) => {
-        setRevokingId(credentialId);
+    const handleRevokeToken = async (credentialId: string) => {
         try {
-            await revokeMutation.mutateAsync(credentialId);
+            await revokeTokenMutation.mutateAsync(credentialId);
             setPendingRevokeId(null);
         } finally {
-            setRevokingId(null);
+            // Mutation state renders the localized error inside the panel.
         }
     };
 
-    const handleVerified = (agentId: string) => {
-        const verifiedAt = new Date().toISOString();
-        setAgents((current) => current.map((agent) => (agent.id === agentId ? { ...agent, isVerified: true, verifiedAt } : agent)));
+    const handleRemoveProvider = async (providerId: string) => {
+        try {
+            await removeProviderMutation.mutateAsync(providerId);
+            setPendingRemoveId(null);
+        } finally {
+            // Query error state renders inside the providers panel.
+        }
     };
 
-    const tokenError = tokenQuery.isError ? translate('gateway.keys.loadError') : revokeMutation.isError ? translate('gateway.keys.revokeError') : null;
-    const createError = createMutation.isError ? translate('gateway.keys.createError') : null;
+    const tokenError = tokenQuery.isError ? translate('gateway.keys.loadError') : revokeTokenMutation.isError ? translate('gateway.keys.revokeError') : null;
+    const createTokenError = createTokenMutation.isError ? translate('gateway.keys.createError') : null;
+    const providerError = providerQuery.isError || removeProviderMutation.isError ? translate('gateway.providers.loadError') : null;
     const activeTokens = tokenQuery.data?.list.filter((token) => token.status === 'ACTIVE') ?? [];
     const pendingRevokeToken = tokenQuery.data?.list.find((token) => token.credentialId === pendingRevokeId);
+    const providers = providerQuery.data?.list ?? [];
+    const pendingRemoveProvider = providers.find((provider) => provider.id === pendingRemoveId);
+    const busyProviderId = verifyProviderMutation.isPending ? verifyProviderMutation.variables : removeProviderMutation.isPending ? removeProviderMutation.variables : null;
+
+    const closeProviderDialog = () => {
+        setProviderDialog(null);
+        registerProviderMutation.reset();
+        verifyProviderMutation.reset();
+    };
 
     return (
         <main className={style.gatewayPage}>
@@ -70,8 +92,8 @@ const Gateway = () => {
                     </div>
                     <p>{translate('gateway.subtitle')}</p>
                 </div>
-                <button type="button" className={style.primaryButton} onClick={() => setIsCreateOpen(true)}>
-                    {translate('gateway.keys.create')}
+                <button type="button" className={style.primaryButton} onClick={() => setProviderDialog({ mode: 'register' })}>
+                    {translate('gateway.providers.register')}
                 </button>
             </header>
 
@@ -92,46 +114,80 @@ const Gateway = () => {
                     ))}
                 </div>
                 <div id={`gateway-panel-${activeTab}`} className={style.tabPanel} role="tabpanel">
-                    {activeTab === 'agents' ? <GatewayAgentPanel agents={agents} translate={translate} /> : null}
+                    {activeTab === 'providers' ? (
+                        <GatewayProviderPanel
+                            busyProviderId={busyProviderId}
+                            errorMessage={providerError}
+                            isLoading={providerQuery.isLoading}
+                            language={lang}
+                            providers={providers}
+                            tokens={tokenQuery.data?.list ?? []}
+                            translate={translate}
+                            onRegister={() => setProviderDialog({ mode: 'register' })}
+                            onRemove={setPendingRemoveId}
+                            onRetry={() => void providerQuery.refetch()}
+                            onReverify={(providerId) => setProviderDialog({ mode: 'reverify', providerId })}
+                        />
+                    ) : null}
                     {activeTab === 'keys' ? (
                         <GatewayTokenPanel
                             data={tokenQuery.data}
                             errorMessage={tokenError}
                             isLoading={tokenQuery.isLoading}
                             language={lang}
-                            revokingId={revokingId}
+                            revokingId={revokeTokenMutation.isPending ? revokeTokenMutation.variables : null}
                             translate={translate}
+                            onCreateToken={() => setIsCreateTokenOpen(true)}
                             onRefetch={() => void tokenQuery.refetch()}
                             onRevoke={setPendingRevokeId}
                         />
                     ) : null}
-                    {activeTab === 'docs' ? <GatewayDocsPanel translate={translate} /> : null}
-                    {activeTab === 'verify' ? <GatewayVerificationPanel agents={agents} tokens={activeTokens} translate={translate} onVerified={handleVerified} /> : null}
-                    {activeTab === 'sessions' ? <GatewaySessionsPanel language={lang} translate={translate} /> : null}
+                    {activeTab === 'docs' ? <GatewayDocsPanel tokens={activeTokens} translate={translate} /> : null}
+                    {activeTab === 'sessions' ? <GatewaySessionsPanel language={lang} providers={providers} translate={translate} /> : null}
                     {activeTab === 'api' ? <GatewayApiPanel translate={translate} /> : null}
                 </div>
             </section>
 
-            {isCreateOpen ? (
+            {providerDialog ? (
+                <GatewayProviderDialog
+                    mode={providerDialog}
+                    providers={providers}
+                    registerMutation={registerProviderMutation}
+                    tokens={activeTokens}
+                    translate={translate}
+                    verifyMutation={verifyProviderMutation}
+                    onClose={closeProviderDialog}
+                />
+            ) : null}
+            {pendingRemoveProvider ? (
+                <GatewayRemoveProviderDialog
+                    isSubmitting={removeProviderMutation.isPending}
+                    provider={pendingRemoveProvider}
+                    translate={translate}
+                    onClose={() => setPendingRemoveId(null)}
+                    onConfirm={() => void handleRemoveProvider(pendingRemoveProvider.id)}
+                />
+            ) : null}
+            {isCreateTokenOpen ? (
                 <GatewayCreateTokenDialog
-                    errorMessage={createError}
-                    isSubmitting={createMutation.isPending}
+                    errorMessage={createTokenError}
+                    isSubmitting={createTokenMutation.isPending}
                     translate={translate}
                     onClose={() => {
-                        setIsCreateOpen(false);
-                        createMutation.reset();
+                        setIsCreateTokenOpen(false);
+                        createTokenMutation.reset();
                     }}
-                    onSubmit={(name) => void handleCreate(name)}
+                    onSubmit={(name, purpose) => void handleCreateToken(name, purpose)}
                 />
             ) : null}
             {plaintextToken ? <GatewayTokenSecretDialog token={plaintextToken} translate={translate} onClose={() => setPlaintextToken(null)} /> : null}
             {pendingRevokeToken ? (
                 <GatewayRevokeTokenDialog
-                    isSubmitting={revokeMutation.isPending}
+                    isSubmitting={revokeTokenMutation.isPending}
                     token={pendingRevokeToken}
                     translate={translate}
                     onClose={() => setPendingRevokeId(null)}
-                    onConfirm={() => void handleRevoke(pendingRevokeToken.credentialId)}
+                    onConfirm={() => void handleRevokeToken(pendingRevokeToken.credentialId)}
                 />
             ) : null}
         </main>

@@ -10,19 +10,22 @@ const SETTINGS_REQUIRED_KEYS = ['settings.title', 'settings.profile.userId', 'se
 const TRAINING_REQUIRED_KEYS = ['training.title', 'training.wizard.title', 'training.status.4', 'training.detail.metrics', 'training.actions.development'] as const;
 const GATEWAY_REQUIRED_KEYS = [
     'gateway.title',
-    'gateway.tabs.agents',
+    'gateway.tabs.providers',
     'gateway.tabs.keys',
-    'gateway.keys.create',
+    'gateway.providers.register',
+    'gateway.providers.columns.name',
+    'gateway.providers.columns.kind',
+    'gateway.providers.columns.endpoint',
+    'gateway.providers.columns.status',
+    'gateway.providers.columns.tasks',
+    'gateway.register.submit',
+    'gateway.register.success',
     'gateway.verify.start',
+    'gateway.verify.error.network_unreachable',
+    'gateway.verify.error.protocol_mismatch',
+    'gateway.keys.create',
+    'gateway.keys.columns.purpose',
     'gateway.sessions.title',
-    'gateway.agents.columns.name',
-    'gateway.agents.columns.kind',
-    'gateway.agents.columns.endpoint',
-    'gateway.agents.columns.status',
-    'gateway.agents.columns.tasks',
-    'gateway.agents.columns.tokens',
-    'gateway.agents.columns.trajectories',
-    'gateway.agents.columns.cost',
 ] as const;
 
 describe('range locale contract', () => {

@@ -1,7 +1,9 @@
 import classNames from 'classnames';
-import { GATEWAY_FLOW, GATEWAY_QUOTAS } from '@/pages/gateway/gateway-mock';
 import style from '@/pages/gateway/gateway.module.less';
 import type { ApiTokenStatus, IApiTokenPage } from '@/api/api-tokens';
+
+const GATEWAY_FLOW = ['auth', 'scope', 'loop', 'evidence'] as const;
+const GATEWAY_QUOTAS = ['isolation', 'tokens', 'rate', 'cost'] as const;
 
 const TOKEN_STATUS_KEY: Readonly<Record<ApiTokenStatus, string>> = {
     ACTIVE: 'gateway.status.active',
@@ -14,6 +16,7 @@ interface GatewayTokenPanelProps {
     errorMessage: string | null;
     isLoading: boolean;
     language: string;
+    onCreateToken: () => void;
     onRefetch: () => void;
     onRevoke: (credentialId: string) => void;
     revokingId: string | null;
@@ -26,7 +29,7 @@ const formatDateTime = (value: string | undefined, language: string, fallback: s
     return Number.isNaN(date.getTime()) ? fallback : new Intl.DateTimeFormat(language, { dateStyle: 'medium', timeStyle: 'short' }).format(date);
 };
 
-const GatewayTokenPanel = ({ data, errorMessage, isLoading, language, onRefetch, onRevoke, revokingId, translate }: GatewayTokenPanelProps) => (
+const GatewayTokenPanel = ({ data, errorMessage, isLoading, language, onCreateToken, onRefetch, onRevoke, revokingId, translate }: GatewayTokenPanelProps) => (
     <>
         <section className={style.flowSection}>
             <header className={style.sectionHeader}>
@@ -58,6 +61,13 @@ const GatewayTokenPanel = ({ data, errorMessage, isLoading, language, onRefetch,
             ))}
         </section>
 
+        <header className={style.subsectionHeader}>
+            <h2>{translate('gateway.keys.table')}</h2>
+            <button type="button" className={style.secondaryButton} onClick={onCreateToken}>
+                {translate('gateway.keys.create')}
+            </button>
+        </header>
+
         {isLoading ? <div className={style.feedback}>{translate('common.loading')}</div> : null}
         {errorMessage ? (
             <div className={style.feedback} role="alert">
@@ -73,7 +83,7 @@ const GatewayTokenPanel = ({ data, errorMessage, isLoading, language, onRefetch,
                 <table aria-label={translate('gateway.keys.table')}>
                     <thead>
                         <tr>
-                            {['name', 'key', 'created', 'expires', 'revoked', 'status', 'actions'].map((column) => (
+                            {['name', 'key', 'purpose', 'created', 'expires', 'revoked', 'status', 'actions'].map((column) => (
                                 <th key={column}>{translate(`gateway.keys.columns.${column}`)}</th>
                             ))}
                         </tr>
@@ -85,6 +95,7 @@ const GatewayTokenPanel = ({ data, errorMessage, isLoading, language, onRefetch,
                                 <td>
                                     <code>{token.keyPrefix}••••••••</code>
                                 </td>
+                                <td>{token.purpose ? translate(`gateway.keys.purpose.${token.purpose}`) : '—'}</td>
                                 <td>{formatDateTime(token.createdAt, language, translate('common.notAvailable'))}</td>
                                 <td>{formatDateTime(token.expiresAt, language, translate('common.notAvailable'))}</td>
                                 <td>{formatDateTime(token.revokedAt, language, translate('common.notAvailable'))}</td>

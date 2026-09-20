@@ -159,6 +159,46 @@ describe('task API facade', () => {
                     list: [{ suite_id: 'suite_websec_v1', name: 'Web Security', sample_count: 24, status: 'ACTIVE' }],
                 },
             };
+            if (url === '/api/v1/gateway/providers') {
+                return {
+                    code: 0,
+                    data: {
+                        list: [
+                            {
+                                provider_id: 'ext-glm52',
+                                name: 'GLM-5.2',
+                                kind: 'model',
+                                endpoint: 'https://open.bigmodel.cn/api/paas/v4',
+                                protocol: 'openai_chat',
+                                harness: 'codex',
+                                key_credential_id: null,
+                                status: 'verified',
+                                health: 'healthy',
+                                last_checked_at: null,
+                                last_error_code: null,
+                                verified_at: null,
+                                metrics: { tasks: 0, tokens_total: 0, trajectories: 0, cost_cny: 0 },
+                            },
+                            {
+                                provider_id: 'ext-redbot',
+                                name: 'RedBot-X',
+                                kind: 'agent',
+                                endpoint: 'https://agent.customer.lab/mcp',
+                                protocol: 'openai_responses',
+                                harness: 'codex',
+                                key_credential_id: null,
+                                status: 'unverified',
+                                health: 'unknown',
+                                last_checked_at: null,
+                                last_error_code: null,
+                                verified_at: null,
+                                metrics: { tasks: 0, tokens_total: 0, trajectories: 0, cost_cny: 0 },
+                            },
+                        ],
+                    },
+                    msg: '',
+                } as never;
+            }
             return { data: responses[requestKey] } as never;
         });
 
@@ -166,9 +206,11 @@ describe('task API facade', () => {
 
         expect(getMock).toHaveBeenCalledWith('/api/v1/ranges', { params: { page: 1, page_size: 100 }, forbidMsg: true });
         expect(getMock).toHaveBeenCalledWith('/api/v1/code-suites', { params: { page: 1, page_size: 100 }, forbidMsg: true });
+        expect(getMock).toHaveBeenCalledWith('/api/v1/gateway/providers', { forbidMsg: true });
         expect(creationData.environments).toContainEqual(expect.objectContaining({ id: 'rng_range5', nameKey: 'Range5', subnet: '26 nodes', status: 'available' }));
         expect(creationData.environments).toContainEqual(expect.objectContaining({ id: 'rng-busy', status: 'pending' }));
         expect(creationData.questionSets).toEqual([expect.objectContaining({ id: 'suite_websec_v1', nameKey: 'Web Security', size: 24 })]);
+        expect(creationData.externalObjects).toEqual([{ harness: 'codex', id: 'ext-glm52', kind: 'model', name: 'GLM-5.2', protocol: 'openai_chat', verified: true }]);
     });
 
     it('rejects an empty response instead of falling back to mock data', async () => {

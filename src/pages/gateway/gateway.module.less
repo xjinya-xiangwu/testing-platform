@@ -152,6 +152,135 @@
     }
 }
 
+.healthStrip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+
+    > span:first-child {
+        color: #8ba8b6;
+        font-size: 11px;
+    }
+}
+
+.filterBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px;
+    margin-bottom: 16px;
+
+    label {
+        display: grid;
+        gap: 6px;
+        min-width: 220px;
+    }
+
+    label > span {
+        color: #8ba5b2;
+        font-size: 10px;
+    }
+}
+
+.filterHint {
+    max-width: 520px;
+    margin: 0;
+    color: #6f8f9d;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.rowActions {
+    display: flex;
+    gap: 8px;
+}
+
+.quietCell {
+    color: #587783;
+}
+
+.providerTable table {
+    min-width: 1080px;
+}
+
+.stepFailed {
+    i,
+    strong {
+        color: #ff8585;
+        border-color: #8b4141;
+    }
+}
+
+.stepSkipped {
+    opacity: 0.55;
+}
+
+.failureBanner {
+    display: grid;
+    gap: 5px;
+    padding: 13px 14px;
+    margin-bottom: 18px;
+    background: rgb(130 36 36 / 12%);
+    border: 1px solid #8b4141;
+    font-size: 11px;
+
+    strong {
+        color: #ff8585;
+    }
+
+    span {
+        color: #c98f8f;
+        line-height: 1.6;
+    }
+}
+
+.timeline {
+    display: grid;
+    gap: 1px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    background: rgb(89 190 222 / 20%);
+
+    li {
+        display: grid;
+        grid-template-columns: 64px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 12px;
+        background: #04111a;
+    }
+
+    span {
+        overflow-wrap: anywhere;
+        font-size: 10px;
+    }
+
+    .timelineKind {
+        justify-self: start;
+        padding: 3px 8px;
+        color: #8dc7ed;
+        border: 1px solid #31566a;
+        font-size: 9px;
+        white-space: nowrap;
+    }
+
+    .timelineMeta {
+        color: #587783;
+        font-family: var(--range-mono);
+        text-align: right;
+        white-space: nowrap;
+    }
+}
+
 .tableWrap {
     width: 100%;
     overflow-x: auto;
@@ -383,42 +512,6 @@
 
     table {
         min-width: 720px;
-    }
-}
-
-.verifyForm {
-    display: grid;
-    grid-template-columns: minmax(220px, 1fr) minmax(240px, 1fr) minmax(200px, 0.75fr) auto;
-    align-items: end;
-    gap: 14px;
-    padding: 18px;
-    margin-bottom: 14px;
-    background: rgb(4 18 28 / 86%);
-    border: 1px solid rgb(89 190 222 / 22%);
-
-    h2 {
-        margin: 0 0 5px;
-        font-size: 15px;
-    }
-
-    p {
-        margin: 0;
-        color: #7e9aa8;
-        font-size: 10px;
-        line-height: 1.5;
-    }
-
-    label,
-    > div {
-        display: grid;
-        gap: 7px;
-        min-width: 0;
-    }
-
-    label > span,
-    .dialogField > span {
-        color: #8ba5b2;
-        font-size: 10px;
     }
 }
 
@@ -727,7 +820,7 @@ select {
         }
     }
 
-    .verifyForm {
+    .formGrid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
@@ -785,8 +878,18 @@ select {
     .statsGrid,
     .quotaGrid,
     .flowGrid,
-    .verifyForm {
+    .formGrid,
+    .filterBar,
+    .timeline li {
         grid-template-columns: 1fr;
+    }
+
+    .timeline li {
+        gap: 6px;
+    }
+
+    .timeline .timelineMeta {
+        text-align: left;
     }
 
     .metricCard {

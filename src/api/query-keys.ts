@@ -41,4 +41,12 @@ export const QUERY_KEYS = {
         all: ['api-tokens'] as const,
         list: (page: number, pageSize: number) => [...QUERY_KEYS.apiTokens.all, 'list', page, pageSize] as const,
     },
+    gatewayProviders: {
+        all: ['gateway-providers'] as const,
+        list: () => [...QUERY_KEYS.gatewayProviders.all, 'list'] as const,
+    },
+    gatewaySessions: {
+        all: ['gateway-sessions'] as const,
+        list: (query: Readonly<{ providerId: string | null; result: string }>) => [...QUERY_KEYS.gatewaySessions.all, 'list', query] as const,
+    },
 } as const;

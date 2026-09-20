@@ -1,7 +1,9 @@
 import { FormEvent, useState } from 'react';
 import useDialogFocus from '@/hooks/useDialogFocus';
 import style from '@/pages/gateway/gateway.module.less';
-import type { IApiToken } from '@/api/api-tokens';
+import type { ApiTokenPurpose, IApiToken } from '@/api/api-tokens';
+
+const TOKEN_PURPOSES: readonly ApiTokenPurpose[] = ['evaluation', 'training', 'adversarial'];
 
 interface TranslateProps {
     translate: (key: string, values?: Readonly<Record<string, string | number>>) => string;
@@ -11,15 +13,16 @@ interface GatewayCreateTokenDialogProps extends TranslateProps {
     errorMessage: string | null;
     isSubmitting: boolean;
     onClose: () => void;
-    onSubmit: (name: string) => void;
+    onSubmit: (name: string, purpose: ApiTokenPurpose) => void;
 }
 
 export const GatewayCreateTokenDialog = ({ errorMessage, isSubmitting, onClose, onSubmit, translate }: GatewayCreateTokenDialogProps) => {
     const [name, setName] = useState('');
+    const [purpose, setPurpose] = useState<ApiTokenPurpose>('evaluation');
     const dialogRef = useDialogFocus<HTMLElement>(true, onClose);
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
-        onSubmit(name);
+        onSubmit(name, purpose);
     };
 
     return (
@@ -38,6 +41,16 @@ export const GatewayCreateTokenDialog = ({ errorMessage, isSubmitting, onClose, 
                     <label className={style.dialogField}>
                         <span>{translate('gateway.keys.name')}</span>
                         <input value={name} maxLength={128} autoComplete="off" onChange={(event) => setName(event.target.value)} />
+                    </label>
+                    <label className={style.dialogField}>
+                        <span>{translate('gateway.keys.createDialog.purpose')}</span>
+                        <select value={purpose} onChange={(event) => setPurpose(event.target.value as ApiTokenPurpose)}>
+                            {TOKEN_PURPOSES.map((option) => (
+                                <option key={option} value={option}>
+                                    {translate(`gateway.keys.purpose.${option}`)}
+                                </option>
+                            ))}
+                        </select>
                     </label>
                     {errorMessage ? (
                         <p className={style.inlineError} role="alert">
