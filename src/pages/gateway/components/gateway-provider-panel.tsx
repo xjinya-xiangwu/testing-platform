@@ -28,7 +28,7 @@ const formatDateTime = (value: string | null, language: string, fallback: string
     return Number.isNaN(date.getTime()) ? fallback : new Intl.DateTimeFormat(language, { dateStyle: 'medium', timeStyle: 'short' }).format(date);
 };
 
-const GATEWAY_PROVIDER_COLUMNS = ['name', 'kind', 'endpoint', 'protocol', 'harness', 'key', 'status', 'health', 'verifiedAt', 'tasks', 'actions'] as const;
+const GATEWAY_PROVIDER_COLUMNS = ['name', 'method', 'kind', 'endpoint', 'protocol', 'key', 'status', 'health', 'verifiedAt', 'tasks', 'actions'] as const;
 
 const healthCell = (provider: IGatewayProvider) => {
     if (provider.status === 'unverified') return { className: style.statusQuiet, key: 'gateway.providers.health.unverified' } as const;
@@ -107,15 +107,13 @@ const GatewayProviderPanel = ({ busyProviderId, errorMessage, isLoading, languag
                                 return (
                                     <tr key={provider.id}>
                                         <td className={style.strongCell}>{provider.name}</td>
+                                        <td>{translate(`gateway.register.method.${provider.method}`)}</td>
                                         <td>{translate(`gateway.agent.kind.${provider.kind}`)}</td>
                                         <td>
                                             <code>{provider.endpoint}</code>
                                         </td>
                                         <td>
                                             <code>{provider.protocol}</code>
-                                        </td>
-                                        <td>
-                                            <code>{provider.harness}</code>
                                         </td>
                                         <td>{tokenName(provider.keyCredentialId) ?? <span className={style.quietCell}>{translate('gateway.providers.keyNone')}</span>}</td>
                                         <td>

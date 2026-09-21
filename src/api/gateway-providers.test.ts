@@ -18,6 +18,7 @@ const BACKEND_PROVIDER = {
     protocol: 'openai_chat',
     harness: 'codex',
     key_credential_id: 'demo-cli',
+    method: 'rest_api',
     status: 'verified',
     health: 'healthy',
     last_checked_at: '2026-08-05T16:20:00+08:00',
@@ -38,6 +39,7 @@ const REGISTRATION_INPUT = {
     harness: 'codex' as const,
     keyCredentialId: 'cred_1',
     kind: 'agent' as const,
+    method: 'rest_api' as const,
     name: 'RedBot-X',
     protocol: 'openai_responses' as const,
 };
@@ -61,6 +63,7 @@ describe('gateway provider facade (live mode)', () => {
                 id: 'ext-glm52',
                 keyCredentialId: 'demo-cli',
                 kind: 'model',
+                method: 'rest_api',
                 lastCheckedAt: '2026-08-05T16:20:00+08:00',
                 lastErrorCode: null,
                 metrics: { costCny: 1286, tasks: 46, tokensTotal: 32_400_000, trajectories: 41_000 },
@@ -84,7 +87,7 @@ describe('gateway provider facade (live mode)', () => {
         const result = await registerGatewayProvider(REGISTRATION_INPUT);
 
         expect(Http.post).toHaveBeenCalledWith('/api/v1/gateway/providers', {
-            data: { endpoint: 'https://agent.example.com/mcp', harness: 'codex', key_credential_id: 'cred_1', kind: 'agent', name: 'RedBot-X', protocol: 'openai_responses' },
+            data: { endpoint: 'https://agent.example.com/mcp', harness: 'codex', key_credential_id: 'cred_1', kind: 'agent', method: 'rest_api', name: 'RedBot-X', protocol: 'openai_responses' },
             forbidMsg: true,
         });
         expect(result.verification).toMatchObject({ errorCode: 'network_unreachable', failedStep: 'connectivity', passed: false });

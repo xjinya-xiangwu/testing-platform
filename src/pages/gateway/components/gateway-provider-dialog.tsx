@@ -1,9 +1,19 @@
 import classNames from 'classnames';
 import { FormEvent, useEffect, useState } from 'react';
 import useDialogFocus from '@/hooks/useDialogFocus';
-import { GATEWAY_HARNESSES, GATEWAY_PROVIDER_KINDS, GATEWAY_PROTOCOLS, isGatewayEndpoint, type IGatewayProviderInput, type IGatewayProvider } from '@/features/gateway/domain/gateway-provider';
+import {
+    GATEWAY_HARNESSES,
+    GATEWAY_HTTP_PROTOCOLS,
+    GATEWAY_INTEGRATION_METHODS,
+    GATEWAY_PROVIDER_KINDS,
+    isGatewayEndpoint,
+    type GatewayIntegrationMethod,
+    type IGatewayProvider,
+    type IGatewayProviderInput,
+} from '@/features/gateway/domain/gateway-provider';
 import { buildVerificationSteps } from '@/features/gateway/domain/gateway-verification';
 import type { IGatewayProviderRegistration } from '@/api/gateway-providers';
+import { getGatewaySnippet } from '@/pages/gateway/gateway-snippets';
 import style from '@/pages/gateway/gateway.module.less';
 import type { IApiToken } from '@/api/api-tokens';
 
@@ -33,7 +43,9 @@ interface GatewayProviderDialogProps {
     onClose: () => void;
 }
 
-const DialogHeader = ({ description, id, title, translate, onClose }: { description: string; id: string; title: string; translate: GatewayProviderDialogProps['translate']; onClose: () => void }) => (
+type Translate = GatewayProviderDialogProps['translate'];
+
+const DialogHeader = ({ description, id, title, translate, onClose }: { description: string; id: string; title: string; translate: Translate; onClose: () => void }) => (
     <header className={style.dialogHeader}>
         <div>
             <h2 id={id}>{title}</h2>
@@ -45,20 +57,24 @@ const DialogHeader = ({ description, id, title, translate, onClose }: { descript
     </header>
 );
 
+// Step labels are phrased per integration method: an MCP registration runs a tools
+// discovery handshake where a REST registration negotiates an inference protocol.
+const verificationStepLabel = (method: GatewayIntegrationMethod, step: string, translate: Translate) => translate(`gateway.verify.step.${method}.${step}`);
+
 const VerificationResult = ({
-    registration,
-    translate,
+    isRetrying,
     onClose,
     onBack,
     onRetry,
-    isRetrying,
+    registration,
+    translate,
 }: {
     isRetrying: boolean;
     onClose: () => void;
     onBack: (() => void) | null;
     onRetry: (() => void) | null;
     registration: IGatewayProviderRegistration;
-    translate: GatewayProviderDialogProps['translate'];
+    translate: Translate;
 }) => {
     const { provider, verification } = registration;
     const steps = buildVerificationSteps(verification);
@@ -79,7 +95,7 @@ const VerificationResult = ({
                 {steps.map((step, index) => (
                     <li key={step.step} className={classNames(step.state === 'passed' && style.stepPassed, step.state === 'failed' && style.stepFailed, step.state === 'skipped' && style.stepSkipped)}>
                         <i aria-hidden="true">{step.state === 'passed' ? '✓' : index + 1}</i>
-                        <span>{translate(`gateway.verify.step.${step.step}`)}</span>
+                        <span>{verificationStepLabel(provider.method, step.step, translate)}</span>
                         <strong>{translate(`gateway.verify.stepState.${step.state}`)}</strong>
                     </li>
                 ))}
@@ -107,10 +123,11 @@ export const GatewayProviderDialog = ({ mode, providers, registerMutation, token
     const dialogRef = useDialogFocus<HTMLElement>(true, onClose);
     const reverifyTarget = mode.mode === 'reverify' ? (providers.find((provider) => provider.id === mode.providerId) ?? null) : null;
     const [phase, setPhase] = useState<'form' | 'result'>('form');
+    const [method, setMethod] = useState<GatewayIntegrationMethod>('rest_api');
     const [name, setName] = useState('');
     const [kind, setKind] = useState<(typeof GATEWAY_PROVIDER_KINDS)[number]>('model');
     const [endpoint, setEndpoint] = useState('');
-    const [protocol, setProtocol] = useState<(typeof GATEWAY_PROTOCOLS)[number]>('openai_responses');
+    const [protocol, setProtocol] = useState<(typeof GATEWAY_HTTP_PROTOCOLS)[number]>('openai_responses');
     const [harness, setHarness] = useState<(typeof GATEWAY_HARNESSES)[number]>('codex');
     const [tokenId, setTokenId] = useState(tokens[0]?.credentialId ?? '');
     const [fieldError, setFieldError] = useState('');
@@ -123,6 +140,17 @@ export const GatewayProviderDialog = ({ mode, providers, registerMutation, token
 
     const activeTokens = tokens.filter((token) => token.status === 'ACTIVE');
     const isSubmitting = registerMutation.isPending || verifyMutation.isPending;
+    const selectedToken = activeTokens.find((token) => token.credentialId === tokenId) ?? null;
+    const keyRef = selectedToken ? `${selectedToken.keyPrefix}…` : '$AIR_KEY';
+    const gatewayEndpoint = new URL('/', window.location.origin).toString();
+    // CLI and Skill connect outbound to the gateway itself, so there is no endpoint to
+    // probe; MCP registrations always speak the MCP protocol; REST picks one of three.
+    const requiresEndpoint = method === 'rest_api' || method === 'mcp';
+    const resolvedEndpoint = requiresEndpoint ? endpoint : gatewayEndpoint;
+    const resolvedProtocol = method === 'mcp' ? ('mcp' as const) : method === 'rest_api' ? protocol : ('openai_responses' as const);
+    const resolvedHarness = method === 'rest_api' ? harness : ('codex' as const);
+    const resolvedKind = method === 'mcp' ? ('agent' as const) : kind;
+    const snippet = getGatewaySnippet(window.location.origin, keyRef, method);
 
     const runVerification = async (registration: Promise<IGatewayProviderRegistration>) => {
         setSubmitError(false);
@@ -137,7 +165,7 @@ export const GatewayProviderDialog = ({ mode, providers, registerMutation, token
 
     const handleRegister = (event: FormEvent) => {
         event.preventDefault();
-        if (!isGatewayEndpoint(endpoint)) {
+        if (requiresEndpoint && !isGatewayEndpoint(endpoint)) {
             setFieldError('gateway.verify.endpointError');
             return;
         }
@@ -146,7 +174,7 @@ export const GatewayProviderDialog = ({ mode, providers, registerMutation, token
             return;
         }
         setFieldError('');
-        const input: IGatewayProviderInput = { endpoint, harness, keyCredentialId: tokenId, kind, name, protocol };
+        const input: IGatewayProviderInput = { endpoint: resolvedEndpoint, harness: resolvedHarness, keyCredentialId: tokenId, kind: resolvedKind, method, name, protocol: resolvedProtocol };
         void runVerification(registerMutation.mutateAsync(input));
     };
 
@@ -174,43 +202,66 @@ export const GatewayProviderDialog = ({ mode, providers, registerMutation, token
                         />
                         <div className={style.formGrid}>
                             <label className={style.dialogField}>
+                                <span>{translate('gateway.register.method')}</span>
+                                <select value={method} onChange={(event) => setMethod(event.target.value as GatewayIntegrationMethod)}>
+                                    {GATEWAY_INTEGRATION_METHODS.map((option) => (
+                                        <option key={option} value={option}>
+                                            {translate(`gateway.register.method.${option}`)}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <label className={style.dialogField}>
                                 <span>{translate('gateway.register.name')}</span>
                                 <input value={name} maxLength={128} placeholder={translate('gateway.register.namePlaceholder')} autoComplete="off" onChange={(event) => setName(event.target.value)} />
                             </label>
-                            <label className={style.dialogField}>
-                                <span>{translate('gateway.register.kind')}</span>
-                                <select value={kind} onChange={(event) => setKind(event.target.value as (typeof GATEWAY_PROVIDER_KINDS)[number])}>
-                                    {GATEWAY_PROVIDER_KINDS.map((option) => (
-                                        <option key={option} value={option}>
-                                            {translate(`gateway.agent.kind.${option}`)}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
-                            <label className={style.dialogField}>
-                                <span>{translate('gateway.register.endpoint')}</span>
-                                <input value={endpoint} placeholder={translate('gateway.register.endpointPlaceholder')} autoComplete="off" onChange={(event) => setEndpoint(event.target.value)} />
-                            </label>
-                            <label className={style.dialogField}>
-                                <span>{translate('gateway.register.protocol')}</span>
-                                <select value={protocol} onChange={(event) => setProtocol(event.target.value as (typeof GATEWAY_PROTOCOLS)[number])}>
-                                    {GATEWAY_PROTOCOLS.map((option) => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
-                            <label className={style.dialogField}>
-                                <span>{translate('gateway.register.harness')}</span>
-                                <select value={harness} onChange={(event) => setHarness(event.target.value as (typeof GATEWAY_HARNESSES)[number])}>
-                                    {GATEWAY_HARNESSES.map((option) => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
+                            {method !== 'mcp' ? (
+                                <label className={style.dialogField}>
+                                    <span>{translate('gateway.register.kind')}</span>
+                                    <select value={kind} onChange={(event) => setKind(event.target.value as (typeof GATEWAY_PROVIDER_KINDS)[number])}>
+                                        {GATEWAY_PROVIDER_KINDS.map((option) => (
+                                            <option key={option} value={option}>
+                                                {translate(`gateway.agent.kind.${option}`)}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                            ) : null}
+                            {method === 'rest_api' || method === 'mcp' ? (
+                                <label className={style.dialogField}>
+                                    <span>{method === 'mcp' ? translate('gateway.register.mcpUrl') : translate('gateway.register.endpoint')}</span>
+                                    <input
+                                        value={endpoint}
+                                        placeholder={method === 'mcp' ? translate('gateway.register.mcpUrlPlaceholder') : translate('gateway.register.endpointPlaceholder')}
+                                        autoComplete="off"
+                                        onChange={(event) => setEndpoint(event.target.value)}
+                                    />
+                                </label>
+                            ) : null}
+                            {method === 'rest_api' ? (
+                                <>
+                                    <label className={style.dialogField}>
+                                        <span>{translate('gateway.register.protocol')}</span>
+                                        <select value={protocol} onChange={(event) => setProtocol(event.target.value as (typeof GATEWAY_HTTP_PROTOCOLS)[number])}>
+                                            {GATEWAY_HTTP_PROTOCOLS.map((option) => (
+                                                <option key={option} value={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
+                                    <label className={style.dialogField}>
+                                        <span>{translate('gateway.register.harness')}</span>
+                                        <select value={harness} onChange={(event) => setHarness(event.target.value as (typeof GATEWAY_HARNESSES)[number])}>
+                                            {GATEWAY_HARNESSES.map((option) => (
+                                                <option key={option} value={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
+                                </>
+                            ) : null}
                             <label className={style.dialogField}>
                                 <span>{translate('gateway.register.key')}</span>
                                 <select value={tokenId} onChange={(event) => setTokenId(event.target.value)}>
@@ -223,6 +274,13 @@ export const GatewayProviderDialog = ({ mode, providers, registerMutation, token
                                 </select>
                             </label>
                         </div>
+                        <p className={style.methodHint}>{translate(`gateway.register.methodHint.${method}`)}</p>
+                        <section className={style.snippetPreview} aria-label={translate('gateway.register.snippet')}>
+                            <h3>{translate('gateway.register.snippet')}</h3>
+                            <pre>
+                                <code>{snippet.code}</code>
+                            </pre>
+                        </section>
                         {fieldError ? (
                             <p className={style.inlineError} role="alert">
                                 {translate(fieldError)}
@@ -257,7 +315,7 @@ export const GatewayProviderDialog = ({ mode, providers, registerMutation, token
                             <div>
                                 <dt>{translate('gateway.register.summary')}</dt>
                                 <dd>
-                                    {reverifyTarget.name} · {reverifyTarget.protocol} · {reverifyTarget.harness}
+                                    {translate(`gateway.register.method.${reverifyTarget.method}`)} · {reverifyTarget.name} · {reverifyTarget.protocol} · {reverifyTarget.harness}
                                 </dd>
                             </div>
                         </dl>
@@ -310,7 +368,7 @@ export const GatewayRemoveProviderDialog = ({
     onClose: () => void;
     onConfirm: () => void;
     provider: IGatewayProvider;
-    translate: GatewayProviderDialogProps['translate'];
+    translate: Translate;
 }) => {
     const dialogRef = useDialogFocus<HTMLElement>(true, onClose);
 

@@ -10,9 +10,12 @@ const GOOD_INPUT = {
     harness: 'codex' as const,
     keyCredentialId: 'demo-cli',
     kind: 'agent' as const,
+    method: 'rest_api' as const,
     name: 'RedBot-X',
     protocol: 'openai_responses' as const,
 };
+
+const MCP_INPUT = { ...GOOD_INPUT, method: 'mcp' as const, protocol: 'mcp' as const };
 
 describe('gateway demo registry', () => {
     beforeEach(() => {
@@ -25,7 +28,7 @@ describe('gateway demo registry', () => {
 
         expect(registry.list.map((provider) => provider.id)).toEqual(['ext-glm52', 'ext-gpt54', 'ext-claude', 'ext-redbot']);
         expect(registry.list.filter((provider) => provider.status === 'verified')).toHaveLength(3);
-        expect(registry.list.find((provider) => provider.id === 'ext-redbot')).toMatchObject({ status: 'unverified', health: 'unknown', keyCredentialId: null });
+        expect(registry.list.find((provider) => provider.id === 'ext-redbot')).toMatchObject({ status: 'unverified', health: 'unknown', keyCredentialId: null, method: 'mcp', protocol: 'mcp' });
     });
 
     it('registers a provider, verifies it, and exposes it as a task candidate', async () => {
@@ -74,6 +77,14 @@ describe('gateway demo registry', () => {
 
         expect(reverified.verification).toMatchObject({ errorCode: 'network_unreachable', passed: false });
         expect((await getGatewaySessions({ providerId: registered.provider.id, result: 'all' })).list).toHaveLength(2);
+    });
+
+    it('registers MCP providers with the fixed MCP protocol and no harness choice', async () => {
+        const { provider, verification } = await registerGatewayProvider(MCP_INPUT);
+
+        expect(verification.passed).toBe(true);
+        expect(provider).toMatchObject({ method: 'mcp', protocol: 'mcp', kind: 'agent' });
+        expect((await getGatewayTaskObjects()).find((object) => object.id === provider.id)).toMatchObject({ protocol: 'mcp', kind: 'agent' });
     });
 
     it('removes a provider from the registry', async () => {

@@ -7,7 +7,7 @@ export interface IGatewayCatalogObject {
     id: string;
     kind: 'agent' | 'model';
     name: string;
-    protocol: 'anthropic_messages' | 'openai_chat' | 'openai_responses';
+    protocol: 'anthropic_messages' | 'mcp' | 'openai_chat' | 'openai_responses';
     verified: boolean;
 }
 

@@ -11,6 +11,7 @@ const provider = (overrides: Partial<IGatewayProvider> = {}): IGatewayProvider =
     kind: 'model',
     lastCheckedAt: '2026-08-04T11:02:00+08:00',
     lastErrorCode: null,
+    method: 'rest_api',
     metrics: { costCny: 100, tasks: 10, tokensTotal: 1_000, trajectories: 20 },
     name: 'GPT-5.4',
     protocol: 'openai_responses',

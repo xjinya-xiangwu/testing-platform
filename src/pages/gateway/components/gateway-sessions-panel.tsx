@@ -24,6 +24,10 @@ const GatewaySessionsPanel = ({ language, providers, translate }: GatewaySession
 
     return (
         <>
+            <header className={style.subsectionHeader}>
+                <h2>{translate('gateway.sessions.title')}</h2>
+                <span>{translate('gateway.sessions.subtitle')}</span>
+            </header>
             <div className={style.filterBar}>
                 <label>
                     <span>{translate('gateway.sessions.filter.provider')}</span>

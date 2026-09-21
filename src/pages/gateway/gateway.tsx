@@ -13,14 +13,14 @@ import useTranslate from '@/hooks/useTranslate';
 import { InfoContext } from '@/provider/global-provider';
 import style from '@/pages/gateway/gateway.module.less';
 
-type GatewayTab = 'providers' | 'keys' | 'docs' | 'sessions' | 'api';
+type GatewayTab = 'access' | 'keys' | 'docs';
 
-const GATEWAY_TABS: readonly GatewayTab[] = ['providers', 'keys', 'docs', 'sessions', 'api'];
+const GATEWAY_TABS: readonly GatewayTab[] = ['access', 'keys', 'docs'];
 
 const Gateway = () => {
     const { lang } = useContext(InfoContext);
     const translate = useTranslate();
-    const [activeTab, setActiveTab] = useState<GatewayTab>('providers');
+    const [activeTab, setActiveTab] = useState<GatewayTab>('access');
     const [isCreateTokenOpen, setIsCreateTokenOpen] = useState(false);
     const [plaintextToken, setPlaintextToken] = useState<string | null>(null);
     const [pendingRevokeId, setPendingRevokeId] = useState<string | null>(null);
@@ -114,20 +114,23 @@ const Gateway = () => {
                     ))}
                 </div>
                 <div id={`gateway-panel-${activeTab}`} className={style.tabPanel} role="tabpanel">
-                    {activeTab === 'providers' ? (
-                        <GatewayProviderPanel
-                            busyProviderId={busyProviderId}
-                            errorMessage={providerError}
-                            isLoading={providerQuery.isLoading}
-                            language={lang}
-                            providers={providers}
-                            tokens={tokenQuery.data?.list ?? []}
-                            translate={translate}
-                            onRegister={() => setProviderDialog({ mode: 'register' })}
-                            onRemove={setPendingRemoveId}
-                            onRetry={() => void providerQuery.refetch()}
-                            onReverify={(providerId) => setProviderDialog({ mode: 'reverify', providerId })}
-                        />
+                    {activeTab === 'access' ? (
+                        <>
+                            <GatewayProviderPanel
+                                busyProviderId={busyProviderId}
+                                errorMessage={providerError}
+                                isLoading={providerQuery.isLoading}
+                                language={lang}
+                                providers={providers}
+                                tokens={tokenQuery.data?.list ?? []}
+                                translate={translate}
+                                onRegister={() => setProviderDialog({ mode: 'register' })}
+                                onRemove={setPendingRemoveId}
+                                onRetry={() => void providerQuery.refetch()}
+                                onReverify={(providerId) => setProviderDialog({ mode: 'reverify', providerId })}
+                            />
+                            <GatewaySessionsPanel language={lang} providers={providers} translate={translate} />
+                        </>
                     ) : null}
                     {activeTab === 'keys' ? (
                         <GatewayTokenPanel
@@ -142,9 +145,12 @@ const Gateway = () => {
                             onRevoke={setPendingRevokeId}
                         />
                     ) : null}
-                    {activeTab === 'docs' ? <GatewayDocsPanel tokens={activeTokens} translate={translate} /> : null}
-                    {activeTab === 'sessions' ? <GatewaySessionsPanel language={lang} providers={providers} translate={translate} /> : null}
-                    {activeTab === 'api' ? <GatewayApiPanel translate={translate} /> : null}
+                    {activeTab === 'docs' ? (
+                        <>
+                            <GatewayDocsPanel tokens={activeTokens} translate={translate} />
+                            <GatewayApiPanel translate={translate} />
+                        </>
+                    ) : null}
                 </div>
             </section>
 

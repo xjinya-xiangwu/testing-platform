@@ -6,11 +6,13 @@ import {
     isGatewayEndpoint,
     isGatewayErrorCode,
     isGatewayHarness,
+    isGatewayIntegrationMethod,
     isGatewayProviderKind,
     isGatewayProtocol,
     validateGatewayProviderInput,
     type GatewayErrorCode,
     type GatewayHarness,
+    type GatewayIntegrationMethod,
     type GatewayProviderHealth,
     type IGatewayProviderInput,
     type GatewayProviderKind,
@@ -62,6 +64,7 @@ const parseGatewayProvider = (value: unknown): IGatewayProvider => {
         !isGatewayEndpoint(value.endpoint) ||
         !isGatewayProtocol(value.protocol) ||
         !isGatewayHarness(value.harness) ||
+        !isGatewayIntegrationMethod(value.method) ||
         !isNullableString(value.key_credential_id) ||
         !(PROVIDER_STATUSES as readonly string[]).includes(value.status as string) ||
         !(PROVIDER_HEALTH as readonly string[]).includes(value.health as string) ||
@@ -81,6 +84,7 @@ const parseGatewayProvider = (value: unknown): IGatewayProvider => {
         kind: value.kind,
         lastCheckedAt: value.last_checked_at,
         lastErrorCode: value.last_error_code,
+        method: value.method,
         metrics: parseGatewayMetrics(value.metrics),
         name: value.name,
         protocol: value.protocol,
@@ -134,6 +138,7 @@ const DEMO_GATEWAY_PROVIDERS: readonly IGatewayProvider[] = [
         kind: 'model',
         lastCheckedAt: '2026-08-05T16:20:00+08:00',
         lastErrorCode: null,
+        method: 'rest_api',
         metrics: { costCny: 1_286, tasks: 46, tokensTotal: 32_400_000, trajectories: 41_000 },
         name: 'GLM-5.2',
         protocol: 'openai_chat',
@@ -149,6 +154,7 @@ const DEMO_GATEWAY_PROVIDERS: readonly IGatewayProvider[] = [
         kind: 'model',
         lastCheckedAt: '2026-08-04T11:02:00+08:00',
         lastErrorCode: null,
+        method: 'rest_api',
         metrics: { costCny: 1_904, tasks: 31, tokensTotal: 21_800_000, trajectories: 28_000 },
         name: 'GPT-5.4',
         protocol: 'openai_responses',
@@ -164,6 +170,7 @@ const DEMO_GATEWAY_PROVIDERS: readonly IGatewayProvider[] = [
         kind: 'model',
         lastCheckedAt: '2026-08-03T09:44:00+08:00',
         lastErrorCode: null,
+        method: 'rest_api',
         metrics: { costCny: 2_417, tasks: 58, tokensTotal: 46_200_000, trajectories: 56_000 },
         name: 'Claude-Opus-4.7',
         protocol: 'anthropic_messages',
@@ -179,9 +186,10 @@ const DEMO_GATEWAY_PROVIDERS: readonly IGatewayProvider[] = [
         kind: 'agent',
         lastCheckedAt: null,
         lastErrorCode: null,
+        method: 'mcp',
         metrics: DEMO_ZERO_METRICS,
         name: 'RedBot-X',
-        protocol: 'openai_responses',
+        protocol: 'mcp',
         status: 'unverified',
         verifiedAt: null,
     },
@@ -274,7 +282,15 @@ const verifyDemoGatewayProvider = (providerId: string): IGatewayProviderRegistra
 
     const checkedAt = new Date().toISOString();
     const verification = runDemoVerification(
-        { endpoint: provider.endpoint, harness: provider.harness, keyCredentialId: provider.keyCredentialId, kind: provider.kind, name: provider.name, protocol: provider.protocol },
+        {
+            endpoint: provider.endpoint,
+            harness: provider.harness,
+            keyCredentialId: provider.keyCredentialId,
+            kind: provider.kind,
+            method: provider.method,
+            name: provider.name,
+            protocol: provider.protocol,
+        },
         checkedAt,
     );
     const state = deriveVerificationProviderState(verification);
@@ -309,8 +325,19 @@ export const getGatewayProviders = async (): Promise<IGatewayProviderRegistry> =
 export const registerGatewayProvider = async (input: IGatewayProviderInput): Promise<IGatewayProviderRegistration> => {
     validateGatewayProviderInput(input);
     if (IS_DEMO_MODE) return registerDemoGatewayProvider(input);
-    const response = await Http.post<{ endpoint: string; harness: GatewayHarness; key_credential_id: string | null; kind: GatewayProviderKind; name: string; protocol: GatewayProtocol }, unknown>(GATEWAY_PROVIDERS, {
-        data: { endpoint: input.endpoint.trim(), harness: input.harness, key_credential_id: input.keyCredentialId, kind: input.kind, name: input.name.trim(), protocol: input.protocol },
+    const response = await Http.post<
+        { endpoint: string; harness: GatewayHarness; key_credential_id: string | null; kind: GatewayProviderKind; method: GatewayIntegrationMethod; name: string; protocol: GatewayProtocol },
+        unknown
+    >(GATEWAY_PROVIDERS, {
+        data: {
+            endpoint: input.endpoint.trim(),
+            harness: input.harness,
+            key_credential_id: input.keyCredentialId,
+            kind: input.kind,
+            method: input.method,
+            name: input.name.trim(),
+            protocol: input.protocol,
+        },
         forbidMsg: true,
     });
     if (response.code !== 0) throw new Error('Gateway provider registration failed');

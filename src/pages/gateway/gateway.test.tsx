@@ -44,6 +44,7 @@ const PROVIDER = (overrides: Partial<IGatewayProvider> = {}): IGatewayProvider =
     kind: 'model',
     lastCheckedAt: '2026-08-05T16:20:00+08:00',
     lastErrorCode: null,
+    method: 'rest_api',
     metrics: { costCny: 1286, tasks: 46, tokensTotal: 32_400_000, trajectories: 41_000 },
     name: 'GLM-5.2',
     protocol: 'openai_chat',
@@ -54,6 +55,11 @@ const PROVIDER = (overrides: Partial<IGatewayProvider> = {}): IGatewayProvider =
 
 const VERIFIED_REGISTRATION: IGatewayProviderRegistration = {
     provider: PROVIDER({ id: 'ext-new', name: 'RedBot-X', kind: 'agent', endpoint: 'https://agent.example.com/mcp', protocol: 'openai_responses' }),
+    verification: { checkedAt: '2026-09-20T10:00:00Z', errorCode: null, failedStep: null, passed: true },
+};
+
+const MCP_REGISTRATION: IGatewayProviderRegistration = {
+    provider: PROVIDER({ id: 'ext-new', name: 'MCPBot', kind: 'agent', endpoint: 'https://agent.example.com/mcp', protocol: 'mcp', method: 'mcp' }),
     verification: { checkedAt: '2026-09-20T10:00:00Z', errorCode: null, failedStep: null, passed: true },
 };
 
@@ -95,7 +101,8 @@ describe('Gateway', () => {
                     name: 'RedBot-X',
                     kind: 'agent',
                     endpoint: 'https://agent.customer.lab/mcp',
-                    protocol: 'openai_responses',
+                    protocol: 'mcp',
+                    method: 'mcp',
                     status: 'unverified',
                     health: 'unknown',
                     keyCredentialId: null,
@@ -127,19 +134,24 @@ describe('Gateway', () => {
         });
     });
 
-    it('renders the provider registry as the default tab with health summary', async () => {
+    it('renders the merged access tab with the registry and session records', async () => {
         renderGateway();
 
         expect(await screen.findByRole('heading', { name: '接入网关' })).toBeInTheDocument();
-        expect(screen.getByRole('tab', { name: '模型 / Agent 注册表' })).toHaveAttribute('aria-selected', 'true');
-        expect(screen.getByRole('table', { name: '模型 / Agent 注册表' })).toBeInTheDocument();
-        expect(screen.getByText('GLM-5.2')).toBeInTheDocument();
-        expect(screen.getByText('RedBot-X')).toBeInTheDocument();
+        expect(screen.getByRole('tab', { name: '接入管理' })).toHaveAttribute('aria-selected', 'true');
+        const registry = screen.getByRole('table', { name: '模型 / Agent 注册表' });
+        expect(within(registry).getByText('GLM-5.2')).toBeInTheDocument();
+        expect(within(registry).getByText('RedBot-X')).toBeInTheDocument();
         expect(screen.getByText('健康 · 1')).toBeInTheDocument();
         expect(screen.getByText('未校验 · 1')).toBeInTheDocument();
+        expect(within(screen.getByRole('table', { name: '模型 / Agent 注册表' })).getAllByText('REST API')).toHaveLength(1);
+        expect(within(screen.getByRole('table', { name: '模型 / Agent 注册表' })).getAllByText('MCP')).toHaveLength(1);
+
+        const sessionTable = await screen.findByRole('table', { name: '接入 Agent 会话记录' });
+        expect(within(sessionTable).getByText('SES-20260805-21')).toBeInTheDocument();
     });
 
-    it('registers a provider and shows the embedded verification passing', async () => {
+    it('registers a REST provider with the rest-specific fields and verification labels', async () => {
         vi.mocked(registerGatewayProvider).mockResolvedValue(VERIFIED_REGISTRATION);
         renderGateway();
         const user = userEvent.setup();
@@ -147,6 +159,9 @@ describe('Gateway', () => {
 
         await user.click(screen.getByRole('button', { name: '注册模型 / Agent' }));
         const dialog = screen.getByRole('dialog', { name: '注册模型 / Agent' });
+        expect(within(dialog).getByLabelText('协议')).toBeInTheDocument();
+        expect(within(dialog).getByLabelText('Agent 框架')).toBeInTheDocument();
+        expect(within(dialog).getByLabelText('接入代码预览')).toHaveTextContent('curl -X POST');
         await user.type(within(dialog).getByLabelText('名称'), 'RedBot-X');
         await user.type(within(dialog).getByLabelText('Agent Endpoint'), 'https://agent.example.com/mcp');
         await user.selectOptions(within(dialog).getByLabelText('接入密钥'), 'cred_active');
@@ -157,14 +172,63 @@ describe('Gateway', () => {
             harness: 'codex',
             keyCredentialId: 'cred_active',
             kind: 'model',
+            method: 'rest_api',
             name: 'RedBot-X',
             protocol: 'openai_responses',
         });
         expect(await within(dialog).findByText(/校验通过 · RedBot-X 已写入注册表/)).toBeInTheDocument();
         expect(within(dialog).getAllByText('通过')).toHaveLength(5);
+        expect(within(dialog).getByText('协议握手（openai / anthropic 兼容）')).toBeInTheDocument();
 
         await user.click(within(dialog).getByRole('button', { name: '完成' }));
         expect(screen.queryByRole('dialog', { name: '注册模型 / Agent' })).not.toBeInTheDocument();
+    });
+
+    it('adapts the registration form for the MCP method with tool-discovery steps', async () => {
+        vi.mocked(registerGatewayProvider).mockResolvedValue(MCP_REGISTRATION);
+        renderGateway();
+        const user = userEvent.setup();
+        await screen.findByText('GLM-5.2');
+
+        await user.click(screen.getByRole('button', { name: '注册模型 / Agent' }));
+        const dialog = screen.getByRole('dialog', { name: '注册模型 / Agent' });
+        await user.selectOptions(within(dialog).getByLabelText('接入方式'), 'mcp');
+        expect(within(dialog).queryByLabelText('协议')).not.toBeInTheDocument();
+        expect(within(dialog).queryByLabelText('Agent 框架')).not.toBeInTheDocument();
+        expect(within(dialog).getByLabelText('MCP Server URL')).toBeInTheDocument();
+        expect(within(dialog).getByLabelText('接入代码预览')).toHaveTextContent('mcpServers');
+
+        await user.type(within(dialog).getByLabelText('名称'), 'MCPBot');
+        await user.type(within(dialog).getByLabelText('MCP Server URL'), 'https://agent.example.com/mcp');
+        await user.click(within(dialog).getByRole('button', { name: '注册并校验' }));
+
+        expect(registerGatewayProvider).toHaveBeenCalledWith({
+            endpoint: 'https://agent.example.com/mcp',
+            harness: 'codex',
+            keyCredentialId: 'cred_active',
+            kind: 'agent',
+            method: 'mcp',
+            name: 'MCPBot',
+            protocol: 'mcp',
+        });
+        expect(await within(dialog).findByText(/校验通过 · MCPBot 已写入注册表/)).toBeInTheDocument();
+        expect(within(dialog).getByText('MCP 握手与工具发现（list_tools）')).toBeInTheDocument();
+        expect(within(dialog).getByText('工具调用试跑（call_tool）')).toBeInTheDocument();
+    });
+
+    it('adapts the registration form for the CLI method without an endpoint', async () => {
+        vi.mocked(registerGatewayProvider).mockResolvedValue(MCP_REGISTRATION);
+        renderGateway();
+        const user = userEvent.setup();
+        await screen.findByText('GLM-5.2');
+
+        await user.click(screen.getByRole('button', { name: '注册模型 / Agent' }));
+        const dialog = screen.getByRole('dialog', { name: '注册模型 / Agent' });
+        await user.selectOptions(within(dialog).getByLabelText('接入方式'), 'cli');
+        expect(within(dialog).queryByLabelText('Agent Endpoint')).not.toBeInTheDocument();
+        expect(within(dialog).queryByLabelText('MCP Server URL')).not.toBeInTheDocument();
+        expect(within(dialog).getByLabelText('接入代码预览')).toHaveTextContent('air login --key');
+        expect(within(dialog).getByText('必填参数:接入密钥;CLI 通过出站连接网关,无需 Endpoint。')).toBeInTheDocument();
     });
 
     it('renders the categorized failure with a remediation hint when verification fails', async () => {
@@ -271,8 +335,7 @@ describe('Gateway', () => {
         const user = userEvent.setup();
         await screen.findByText('GLM-5.2');
 
-        await user.click(screen.getByRole('tab', { name: '会话管理' }));
-        const table = await screen.findByRole('table', { name: '接入 Agent 会话列表' });
+        const table = await screen.findByRole('table', { name: '接入 Agent 会话记录' });
         expect(within(table).getByText('SES-20260805-21')).toBeInTheDocument();
 
         await user.click(within(table).getByRole('button', { name: '详情' }));
@@ -283,7 +346,7 @@ describe('Gateway', () => {
         expect(dialog).toHaveTextContent('210 ms');
     });
 
-    it('generates integration snippets that reference the selected key prefix', async () => {
+    it('merges the integration docs and API center on one tab', async () => {
         renderGateway();
         const user = userEvent.setup();
         await screen.findByText('GLM-5.2');
@@ -292,13 +355,16 @@ describe('Gateway', () => {
         expect(await screen.findByText('选择密钥生成接入配置')).toBeInTheDocument();
         expect(screen.getByText(/下方配置以 sk-mock… 引用所选密钥「评测接入密钥」/)).toBeInTheDocument();
         expect(screen.getAllByText(/Bearer sk-mock…/).length).toBeGreaterThanOrEqual(2);
+        expect(screen.getByRole('heading', { name: '接入流程说明 · CYBERSEC RANGE Gateway' })).toBeInTheDocument();
+        expect(screen.getByText(/决策 VM 与工具执行 VM/)).toBeInTheDocument();
+        expect(screen.queryByRole('tab', { name: '接口中心' })).not.toBeInTheDocument();
     });
 
     it('defines the complete English gateway corpus', async () => {
         renderGateway(true);
 
         expect(await screen.findByRole('heading', { name: 'Access Gateway' })).toBeInTheDocument();
-        expect(screen.getByRole('tab', { name: 'Model / Agent Registry' })).toBeInTheDocument();
+        expect(screen.getByRole('tab', { name: 'Access Management' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Register model / Agent' })).toBeInTheDocument();
     });
 });
