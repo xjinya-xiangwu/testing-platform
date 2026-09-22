@@ -280,7 +280,9 @@
     overflow-x: auto;
 }
 
-table {
+/* Scoped to .tableWrap: a bare `table {}` here compiles to a global element
+ * selector in CSS Modules and leaks min-width/nowrap onto every table in the app. */
+.tableWrap table {
     width: 100%;
     min-width: 760px;
     border-collapse: collapse;
