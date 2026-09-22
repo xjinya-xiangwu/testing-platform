@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { InfoContext } from '@/provider/global-provider';
 import useTranslate from '@/hooks/useTranslate';
+import { useTheme } from '@/hooks/useTheme';
 import IconFont from '@/components/icon-font/icon-font';
 import type { IGetUserRes } from '@/components/login/login-service';
 import style from '@/components/app-layout/app-layout.module.less';
@@ -39,6 +40,7 @@ interface AppLayoutProps {
 
 const AppLayout = ({ user }: AppLayoutProps) => {
     const { loginOut, userInfo } = useContext(InfoContext);
+    const { theme, toggleTheme } = useTheme();
     const { pathname, search } = useLocation();
     const activeTaskType = new URLSearchParams(search).get('type') === 'range' ? 'range' : 'code';
     const translate = useTranslate();
@@ -83,9 +85,14 @@ const AppLayout = ({ user }: AppLayoutProps) => {
                         <span>{accountInitial}</span>
                         <div>
                             <b>{accountName}</b>
-                            <button type="button" onClick={loginOut}>
-                                {translate('loginout')}
-                            </button>
+                            <div className={style.accountActions}>
+                                <button type="button" onClick={toggleTheme} aria-label={translate(theme === 'dark' ? 'theme.switchLight' : 'theme.switchDark')} title={translate(theme === 'dark' ? 'theme.switchLight' : 'theme.switchDark')}>
+                                    {theme === 'dark' ? '☀' : '☾'}
+                                </button>
+                                <button type="button" onClick={loginOut}>
+                                    {translate('loginout')}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

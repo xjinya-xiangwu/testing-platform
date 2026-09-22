@@ -1,21 +1,21 @@
 .board {
-    --board-canvas: #06131e;
-    --board-panel: #0a1622;
-    --board-surface: #0a2030;
-    --board-border: #294d73;
-    --board-primary: #8ecbff;
-    --board-interactive: #77bcff;
-    --board-success: #65f5e3;
-    --board-warning: #ffd267;
-    --board-danger: #ff746c;
-    --board-text: #f4fbff;
-    --board-muted: #a9c2ce;
+    --board-canvas: var(--page);
+    --board-panel: var(--card);
+    --board-surface: var(--muted-bg);
+    --board-border: var(--border-strong);
+    --board-primary: var(--primary);
+    --board-interactive: var(--primary-strong);
+    --board-success: var(--success);
+    --board-warning: var(--warning);
+    --board-danger: var(--danger);
+    --board-text: var(--text-bright);
+    --board-muted: var(--text-muted);
 
     height: 100%;
     padding: 14px clamp(14px, 2vw, 28px) 18px;
     overflow-y: auto;
     color: var(--board-text);
-    background: radial-gradient(circle at 18% 0%, rgb(41 165 190 / 12%), transparent 34%), linear-gradient(180deg, #06131e, #02080e);
+    background: var(--page);
     font-family: 'PingFang SC', 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Microsoft YaHei', Arial, sans-serif;
     font-size: 13px;
     line-height: 1.4;
@@ -36,7 +36,7 @@
     justify-content: space-between;
     gap: 16px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgb(41 77 115 / 70%);
+    border-bottom: 1px solid var(--border);
 }
 
 .headerText {
@@ -91,7 +91,7 @@
     padding: 2px;
     border: 1px solid var(--board-border);
     border-radius: 6px;
-    background: rgb(10 32 48 / 42%);
+    background: var(--muted-bg);
 
     button {
         min-width: 54px;
@@ -107,13 +107,13 @@
         &:hover,
         &:focus-visible {
             color: var(--board-text);
-            background: rgb(142 203 255 / 12%);
+            background: var(--primary-soft);
         }
     }
 }
 
 .rangeActive {
-    color: #06131e !important;
+    color: var(--page) !important;
     background: var(--board-primary) !important;
     font-weight: 600;
 }
@@ -135,7 +135,7 @@
 }
 
 .primaryButton {
-    color: #06131e;
+    color: var(--page);
     background: var(--board-primary);
     border: 1px solid var(--board-primary);
 
@@ -148,13 +148,13 @@
 .secondaryButton,
 .rowAction {
     color: var(--board-primary);
-    background: rgb(142 203 255 / 10%);
-    border: 1px solid rgb(142 203 255 / 34%);
+    background: var(--primary-soft);
+    border: 1px solid var(--border-strong);
 
     &:hover,
     &:focus-visible {
         color: var(--board-text);
-        background: rgb(142 203 255 / 18%);
+        background: var(--primary-soft);
     }
 }
 
@@ -167,7 +167,7 @@
 .metricPanel {
     min-width: 0;
     padding: 10px 12px 11px;
-    background: linear-gradient(180deg, rgb(10 32 48 / 82%), rgb(6 19 30 / 92%));
+    background: linear-gradient(180deg, var(--muted-bg), var(--card));
     border: 1px solid var(--board-border);
     border-radius: 7px;
 
@@ -180,7 +180,7 @@
 
         h2 {
             margin: 0;
-            color: #eafaff;
+            color: var(--text-bright);
             font-size: 14px;
             line-height: 18px;
             font-weight: 700;
@@ -207,8 +207,8 @@
     min-width: 0;
     gap: 2px;
     padding: 8px 9px;
-    background: rgb(6 19 30 / 74%);
-    border: 1px solid rgb(41 77 115 / 62%);
+    background: var(--card-soft);
+    border: 1px solid var(--border);
     border-radius: 6px;
 
     span {
@@ -228,7 +228,7 @@
 
     small {
         overflow: hidden;
-        color: #8fa8b6;
+        color: var(--primary);
         font-size: 11px;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -259,7 +259,7 @@
 
         h2 {
             margin: 0;
-            color: #eafaff;
+            color: var(--text-bright);
             font-size: 15px;
             line-height: 20px;
             font-weight: 700;
@@ -290,7 +290,7 @@
     th,
     td {
         padding: 7px 8px;
-        border-bottom: 1px solid rgb(41 77 115 / 44%);
+        border-bottom: 1px solid var(--border);
         text-align: left;
         vertical-align: middle;
     }
@@ -306,12 +306,12 @@
         transition: background 120ms ease;
 
         &:hover {
-            background: rgb(142 203 255 / 7%);
+            background: var(--primary-soft);
         }
     }
 
     td {
-        color: #d7e9f2;
+        color: var(--text);
         font-size: 12px;
     }
 
@@ -329,7 +329,7 @@
         span {
             display: block;
             overflow: hidden;
-            color: #d7e9f2;
+            color: var(--text);
             text-overflow: ellipsis;
             white-space: nowrap;
         }
@@ -405,11 +405,11 @@ progress {
     appearance: none;
     border: 0;
     border-radius: 3px;
-    background: rgb(41 77 115 / 55%);
+    background: var(--border-strong);
     overflow: hidden;
 
     &::-webkit-progress-bar {
-        background: rgb(41 77 115 / 55%);
+        background: var(--border-strong);
     }
 
     &::-webkit-progress-value {
@@ -510,7 +510,7 @@ progress {
     align-items: center;
     gap: 9px;
     padding: 6px 0;
-    border-bottom: 1px solid rgb(41 77 115 / 36%);
+    border-bottom: 1px solid var(--border);
 
     &:last-child {
         border-bottom: 0;
@@ -523,7 +523,7 @@ progress {
         gap: 2px;
 
         strong {
-            color: #eafaff;
+            color: var(--text-bright);
             font-size: 13px;
             font-weight: 600;
         }

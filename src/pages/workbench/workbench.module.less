@@ -1,17 +1,17 @@
 .workbenchPage {
-    --wb-canvas: #01050a;
-    --wb-panel: #06131e;
-    --wb-surface: #0a2030;
-    --wb-border: rgb(89 190 222 / 32%);
+    --wb-canvas: var(--page);
+    --wb-panel: var(--page);
+    --wb-surface: var(--muted-bg);
+    --wb-border: var(--border-strong);
     --wb-border-soft: rgb(39 79 97 / 62%);
-    --wb-primary: #8ecbff;
-    --wb-accent: #6defff;
-    --wb-success: #65f5e3;
-    --wb-warning: #ffd267;
-    --wb-danger: #ff746c;
-    --wb-text: #f4fbff;
-    --wb-muted: #d7e9f2;
-    --wb-quiet: #8ba9b8;
+    --wb-primary: var(--primary);
+    --wb-accent: var(--primary);
+    --wb-success: var(--success);
+    --wb-warning: var(--warning);
+    --wb-danger: var(--danger);
+    --wb-text: var(--text-bright);
+    --wb-muted: var(--text);
+    --wb-quiet: var(--primary);
 
     width: calc(100% - 24px);
     // max-width: 1960px;
@@ -50,7 +50,7 @@
     min-height: 64px;
     padding: 12px 14px;
     margin-bottom: 14px;
-    background: linear-gradient(135deg, rgb(10 32 48 / 72%), rgb(6 19 30 / 96%) 50%, rgb(2 8 14 / 72%));
+    background: linear-gradient(135deg, var(--muted-bg), var(--card) 50%, var(--inset));
     border: 1px solid rgb(89 190 222 / 36%);
     box-shadow: inset 0 0 18px rgb(109 239 255 / 5%);
 }
@@ -135,7 +135,7 @@
     justify-content: center;
     padding: 6px 11px;
     color: var(--wb-primary);
-    background: rgb(3 14 24 / 76%);
+    background: var(--card);
     border: 1px solid var(--wb-border);
     text-decoration: none;
     cursor: pointer;
@@ -148,7 +148,7 @@
 
 .actions .dangerButton {
     color: var(--wb-danger);
-    border-color: rgb(255 116 108 / 58%);
+    border-color: var(--danger);
 }
 
 .primaryButton {
@@ -163,7 +163,7 @@
     padding: 12px 14px;
     margin: 0 0 14px;
     color: var(--wb-muted);
-    background: linear-gradient(90deg, rgb(10 32 48 / 78%), rgb(6 19 30 / 48%));
+    background: linear-gradient(90deg, var(--muted-bg), var(--card));
     border-left: 2px solid var(--wb-primary);
     font-size: 13px;
     line-height: 1.65;
@@ -172,7 +172,7 @@
 .attackChain,
 .panel {
     min-width: 0;
-    background: rgb(6 19 30 / 94%);
+    background: var(--card);
     border: 1px solid var(--wb-border);
 }
 
@@ -427,8 +427,8 @@
     margin-top: 12px;
     overflow: hidden;
     background:
-        radial-gradient(circle at 50% 42%, rgb(20 71 101 / 22%), transparent 48%), linear-gradient(rgb(109 239 255 / 3%) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(109 239 255 / 3%) 1px, transparent 1px), rgb(2 8 14 / 68%);
+        radial-gradient(circle at 50% 42%, rgb(20 71 101 / 22%), transparent 48%), linear-gradient(var(--primary-soft) 1px, transparent 1px),
+        linear-gradient(90deg, var(--primary-soft) 1px, transparent 1px), var(--inset);
     background-size:
         auto,
         28px 28px,
@@ -476,7 +476,7 @@
     right: 10px;
     display: inline-flex;
     overflow: hidden;
-    background: rgb(2 10 17 / 86%);
+    background: var(--inset);
     border: 1px solid var(--wb-border-soft);
 
     button {
@@ -507,14 +507,14 @@
 .topologyZone {
     > rect {
         fill: url('#workbench-zone-fill');
-        stroke: rgb(79 169 201 / 48%);
+        stroke: var(--primary);
         stroke-width: 1;
     }
 }
 
 .topologyZoneAccent {
     fill: none;
-    stroke: #59d8e7;
+    stroke: var(--primary);
     stroke-linecap: square;
     stroke-width: 2;
 }
@@ -525,27 +525,27 @@
 }
 
 .topologyZoneLabel {
-    fill: #f0fbff;
+    fill: var(--text-bright);
     font-size: 11px;
     font-weight: 600;
 }
 
 .topologyZoneSummary {
-    fill: #9ab6c5;
+    fill: var(--primary);
     font-family: var(--range-mono);
     font-size: 9.5px;
 }
 
 .topologyNetworkConnector {
     > rect {
-        fill: rgb(6 26 38 / 96%);
-        stroke: rgb(86 201 218 / 84%);
+        fill: var(--card);
+        stroke: var(--primary);
         stroke-width: 1;
     }
 }
 
 .topologyNetworkConnectorAccent {
-    stroke: #59d8e7;
+    stroke: var(--primary);
     stroke-linecap: square;
     stroke-width: 2;
 }
@@ -556,13 +556,13 @@
 }
 
 .topologyNetworkConnectorLabel {
-    fill: #eefaff;
+    fill: var(--text-bright);
     font-size: 9.5px;
     font-weight: 600;
 }
 
 .topologyNetworkConnectorCidr {
-    fill: #88aebf;
+    fill: var(--primary);
     font-family: var(--range-mono);
     font-size: 8px;
 }
@@ -570,7 +570,7 @@
 .topologyNetworkConnectorGlyph {
     > g {
         fill: none;
-        stroke: #79dbea;
+        stroke: var(--primary);
         stroke-linecap: round;
         stroke-linejoin: round;
         stroke-width: 1.35;
@@ -579,7 +579,7 @@
 
 .topologyEdges path {
     fill: none;
-    stroke: rgb(69 139 174 / 64%);
+    stroke: var(--primary);
     stroke-width: 1;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -589,7 +589,7 @@
 
 .topologyNetworkEdges path {
     fill: none;
-    stroke: rgb(87 205 224 / 82%);
+    stroke: var(--primary);
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 1.15;
@@ -602,11 +602,11 @@
 
 .topologyAttackPath {
     fill: none;
-    stroke: rgb(255 126 101 / 88%);
+    stroke: var(--warning);
     stroke-width: 1.55;
     stroke-linecap: round;
     stroke-linejoin: round;
-    filter: drop-shadow(0 0 3px rgb(255 102 85 / 52%));
+    filter: drop-shadow(0 0 3px var(--danger));
     vector-effect: non-scaling-stroke;
 }
 
@@ -622,11 +622,11 @@
 
 .topologyAttackArrow {
     pointer-events: none;
-    filter: drop-shadow(0 0 3px rgb(255 124 94 / 95%)) drop-shadow(0 0 8px rgb(255 86 70 / 40%));
+    filter: drop-shadow(0 0 3px var(--warning)) drop-shadow(0 0 8px rgb(255 86 70 / 40%));
 }
 
 .topologyAttackArrowSolid {
-    fill: #ff8a70;
+    fill: var(--warning);
     stroke: rgb(255 216 196 / 42%);
     stroke-width: 0.4;
 }
@@ -634,7 +634,7 @@
 .topologyAttackArrowMid,
 .topologyAttackArrowFront {
     fill: none;
-    stroke: rgb(255 150 118 / 96%);
+    stroke: var(--warning);
     stroke-width: 1.35;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -650,14 +650,14 @@
 
 .topologyNode {
     > rect {
-        fill: rgb(8 31 45 / 92%);
-        stroke: rgb(74 176 206 / 84%);
+        fill: var(--card);
+        stroke: var(--primary);
         stroke-width: 1;
     }
 }
 
 .topologyNodeAccent {
-    stroke: #54dfeb;
+    stroke: var(--primary);
     stroke-linecap: square;
     stroke-width: 2;
 }
@@ -668,7 +668,7 @@
 }
 
 .topologyNodeLabel {
-    fill: #f1f9ff;
+    fill: var(--text-bright);
     font-size: 11px;
     font-weight: 600;
 }
@@ -676,7 +676,7 @@
 .topologyGlyph {
     > g {
         fill: none;
-        stroke: #a6d8ff;
+        stroke: var(--primary);
         stroke-width: 1.35;
         stroke-linecap: round;
         stroke-linejoin: round;
@@ -686,29 +686,29 @@
 .topologyNodeCompromised {
     > rect {
         fill: rgb(57 27 27 / 78%);
-        stroke: rgb(255 145 105 / 72%);
+        stroke: var(--warning);
     }
 
     .topologyNodeAccent,
     .topologyGlyph > g {
-        stroke: #ff9f7c;
+        stroke: var(--warning);
     }
 
     .topologyNodeLabel {
-        fill: rgb(255 220 207 / 96%);
+        fill: var(--text-bright);
     }
 }
 
 .topologyNodeAttacking {
     > rect {
         fill: rgb(78 35 30 / 86%);
-        stroke: rgb(255 182 118 / 92%);
-        filter: drop-shadow(0 0 8px rgb(255 116 82 / 52%));
+        stroke: var(--warning);
+        filter: drop-shadow(0 0 8px var(--danger));
     }
 
     .topologyNodeAccent,
     .topologyGlyph > g {
-        stroke: #ff9465;
+        stroke: var(--warning);
     }
 
     animation: workbench-node-breach 780ms ease-in-out infinite alternate;
@@ -717,13 +717,13 @@
 .topologyNodeDetected {
     > rect {
         fill: rgb(87 24 29 / 92%);
-        stroke: rgb(255 85 85 / 96%);
-        filter: drop-shadow(0 0 9px rgb(255 74 74 / 72%));
+        stroke: var(--danger);
+        filter: drop-shadow(0 0 9px var(--danger));
     }
 
     .topologyNodeAccent,
     .topologyGlyph > g {
-        stroke: #ff6f6f;
+        stroke: var(--danger);
     }
 
     animation: workbench-node-detected 600ms ease-out both;
@@ -732,12 +732,12 @@
 .topologyNodeExternal {
     > rect {
         fill: rgb(48 17 23 / 90%);
-        stroke: rgb(255 91 91 / 72%);
+        stroke: var(--danger);
     }
 
     .topologyNodeAccent,
     .topologyGlyph > g {
-        stroke: rgb(255 104 104 / 96%);
+        stroke: var(--danger);
     }
 
     .topologyNodeLabel {
@@ -767,13 +767,13 @@
     }
 
     span:nth-child(2)::before {
-        background: rgb(255 148 101 / 75%);
-        border-color: rgb(255 182 118 / 90%);
+        background: var(--warning);
+        border-color: var(--warning);
     }
 
     span:nth-child(3)::before {
-        background: rgb(255 105 80 / 65%);
-        border-color: rgb(255 145 105 / 78%);
+        background: var(--danger);
+        border-color: var(--warning);
     }
 
     span:nth-child(4)::before {
@@ -843,8 +843,8 @@
     padding: 12px;
     margin: 0;
     overflow: auto;
-    color: #d8f3dc;
-    background: #01070b;
+    color: var(--text-bright);
+    background: var(--inset);
     font-family: var(--range-mono);
     font-size: 12px;
     line-height: 1.6;
@@ -990,12 +990,12 @@
     &[data-status='pass'],
     &[data-status='passed'],
     &[data-status='verified'] {
-        border-color: rgb(101 245 227 / 48%);
+        border-color: var(--success);
     }
 
     &[data-status='fail'],
     &[data-status='failed'] {
-        border-color: rgb(255 116 108 / 58%);
+        border-color: var(--danger);
     }
 
     &[data-status='partial'] {
@@ -1003,7 +1003,7 @@
     }
 
     &[data-status='running'] {
-        border-color: rgb(142 203 255 / 58%);
+        border-color: var(--primary);
     }
 }
 
@@ -1015,7 +1015,7 @@
     justify-content: center;
     padding: 4px 9px;
     color: var(--wb-primary);
-    border: 1px solid rgb(142 203 255 / 48%);
+    border: 1px solid var(--primary);
     font-size: 12px;
     line-height: 1;
     white-space: nowrap;
@@ -1024,7 +1024,7 @@
 [data-level='critical'] .riskLevel,
 [data-level='high'] .riskLevel {
     color: var(--wb-danger);
-    border-color: rgb(255 116 108 / 58%);
+    border-color: var(--danger);
 }
 
 [data-level='medium'] .riskLevel {
@@ -1086,7 +1086,7 @@
 .feedback {
     min-height: 60vh;
     display: grid;
-    color: #a9c2ce;
+    color: var(--text-muted);
     place-items: center;
     text-align: center;
 }
@@ -1097,8 +1097,8 @@
     button {
         min-height: 38px;
         padding: 7px 12px;
-        color: #01050a;
-        background: #8ecbff;
+        color: var(--page);
+        background: var(--primary);
         border: 0;
     }
 }

@@ -45,15 +45,15 @@
 .gatewayCard {
     min-width: 0;
     padding: 16px;
-    background: rgb(4 16 25 / 94%);
-    border: 1px solid rgb(89 190 222 / 30%);
-    box-shadow: inset 0 1px rgb(255 255 255 / 2%);
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
 }
 .qbTabs {
     display: flex;
     overflow-x: auto;
     padding: 4px;
-    background: #020d14;
+    background: var(--inset);
     border: 1px solid rgb(89 190 222 / 26%);
     scrollbar-width: thin;
 
@@ -62,7 +62,7 @@
         min-height: 32px;
         flex: 1 1 0;
         padding: 0 14px;
-        color: #94a8b3;
+        color: var(--text-faint);
         background: transparent;
         border: 0;
         font-family: inherit;
@@ -71,14 +71,14 @@
 
         &:hover,
         &:focus-visible {
-            color: #d5e7ef;
-            background: #0b1d29;
+            color: var(--text);
+            background: var(--muted-bg);
         }
     }
 
     .activeTab {
-        color: #8dc7ed;
-        background: #102433;
+        color: var(--primary);
+        background: var(--primary-soft);
     }
 }
 .tabPanel {
@@ -283,7 +283,7 @@
 .qbPrimaryButton {
     min-height: 34px;
     padding: 6px 14px;
-    color: #04121c;
+    color: var(--on-primary);
     background: var(--range-primary);
     border: 1px solid var(--range-primary);
     cursor: pointer;
@@ -539,12 +539,12 @@
     border: 1px solid color-mix(in srgb, var(--range-warning) 70%, transparent);
 }
 .qbTone-danger {
-    color: #ff7a7a;
-    border: 1px solid rgb(255 122 122 / 60%);
+    color: var(--danger);
+    border: 1px solid var(--warning);
 }
 .qbTone-accent {
-    color: #8dc7ed;
-    border: 1px solid rgb(141 199 237 / 60%);
+    color: var(--primary);
+    border: 1px solid var(--primary);
 }
 .qbProgressTrack {
     display: block;
@@ -611,14 +611,14 @@
 }
 .qbDangerLine {
     margin: 8px 0 0;
-    color: #ff9a9a;
+    color: var(--danger);
     font-size: 11px;
 }
 .qbDangerInline {
-    color: #ff9a9a;
+    color: var(--danger);
 }
 .qbSuggestion {
-    color: #8dc7ed;
+    color: var(--primary);
     font-size: 10px;
 }
 .qbBackdrop {
@@ -627,7 +627,7 @@
     inset: 0;
     display: grid;
     padding: 16px;
-    background: rgb(1 5 10 / 78%);
+    background: var(--card);
     place-items: center;
 }
 .qbDialog,
@@ -762,7 +762,7 @@
 
     > div {
         padding: 8px 10px;
-        background: #041520;
+        background: var(--inset);
         border: 1px solid color-mix(in srgb, var(--range-primary) 35%, var(--range-border));
 
         span {
@@ -773,7 +773,7 @@
         }
 
         code {
-            color: #8dc7ed;
+            color: var(--primary);
             font-family: var(--range-mono);
             font-size: 10px;
             word-break: break-all;
@@ -864,13 +864,13 @@ select {
     font-size: 10px;
 }
 .qbStageDone {
-    color: #04121c;
+    color: var(--on-primary);
     background: var(--range-primary);
 }
 .qbStageActive {
-    color: #8dc7ed;
+    color: var(--primary);
     background: transparent;
-    border: 1px solid #8dc7ed;
+    border: 1px solid var(--primary);
     animation: qb-pulse 1.1s ease-in-out infinite;
 }
 .qbStageTodo {

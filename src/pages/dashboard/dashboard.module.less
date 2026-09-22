@@ -2,20 +2,20 @@
     --dash-font-sans: 'PingFang SC', 'Hiragino Sans GB', 'Heiti SC', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Microsoft YaHei', 'SimHei', Arial, sans-serif;
     --dash-font-number: 'DIN Alternate', Bahnschrift, 'Helvetica Neue', 'Arial Narrow', var(--dash-font-sans);
     --range-mono: var(--dash-font-number);
-    --dash-canvas: #01050a;
-    --dash-panel: #06131e;
-    --dash-surface: #0a2030;
-    --dash-border: #5f9fdf;
-    --dash-border-soft: #294d73;
-    --dash-primary: #8ecbff;
-    --dash-interactive: #77bcff;
-    --dash-accent: #72b7ff;
-    --dash-success: #65f5e3;
-    --dash-warning: #ffd267;
-    --dash-danger: #ff746c;
-    --dash-text: #f4fbff;
-    --dash-muted: #d7e9f2;
-    --dash-quiet: #a9c2ce;
+    --dash-canvas: var(--page);
+    --dash-panel: var(--page);
+    --dash-surface: var(--muted-bg);
+    --dash-border: var(--primary-strong);
+    --dash-border-soft: var(--border-strong);
+    --dash-primary: var(--primary);
+    --dash-interactive: var(--primary-strong);
+    --dash-accent: var(--primary);
+    --dash-success: var(--success);
+    --dash-warning: var(--warning);
+    --dash-danger: var(--danger);
+    --dash-text: var(--text-bright);
+    --dash-muted: var(--text);
+    --dash-quiet: var(--text-muted);
 
     width: 100%;
     height: 100%;
@@ -38,7 +38,7 @@
     flex: 0 0 auto;
     overflow: hidden;
     isolation: isolate;
-    background: radial-gradient(circle at 52% 38%, rgb(41 165 190 / 20%), transparent 34%), linear-gradient(180deg, #06131e, #02080e);
+    background: radial-gradient(circle at 52% 38%, rgb(41 165 190 / 20%), transparent 34%), linear-gradient(180deg, var(--page), var(--page));
     container-type: size;
     transform: scale(var(--dashboard-fit-scale, 1));
     transform-origin: center center;
@@ -68,7 +68,7 @@
     object-fit: cover;
     object-position: center 50%;
     filter: brightness(0.88) contrast(1.04) saturate(0.93);
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 91%, transparent), linear-gradient(180deg, transparent, #000 9%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, var(--inset) 8%, var(--inset) 91%, transparent), linear-gradient(180deg, transparent, var(--inset) 9%, var(--inset) 88%, transparent);
     mask-composite: intersect;
     transform: scale(0.925) translate3d(-86px, 0, 0);
 }
@@ -78,8 +78,8 @@
     z-index: 1;
     inset: 0;
     background:
-        linear-gradient(90deg, rgb(1 8 14 / 72%), rgb(1 8 14 / 20%) 20%, rgb(1 8 14 / 2%) 50%, rgb(1 8 14 / 23%) 79%, rgb(1 8 14 / 74%)),
-        linear-gradient(180deg, rgb(1 8 14 / 52%), rgb(1 8 14 / 3%) 18%, rgb(1 8 14 / 2%) 70%, rgb(1 8 14 / 58%)), radial-gradient(circle at 51% 42%, transparent 50%, rgb(1 7 12 / 50%));
+        linear-gradient(90deg, var(--inset), rgb(1 8 14 / 20%) 20%, var(--primary-soft) 50%, rgb(1 8 14 / 23%) 79%, var(--inset)),
+        linear-gradient(180deg, var(--inset), rgb(1 8 14 / 3%) 18%, var(--primary-soft) 70%, var(--inset)), radial-gradient(circle at 51% 42%, transparent 50%, var(--inset));
     pointer-events: none;
 }
 
@@ -87,9 +87,9 @@
     position: absolute;
     z-index: 2;
     inset: 0;
-    background-image: linear-gradient(rgb(77 219 244 / 6%) 1px, transparent 1px), linear-gradient(90deg, rgb(77 219 244 / 6%) 1px, transparent 1px);
+    background-image: linear-gradient(var(--primary-soft) 1px, transparent 1px), linear-gradient(90deg, var(--primary-soft) 1px, transparent 1px);
     background-size: 32px 32px;
-    mask-image: radial-gradient(circle at center, #000, transparent 73%);
+    mask-image: radial-gradient(circle at center, var(--inset), transparent 73%);
     opacity: 0.15;
     pointer-events: none;
 }
@@ -103,8 +103,8 @@
     height: 72px;
     padding: 12px 0 0 57px;
     overflow: hidden;
-    background: linear-gradient(135deg, rgb(10 32 48 / 82%), rgb(6 19 30 / 94%) 50%, rgb(2 8 14 / 72%));
-    border: 1px solid rgb(89 190 222 / 58%);
+    background: linear-gradient(135deg, var(--muted-bg), var(--card) 50%, var(--inset));
+    border: 1px solid var(--primary);
     box-shadow:
         0 0 20px rgb(119 188 255 / 16%),
         inset 0 0 18px rgb(109 239 255 / 10%);
@@ -122,7 +122,7 @@
 
     p {
         margin: 2px 0 0;
-        color: rgb(216 245 255 / 88%);
+        color: var(--text-bright);
         font-size: 13px;
         white-space: nowrap;
     }
@@ -134,8 +134,8 @@
     left: 16px;
     width: 78px;
     height: 80px;
-    border-top: 1px solid rgb(142 203 255 / 50%);
-    border-left: 1px solid rgb(142 203 255 / 70%);
+    border-top: 1px solid var(--primary);
+    border-left: 1px solid var(--primary);
     opacity: 0.85;
     transform: skewX(-42deg);
 }
@@ -153,8 +153,8 @@
     align-items: center;
     gap: 4px 10px;
     padding: 5px 10px;
-    color: rgb(213 238 247 / 74%);
-    background: linear-gradient(135deg, rgb(7 25 38 / 68%), rgb(9 32 49 / 86%), rgb(7 25 38 / 56%));
+    color: var(--text-bright);
+    background: linear-gradient(135deg, var(--card), var(--card), var(--card));
     border: 1px solid rgb(83 199 234 / 24%);
     font-size: 12px;
 
@@ -206,18 +206,18 @@
         justify-self: end;
         gap: 8px;
         padding-left: 12px;
-        border-left: 1px solid rgb(118 164 189 / 42%);
+        border-left: 1px solid var(--text-muted);
         font-family: var(--range-mono);
 
         strong {
-            color: #f3fbff;
+            color: var(--text-bright);
             font-size: 17px;
             line-height: 20px;
             font-weight: 800;
         }
 
         small {
-            color: rgb(181 203 215 / 72%);
+            color: var(--text-muted);
             font-size: 12px;
         }
     }
@@ -233,7 +233,7 @@
         place-items: center;
         border: 1px solid currentcolor;
         border-radius: 50%;
-        box-shadow: 0 0 12px rgb(101 245 227 / 38%);
+        box-shadow: 0 0 12px var(--success);
         content: '✓';
         font-size: 10px;
     }
@@ -248,11 +248,11 @@
     display: flex;
     align-items: center;
     gap: 0.63cqw;
-    color: #e6f5ff;
+    color: var(--text-bright);
 
     > span + span {
         padding-left: 0.63cqw;
-        border-left: 1px solid rgb(118 164 189 / 42%);
+        border-left: 1px solid var(--text-muted);
     }
 
     time {
@@ -269,7 +269,7 @@
 
     small {
         margin-top: 0.28cqh;
-        color: rgb(181 203 215 / 72%);
+        color: var(--text-muted);
         font-size: 0.52cqw;
     }
 }
@@ -284,7 +284,7 @@
 
 .moon {
     border-radius: 50%;
-    box-shadow: inset -0.26cqw -1px 0 #d6e9ff;
+    box-shadow: inset -0.26cqw -1px 0 var(--text-bright);
 }
 
 .weather::before {
@@ -293,9 +293,9 @@
     left: 0.05cqw;
     width: 0.47cqw;
     height: 0.47cqw;
-    background: #ffc55f;
+    background: var(--warning);
     border-radius: 50%;
-    box-shadow: 0 0 0.52cqw #ffc55f;
+    box-shadow: 0 0 0.52cqw var(--warning);
     content: '';
 }
 
@@ -305,7 +305,7 @@
     bottom: 0.1cqw;
     width: 0.73cqw;
     height: 0.42cqw;
-    background: #d9f4ff;
+    background: var(--text-bright);
     border-radius: 0.52cqw;
     content: '';
 }
@@ -327,8 +327,8 @@
     position: relative;
     overflow: hidden;
     color: var(--dash-text);
-    background: linear-gradient(180deg, rgb(7 25 43 / 84%), rgb(3 12 24 / 78%)), radial-gradient(circle at 7% 0%, rgb(87 154 224 / 12%), transparent 42%);
-    border: 1px solid rgb(95 159 223 / 50%);
+    background: linear-gradient(180deg, var(--card), var(--inset)), radial-gradient(circle at 7% 0%, rgb(87 154 224 / 12%), transparent 42%);
+    border: 1px solid var(--primary);
     box-shadow:
         inset 0 0 0 1px rgb(215 244 255 / 4%),
         inset 0 0 18px rgb(58 116 181 / 13%),
@@ -340,8 +340,8 @@
         z-index: 2;
         inset: 0;
         background:
-            linear-gradient(90deg, rgb(166 216 255 / 82%) 0 12px, transparent 12px calc(100% - 12px), rgb(166 216 255 / 82%) calc(100% - 12px)) left top / 100% 1px no-repeat,
-            linear-gradient(90deg, rgb(166 216 255 / 70%) 0 12px, transparent 12px calc(100% - 12px), rgb(166 216 255 / 70%) calc(100% - 12px)) left bottom / 100% 1px no-repeat;
+            linear-gradient(90deg, var(--primary) 0 12px, transparent 12px calc(100% - 12px), var(--primary) calc(100% - 12px)) left top / 100% 1px no-repeat,
+            linear-gradient(90deg, var(--primary) 0 12px, transparent 12px calc(100% - 12px), var(--primary) calc(100% - 12px)) left bottom / 100% 1px no-repeat;
         content: '';
         opacity: 0.6;
         pointer-events: none;
@@ -361,7 +361,7 @@
         display: grid;
         place-items: center;
         color: var(--dash-accent);
-        background: linear-gradient(180deg, rgb(17 43 62 / 82%), rgb(6 23 36 / 86%));
+        background: linear-gradient(180deg, rgb(17 43 62 / 82%), var(--card));
         border: 1px solid rgb(105 165 215 / 43%);
         border-radius: 5px;
         box-shadow: 0 0 10px rgb(85 165 255 / 18%);
@@ -372,7 +372,7 @@
     > span {
         display: block;
         overflow: hidden;
-        color: rgb(176 209 222 / 86%);
+        color: var(--primary);
         font-size: 12px;
         line-height: 15px;
         font-weight: 700;
@@ -382,7 +382,7 @@
 
     strong {
         display: block;
-        color: #f5fbff;
+        color: var(--text-bright);
         font-family: var(--range-mono);
         font-size: 25px;
         line-height: 25px;
@@ -495,7 +495,7 @@
         min-width: 0;
         margin: 0;
         overflow: hidden;
-        color: #eafaff;
+        color: var(--text-bright);
         font-size: 14px;
         line-height: 20px;
         font-weight: 750;
@@ -516,7 +516,7 @@
 
     span {
         overflow: hidden;
-        color: rgb(194 224 237 / 72%);
+        color: var(--text-bright);
         font-size: 11px;
         font-weight: 600;
         text-overflow: ellipsis;
@@ -538,7 +538,7 @@
 
     dt {
         overflow: hidden;
-        color: rgb(184 216 227 / 74%);
+        color: var(--text-bright);
         text-overflow: ellipsis;
         white-space: nowrap;
     }
@@ -632,7 +632,7 @@
 }
 
 .baselineLegend::before {
-    background: #e28a54;
+    background: var(--warning);
 }
 
 .trainingRun {
@@ -641,7 +641,7 @@
     gap: 0.42cqw;
     align-items: center;
     padding-bottom: 0.56cqh;
-    border-bottom: 1px solid rgb(89 190 222 / 22%);
+    border-bottom: 1px solid var(--border);
     font-family: var(--range-mono);
     font-size: 0.57cqw;
 
@@ -701,8 +701,8 @@
     > div {
         min-width: 0;
         padding: 0.56cqh 0.42cqw;
-        background: rgb(8 30 45 / 68%);
-        border: 1px solid rgb(89 190 222 / 18%);
+        background: var(--card);
+        border: 1px solid var(--border);
     }
 
     dt,
@@ -733,7 +733,7 @@
     > div {
         min-width: 0;
         padding: 0.46cqh 0.31cqw;
-        background: rgb(5 22 34 / 70%);
+        background: var(--card);
         border-left: 1px solid var(--dash-border-soft);
     }
 
@@ -809,7 +809,7 @@
     display: flex;
     gap: 8px;
     align-items: center;
-    color: rgb(215 233 242 / 84%);
+    color: var(--text-bright);
     font-size: 12px;
 
     strong {
@@ -864,7 +864,7 @@
         min-height: 2.96cqh;
         padding: 0 0.63cqw;
         color: var(--dash-text);
-        background: rgb(10 32 48 / 82%);
+        background: var(--muted-bg);
         border: 1px solid var(--dash-primary);
         cursor: pointer;
     }
@@ -881,9 +881,9 @@
     align-content: center;
     gap: 8px;
     padding-left: 18px;
-    color: rgb(230 247 252 / 86%);
-    background: rgb(4 19 30 / 72%);
-    border: 1px solid rgb(85 188 225 / 45%);
+    color: var(--text-bright);
+    background: var(--card);
+    border: 1px solid var(--primary);
     box-shadow: inset 0 0 15px rgb(64 187 223 / 12%);
     font-size: 12px;
 
@@ -902,13 +902,13 @@
 }
 
 .topologyLegendNormal {
-    border-top: 2px dashed #8fcaff;
-    box-shadow: 0 0 7px rgb(139 195 255 / 55%);
+    border-top: 2px dashed var(--primary);
+    box-shadow: 0 0 7px var(--primary);
 }
 
 .topologyLegendAttackPath {
-    border-top: 2px dashed #ff7668;
-    box-shadow: 0 0 7px rgb(255 91 76 / 48%);
+    border-top: 2px dashed var(--danger);
+    box-shadow: 0 0 7px var(--danger);
 }
 
 .topologyLegendHit {
@@ -917,7 +917,7 @@
     flex: 0 0 20px;
     margin-right: 11px;
     background: rgb(255 120 82 / 18%);
-    border: 1px solid rgb(255 144 96 / 78%);
+    border: 1px solid var(--warning);
     border-radius: 5px;
     box-shadow: 0 0 8px rgb(255 111 84 / 25%);
 }
@@ -927,8 +927,8 @@
     height: 20px;
     flex: 0 0 20px;
     margin-right: 11px;
-    color: #8fcaff;
-    filter: drop-shadow(0 0 4px rgb(91 177 255 / 58%));
+    color: var(--primary);
+    filter: drop-shadow(0 0 4px var(--primary));
 }
 
 .topologyConsoleLink {
@@ -941,7 +941,7 @@
     align-items: center;
     padding: 0 12px;
     color: var(--dash-primary);
-    background: rgb(3 14 24 / 78%);
+    background: var(--card);
     border: 1px solid rgb(89 190 222 / 42%);
     font-size: 12px;
     font-weight: 600;
@@ -963,8 +963,8 @@
     align-items: center;
     gap: 0.42cqw;
     padding: 0.37cqh 0.52cqw;
-    background: rgb(3 14 24 / 76%);
-    border: 1px solid rgb(89 190 222 / 32%);
+    background: var(--card);
+    border: 1px solid var(--border-strong);
     transform: translateX(-50%);
 
     button {
@@ -972,7 +972,7 @@
         height: 2.41cqh;
         padding: 0 0.42cqw;
         color: var(--dash-muted);
-        background: rgb(10 32 48 / 74%);
+        background: var(--card);
         border: 1px solid var(--dash-border-soft);
         font-size: 0.52cqw;
         cursor: pointer;
@@ -1128,7 +1128,7 @@
     height: 4.63cqh;
     padding: 0.37cqh 0.21cqw;
     margin-top: 0.46cqh;
-    background: rgb(4 18 30 / 58%);
+    background: var(--card);
     border: 1px solid var(--dash-border-soft);
 
     svg {
@@ -1148,8 +1148,8 @@
     display: flex;
     align-items: center;
     overflow: hidden;
-    background: rgb(3 14 24 / 88%);
-    border: 1px solid rgb(89 190 222 / 32%);
+    background: var(--card);
+    border: 1px solid var(--border-strong);
     white-space: nowrap;
 
     > strong {
@@ -1205,7 +1205,7 @@
 }
 
 .topologyNode {
-    fill: rgb(6 19 30 / 92%);
+    fill: var(--card);
     stroke: var(--dash-border);
 }
 
@@ -1278,7 +1278,7 @@
     gap: 12px;
     padding: 0 14px;
     color: var(--dash-quiet);
-    background: rgb(4 18 30 / 78%);
+    background: var(--card);
     border: 1px solid var(--dash-border-soft);
     font-size: 12px;
 
@@ -1308,7 +1308,7 @@
         align-items: center;
         gap: 8px;
         padding: 12px 8px;
-        background: linear-gradient(180deg, rgb(12 48 70 / 78%), rgb(4 18 30 / 82%));
+        background: linear-gradient(180deg, rgb(12 48 70 / 78%), var(--card));
         border: 1px solid rgb(95 159 223 / 42%);
     }
 
@@ -1317,7 +1317,7 @@
         height: 30px;
         display: grid;
         place-items: center;
-        color: #05121c;
+        color: var(--card);
         background: var(--dash-primary);
         font-family: var(--range-mono);
         font-size: 11px;
@@ -1355,8 +1355,8 @@
 .flowSnapshot {
     align-self: center;
     padding: 18px;
-    background: linear-gradient(135deg, rgb(7 31 47 / 92%), rgb(3 14 24 / 88%));
-    border: 1px solid rgb(95 159 223 / 52%);
+    background: linear-gradient(135deg, var(--card), var(--card));
+    border: 1px solid var(--primary);
     box-shadow: 0 0 34px rgb(48 145 205 / 14%);
 
     header {
@@ -1382,7 +1382,7 @@
     header > span {
         padding: 5px 10px;
         color: var(--dash-success);
-        border: 1px solid rgb(101 245 227 / 45%);
+        border: 1px solid var(--success);
         font-size: 11px;
     }
     dl {
@@ -1438,7 +1438,7 @@
     align-items: center;
     padding: 0 16px;
     color: var(--dash-primary);
-    background: rgb(7 31 47 / 88%);
+    background: var(--card);
     border: 1px solid var(--dash-border);
     font-size: 12px;
     text-decoration: none;
@@ -1476,8 +1476,8 @@
 }
 .benchmarkReadinessList li {
     padding: 11px;
-    background: rgb(4 18 30 / 70%);
-    border: 1px solid rgb(89 190 222 / 28%);
+    background: var(--card);
+    border: 1px solid var(--border-strong);
 }
 .benchmarkReadinessList header {
     display: flex;
@@ -1495,7 +1495,7 @@
 }
 .readyStatus {
     color: var(--dash-success);
-    border: 1px solid rgb(101 245 227 / 38%);
+    border: 1px solid var(--success);
 }
 .verifyStatus {
     color: var(--dash-warning);
@@ -1529,7 +1529,7 @@
     font-size: 10px;
 }
 .benchmarkReadinessList small {
-    color: rgb(210 232 240 / 72%);
+    color: var(--text);
     font-size: 9px;
 }
 
@@ -1540,7 +1540,7 @@
 }
 .governancePanel section {
     padding: 13px;
-    background: rgb(4 18 30 / 62%);
+    background: var(--card);
     border: 1px solid rgb(84 176 212 / 22%);
 }
 .governancePanel h3 {
@@ -1562,7 +1562,7 @@
     gap: 6px;
     align-items: center;
     padding: 8px;
-    background: rgb(10 38 57 / 48%);
+    background: var(--muted-bg);
     font-size: 10px;
 }
 .subjectList strong {
@@ -1585,7 +1585,7 @@
 .guardrailList li {
     display: flex;
     gap: 8px;
-    color: rgb(224 242 248 / 84%);
+    color: var(--text-bright);
     font-size: 11px;
 }
 .guardrailList span {
@@ -1600,7 +1600,7 @@
 .deliveryStats > div {
     padding: 10px 5px;
     text-align: center;
-    background: rgb(10 38 57 / 48%);
+    background: var(--muted-bg);
 }
 .deliveryStats dt {
     color: var(--dash-quiet);

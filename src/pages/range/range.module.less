@@ -4,7 +4,7 @@
     min-width: 0;
     padding: 24px clamp(14px, 2vw, 22px) 44px;
     margin: 0 auto;
-    background: #01050a;
+    background: var(--page);
 }
 
 .backLink {
@@ -12,7 +12,7 @@
     min-height: 32px;
     align-items: center;
     margin: 0 0 14px 2px;
-    color: #77bcff;
+    color: var(--primary-strong);
     font-size: 13px;
     text-decoration: none;
 
@@ -23,7 +23,7 @@
 
     &:hover,
     &:focus-visible {
-        color: #a6d8ff;
+        color: var(--primary);
     }
 }
 
@@ -35,11 +35,11 @@
     gap: 24px;
     padding: 4px 2px 18px;
     margin-bottom: 22px;
-    border-bottom: 1px solid rgb(89 190 222 / 24%);
+    border-bottom: 1px solid var(--border);
 
     h1 {
         margin: 7px 0;
-        color: #f4fbff;
+        color: var(--text-bright);
         font-size: 26px;
         font-weight: 600;
         letter-spacing: 0.015em;
@@ -49,13 +49,13 @@
     p {
         max-width: 960px;
         margin: 0;
-        color: #d7e9f2;
+        color: var(--text);
         font-size: 14px;
         line-height: 1.7;
     }
 
     > div > span:first-child {
-        color: #8ecbff;
+        color: var(--primary);
         font-family: var(--range-mono);
         font-size: 12px;
         letter-spacing: 0.14em;
@@ -76,11 +76,11 @@
     justify-content: center;
     gap: 7px;
     padding: 0 14px;
-    color: #01050a;
-    background: #8ecbff;
-    border: 1px solid #8ecbff;
+    color: var(--page);
+    background: var(--primary);
+    border: 1px solid var(--primary);
     border-radius: 2px;
-    box-shadow: 0 0 22px rgb(142 203 255 / 12%);
+    box-shadow: 0 0 22px var(--primary-soft);
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
@@ -94,15 +94,15 @@
 
     &:hover,
     &:focus-visible {
-        background: #a6d8ff;
-        border-color: #a6d8ff;
+        background: var(--primary);
+        border-color: var(--primary);
         transform: translateY(-1px);
     }
 
     &:disabled {
-        color: #718692;
-        background: #16232b;
-        border-color: #31434d;
+        color: var(--primary);
+        background: var(--card);
+        border-color: var(--text-muted);
         box-shadow: none;
         cursor: not-allowed;
         opacity: 0.72;
@@ -111,16 +111,16 @@
 }
 
 .secondaryButton {
-    color: #f4fbff;
-    background: rgb(10 32 48 / 78%);
-    border-color: rgb(89 190 222 / 48%);
+    color: var(--text-bright);
+    background: var(--muted-bg);
+    border-color: var(--border-strong);
     box-shadow: none;
     font-weight: 400;
 
     &:hover,
     &:focus-visible {
-        background: #062131;
-        border-color: #77bcff;
+        background: var(--card);
+        border-color: var(--primary-strong);
     }
 }
 
@@ -139,13 +139,13 @@
     min-height: 290px;
     flex-direction: column;
     overflow: hidden;
-    background: rgb(6 19 30 / 86%);
-    border: 1px solid rgb(89 190 222 / 24%);
+    background: var(--card);
+    border: 1px solid var(--border);
     box-shadow: 0 14px 38px rgb(0 0 0 / 10%);
 
     h2 {
         margin: 0;
-        color: #f4fbff;
+        color: var(--text-bright);
         font-size: 17px;
         font-weight: 600;
     }
@@ -153,7 +153,7 @@
     p {
         min-height: 63px;
         margin: 9px 0 16px;
-        color: #d7e9f2;
+        color: var(--text);
         font-size: 13px;
         line-height: 1.6;
     }
@@ -193,7 +193,7 @@
 .environmentId {
     min-width: 0;
     overflow: hidden;
-    color: #8ecbff;
+    color: var(--primary);
     font-family: var(--range-mono);
     font-size: 12px;
     text-overflow: ellipsis;
@@ -217,9 +217,9 @@
     align-items: center;
     justify-content: center;
     padding: 3px 8px;
-    color: #d7e9f2;
+    color: var(--text);
     background: transparent;
-    border: 1px solid #274f61;
+    border: 1px solid var(--border-strong);
     font-size: 12px;
     line-height: 1;
     white-space: nowrap;
@@ -227,24 +227,24 @@
 
 .industryBadge {
     padding-inline: 2px;
-    color: #a9c2ce;
+    color: var(--text-muted);
     border-color: transparent;
 }
 
 .typeBadge {
-    color: #8ecbff;
-    background: rgb(142 203 255 / 8%);
-    border-color: rgb(142 203 255 / 42%);
+    color: var(--primary);
+    background: var(--primary-soft);
+    border-color: var(--primary-strong);
 }
 
 .status {
-    color: #65f5e3;
+    color: var(--success);
     background: rgb(101 245 227 / 7%);
     border-color: rgb(101 245 227 / 36%);
 }
 
 .statusPending {
-    color: #a9c2ce;
+    color: var(--text-muted);
     background: rgb(169 194 206 / 5%);
     border-color: rgb(169 194 206 / 22%);
 }
@@ -253,8 +253,8 @@
     display: grid;
     padding: 12px 0;
     margin: 0;
-    border-top: 1px solid rgb(39 79 97 / 55%);
-    border-bottom: 1px solid rgb(39 79 97 / 55%);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     grid-template-columns: repeat(2, minmax(0, 1fr));
 
     div {
@@ -270,14 +270,14 @@
     }
 
     dt {
-        color: #a9c2ce;
+        color: var(--text-muted);
         font-size: 12px;
     }
 
     dd {
         margin: 0;
         overflow: hidden;
-        color: #f4fbff;
+        color: var(--text-bright);
         font-family: var(--range-mono);
         font-size: 16px;
         font-weight: 500;
@@ -290,8 +290,8 @@
 .detailSection {
     padding: 20px;
     margin-bottom: 16px;
-    background: rgb(6 19 30 / 86%);
-    border: 1px solid rgb(89 190 222 / 24%);
+    background: var(--card);
+    border: 1px solid var(--border);
     box-shadow: 0 14px 38px rgb(0 0 0 / 10%);
 }
 
@@ -305,13 +305,13 @@
 
     h2 {
         margin: 0;
-        color: #f4fbff;
+        color: var(--text-bright);
         font-size: 16px;
         font-weight: 600;
     }
 
     span {
-        color: #a9c2ce;
+        color: var(--text-muted);
         font-size: 12px;
     }
 }
@@ -324,7 +324,7 @@
     justify-items: center;
     gap: 10px;
     padding: 32px;
-    color: #f4fbff;
+    color: var(--text-bright);
     background: linear-gradient(rgb(109 239 255 / 2%) 1px, transparent 1px), linear-gradient(90deg, rgb(109 239 255 / 2%) 1px, transparent 1px), rgb(2 8 14 / 34%);
     background-size: 32px 32px;
     border: 1px dashed rgb(89 190 222 / 34%);
@@ -340,7 +340,7 @@
     span,
     p {
         margin: 0;
-        color: #a9c2ce;
+        color: var(--text-muted);
         font-size: 13px;
     }
 }
@@ -360,14 +360,14 @@
     td {
         min-height: 54px;
         padding: 12px;
-        border-bottom: 1px solid rgb(39 79 97 / 50%);
+        border-bottom: 1px solid var(--border);
         text-align: left;
         vertical-align: middle;
     }
 
     th {
         width: 150px;
-        color: #a9c2ce;
+        color: var(--text-muted);
         background: rgb(10 32 48 / 40%);
         font-size: 12px;
         font-weight: 500;
@@ -375,7 +375,7 @@
     }
 
     td {
-        color: #d7e9f2;
+        color: var(--text);
         white-space: normal;
     }
 }
@@ -389,12 +389,12 @@
 .panel {
     min-width: 0;
     padding: 16px;
-    background: rgb(6 19 30 / 86%);
-    border: 1px solid rgb(89 190 222 / 24%);
+    background: var(--card);
+    border: 1px solid var(--border);
 
     h2 {
         margin: 0 0 14px;
-        color: #f4fbff;
+        color: var(--text-bright);
         font-size: 16px;
     }
 }
@@ -409,14 +409,14 @@
     height: clamp(340px, 32vw, 460px);
     overflow: auto;
     background:
-        radial-gradient(circle at 50% 42%, rgb(20 71 101 / 22%), transparent 48%), linear-gradient(rgb(109 239 255 / 3%) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(109 239 255 / 3%) 1px, transparent 1px), rgb(2 8 14 / 68%);
+        radial-gradient(circle at 50% 42%, rgb(20 71 101 / 22%), transparent 48%), linear-gradient(var(--primary-soft) 1px, transparent 1px),
+        linear-gradient(90deg, var(--primary-soft) 1px, transparent 1px), var(--inset);
     background-size:
         auto,
         28px 28px,
         28px 28px,
         auto;
-    border: 1px solid rgb(89 190 222 / 24%);
+    border: 1px solid var(--border);
 }
 
 .topology {
@@ -429,14 +429,14 @@
 .topologyZone {
     > rect {
         fill: url('#range-static-zone-fill');
-        stroke: rgb(79 169 201 / 48%);
+        stroke: var(--primary);
         stroke-width: 1;
     }
 }
 
 .topologyZoneAccent {
     fill: none;
-    stroke: #59d8e7;
+    stroke: var(--primary);
     stroke-linecap: square;
     stroke-width: 2;
 }
@@ -447,13 +447,13 @@
 }
 
 .topologyZoneLabel {
-    fill: #f0fbff;
+    fill: var(--text-bright);
     font-size: 11px;
     font-weight: 600;
 }
 
 .topologyZoneSummary {
-    fill: #9ab6c5;
+    fill: var(--primary);
     font-family: var(--range-mono);
     font-size: 9.5px;
 }
@@ -461,7 +461,7 @@
 .topologyNodeZoneLinks {
     fill: none;
     pointer-events: none;
-    stroke: rgb(94 196 220 / 68%);
+    stroke: var(--primary);
     stroke-dasharray: 4 4;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -469,14 +469,14 @@
 }
 
 .topologyNodeZoneArrow {
-    fill: rgb(94 196 220 / 82%);
+    fill: var(--primary);
     stroke: none;
 }
 
 .topologyNetworkLinks {
     fill: none;
     pointer-events: none;
-    stroke: rgb(84 223 235 / 74%);
+    stroke: var(--primary);
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 1.2;
@@ -484,14 +484,14 @@
 
 .topologyNetworkConnector {
     > rect {
-        fill: rgb(5 27 41 / 98%);
-        stroke: rgb(84 223 235 / 88%);
+        fill: var(--card);
+        stroke: var(--primary);
         stroke-width: 1;
     }
 }
 
 .topologyNetworkConnectorAccent {
-    stroke: #54dfeb;
+    stroke: var(--primary);
     stroke-linecap: square;
     stroke-width: 2;
 }
@@ -502,14 +502,14 @@
 }
 
 .topologyNetworkConnectorLabel {
-    fill: #f1f9ff;
+    fill: var(--text-bright);
     font-family: var(--range-mono);
     font-size: 9.5px;
     font-weight: 600;
 }
 
 .topologyNetworkConnectorCidr {
-    fill: #8fb7c8;
+    fill: var(--primary);
     font-family: var(--range-mono);
     font-size: 8px;
 }
@@ -517,7 +517,7 @@
 .topologyNetworkConnectorGlyph {
     > g {
         fill: none;
-        stroke: #6eefff;
+        stroke: var(--primary);
         stroke-linecap: round;
         stroke-linejoin: round;
         stroke-width: 1.35;
@@ -528,8 +528,8 @@
     cursor: pointer;
 
     > rect {
-        fill: rgb(8 31 45 / 92%);
-        stroke: rgb(74 176 206 / 84%);
+        fill: var(--card);
+        stroke: var(--primary);
         stroke-width: 1;
         transition:
             fill 140ms ease,
@@ -538,21 +538,21 @@
 
     &:hover > rect {
         fill: rgb(11 42 59 / 96%);
-        stroke: #66d3e5;
+        stroke: var(--primary);
     }
 
     &:focus-visible {
         outline: none;
 
         > rect {
-            stroke: #fff;
+            stroke: var(--text-bright);
             stroke-width: 2;
         }
     }
 }
 
 .topologyNodeAccent {
-    stroke: #54dfeb;
+    stroke: var(--primary);
     stroke-linecap: square;
     stroke-width: 2;
 }
@@ -563,7 +563,7 @@
 }
 
 .topologyNodeLabel {
-    fill: #f1f9ff;
+    fill: var(--text-bright);
     font-size: 11px;
     font-weight: 600;
 }
@@ -571,7 +571,7 @@
 .topologyGlyph {
     > g {
         fill: none;
-        stroke: #a6d8ff;
+        stroke: var(--primary);
         stroke-linecap: round;
         stroke-linejoin: round;
         stroke-width: 1.35;
@@ -580,13 +580,13 @@
 
 .nodeDetails {
     padding: 14px;
-    color: #d7e9f2;
+    color: var(--text);
     background: rgb(2 8 14 / 34%);
-    border: 1px solid #274f61;
+    border: 1px solid var(--border-strong);
 
     h3 {
         margin: 0 0 12px;
-        color: #f4fbff;
+        color: var(--text-bright);
     }
 
     dl {
@@ -597,7 +597,7 @@
     }
 
     dt {
-        color: #a9c2ce;
+        color: var(--text-muted);
         font-size: 11px;
     }
 
@@ -614,13 +614,13 @@
     padding: 3px;
     margin-bottom: 14px;
     overflow-x: auto;
-    background: rgb(2 8 14 / 70%);
-    border: 1px solid rgb(89 190 222 / 18%);
+    background: var(--inset);
+    border: 1px solid var(--border);
 
     button {
         min-height: 36px;
         padding: 0 12px;
-        color: #a9c2ce;
+        color: var(--text-muted);
         background: transparent;
         border: 0;
         cursor: pointer;
@@ -629,8 +629,8 @@
 }
 
 .activeSceneTab {
-    color: #8ecbff;
-    background: rgb(142 203 255 / 10%);
+    color: var(--primary);
+    background: var(--primary-soft);
 }
 
 .consoleLayout {
@@ -656,14 +656,14 @@
         display: flex;
         gap: 10px;
         padding: 10px 12px;
-        color: #d7e9f2;
+        color: var(--text);
         background: rgb(2 8 14 / 34%);
-        border: 1px solid rgb(39 79 97 / 50%);
+        border: 1px solid var(--border);
         font-size: 12px;
     }
 
     span {
-        color: #8ecbff;
+        color: var(--primary);
         font-family: var(--range-mono);
     }
 }
@@ -677,24 +677,24 @@
     div {
         padding: 10px;
         background: rgb(2 8 14 / 34%);
-        border: 1px solid rgb(39 79 97 / 50%);
+        border: 1px solid var(--border);
     }
 
     dt {
-        color: #a9c2ce;
+        color: var(--text-muted);
         font-size: 11px;
     }
 
     dd {
         margin: 5px 0 0;
-        color: #f4fbff;
+        color: var(--text-bright);
         font-family: var(--range-mono);
         font-size: 13px;
     }
 }
 
 .alertTelemetry dd {
-    color: #ff746c;
+    color: var(--danger);
 }
 
 .feedback {
@@ -704,14 +704,14 @@
     justify-items: center;
     gap: 12px;
     padding: 24px;
-    color: #a9c2ce;
+    color: var(--text-muted);
 
     button {
         min-height: 36px;
         padding: 0 14px;
-        color: #f4fbff;
-        background: rgb(10 32 48 / 78%);
-        border: 1px solid rgb(89 190 222 / 48%);
+        color: var(--text-bright);
+        background: var(--muted-bg);
+        border: 1px solid var(--border-strong);
         border-radius: 2px;
         cursor: pointer;
     }

@@ -1,7 +1,7 @@
 .layout {
     min-height: 100vh;
-    color: #f4fbff;
-    background: #01050a;
+    color: var(--text);
+    background: var(--page);
 }
 
 .sidebar {
@@ -12,9 +12,9 @@
     width: 240px;
     flex-direction: column;
     overflow: hidden;
-    color: #f4fbff;
-    background: linear-gradient(180deg, rgb(10 32 48 / 52%), transparent 30%), #02080e;
-    border-right: 1px solid rgb(89 190 222 / 22%);
+    color: var(--text);
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
     transition: width 180ms ease;
 
     nav {
@@ -35,33 +35,36 @@
         gap: 12px;
         padding: 0 10px;
         overflow: hidden;
-        color: #d7e9f2;
+        color: var(--text-muted);
         font-size: 13px;
         text-decoration: none;
         white-space: nowrap;
+        border-radius: 6px;
 
         &:hover,
         &:focus-visible {
-            color: #f4fbff;
-            background: rgb(10 32 48 / 72%);
+            color: var(--text);
+            background: var(--muted-bg);
         }
     }
 
     nav .active {
-        color: #8ecbff;
-        background: linear-gradient(90deg, rgb(142 203 255 / 18%), rgb(119 188 255 / 8%) 72%, transparent);
+        color: var(--primary);
+        background: var(--primary-soft);
+        font-weight: 600;
 
         &::before {
             position: absolute;
-            left: -12px;
-            width: 2px;
+            left: 0;
+            width: 3px;
             height: 24px;
-            background: #8ecbff;
+            background: var(--primary);
+            border-radius: 2px;
             content: '';
         }
 
         .menuIcon {
-            color: #8ecbff;
+            color: var(--primary);
         }
     }
 }
@@ -78,7 +81,7 @@
 .navCaption {
     height: 24px;
     padding: 6px 8px 0;
-    color: #7f9aa7;
+    color: var(--text-faint);
     font-size: 12px;
     letter-spacing: 0.08em;
     white-space: nowrap;
@@ -88,7 +91,7 @@
     width: 18px;
     height: 18px;
     flex: 0 0 18px;
-    color: #a9c2ce;
+    color: var(--text-faint);
     font-size: 18px;
 
     > span {
@@ -144,10 +147,10 @@
             top: 50%;
             left: 49px;
             padding: 6px 8px;
-            color: #f4fbff;
-            background: #0a2030;
-            border: 1px solid #274f61;
-            box-shadow: 0 8px 24px rgb(0 0 0 / 28%);
+            color: var(--text);
+            background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-pop);
             content: attr(aria-label);
             font-size: 12px;
             line-height: 1;
@@ -192,8 +195,7 @@
     gap: 12px;
     padding: 0 16px;
     overflow: hidden;
-    background: linear-gradient(105deg, rgb(10 32 48 / 72%), rgb(2 8 14 / 16%));
-    border-bottom: 1px solid rgb(89 190 222 / 22%);
+    border-bottom: 1px solid var(--border);
     white-space: nowrap;
 
     .brandSymbol {
@@ -203,9 +205,9 @@
         flex: none;
         align-items: center;
         justify-content: center;
-        color: #8ecbff;
-        background: rgb(142 203 255 / 8%);
-        border: 1px solid rgb(142 203 255 / 66%);
+        color: var(--on-primary);
+        background: var(--primary);
+        border-radius: 8px;
         font-family: var(--range-mono);
         font-size: 11px;
 
@@ -217,8 +219,9 @@
     }
 
     strong {
-        font-size: 18px;
-        font-weight: 600;
+        color: var(--text-bright);
+        font-size: 17px;
+        font-weight: 700;
     }
 }
 
@@ -228,7 +231,7 @@
     gap: 8px;
     padding: 10px 12px;
     margin-top: auto;
-    border-top: 1px solid #274f61;
+    border-top: 1px solid var(--border);
 }
 
 .account {
@@ -245,8 +248,9 @@
         flex: none;
         align-items: center;
         justify-content: center;
-        color: #01050a;
-        background: #8ecbff;
+        color: var(--on-primary);
+        background: var(--primary);
+        border-radius: 50%;
         font-family: var(--range-mono);
         font-size: 11px;
         font-weight: 700;
@@ -260,18 +264,28 @@
 
     b {
         overflow: hidden;
+        color: var(--text-bright);
         font-size: 13px;
         text-overflow: ellipsis;
     }
+}
+
+.accountActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 
     button {
-        padding: 3px 0;
-        color: #a9c2ce;
+        padding: 2px 0;
+        color: var(--text-muted);
         background: transparent;
         border: 0;
         font-size: 11px;
-        text-align: left;
         cursor: pointer;
+
+        &:hover {
+            color: var(--primary);
+        }
     }
 }
 
@@ -307,7 +321,7 @@
         align-items: center;
         overflow: hidden;
         border-right: 0;
-        border-bottom: 1px solid rgb(89 190 222 / 22%);
+        border-bottom: 1px solid var(--border);
 
         .brand {
             min-height: 52px;

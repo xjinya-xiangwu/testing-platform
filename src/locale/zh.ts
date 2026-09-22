@@ -122,6 +122,8 @@ export const ZH = {
     'settings.notAvailable': '—',
     'app.brand': '网安攻防演练场',
     'app.brand.short': 'AR',
+    'theme.switchDark': '切换到暗色模式',
+    'theme.switchLight': '切换到亮色模式',
     'app.status': '平台运行正常',
     'app.sidebar.open': '展开导航',
     'app.sidebar.close': '收起导航',

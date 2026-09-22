@@ -121,6 +121,8 @@ export const EN = {
     'settings.status.unknown': 'Unknown',
     'settings.notAvailable': '—',
     'app.brand': 'Cyber Range',
+    'theme.switchDark': 'Switch to dark mode',
+    'theme.switchLight': 'Switch to light mode',
     'app.brand.short': 'AR',
     'app.status': 'Platform operating normally',
     'app.sidebar.open': 'Expand navigation',

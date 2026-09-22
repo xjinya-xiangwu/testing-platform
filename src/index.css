@@ -1,24 +1,100 @@
 @import 'tailwindcss';
 
+/* ------------------------------------------------------------------ */
+/* Design tokens — light is the default theme, dark overrides via      */
+/* html[data-theme='dark']. Legacy variable families (--range-* used   */
+/* across pages, --board-* on the dashboard board) are aliased to the  */
+/* semantic tokens so existing consumers follow the active theme.      */
+/* ------------------------------------------------------------------ */
+
 :root {
-    --range-background: #1a1815;
-    --range-foreground: #ebe6dc;
-    --range-card: #252320;
-    --range-card-foreground: #ebe6dc;
-    --range-sidebar: #1f1d1a;
-    --range-muted: #1f1d1a;
-    --range-muted-foreground: #8a8478;
-    --range-accent: #252320;
-    --range-border: #3a3631;
-    --range-primary: #7aa5db;
-    --range-primary-foreground: #1a1815;
-    --range-blue: #5b88c2;
-    --range-green: #a4b870;
-    --range-gold: #d4ad6a;
-    --range-red: #e57878;
+    color-scheme: light;
+
+    /* semantic surfaces */
+    --page: #f3f5f9;
+    --sidebar: #ffffff;
+    --card: #ffffff;
+    --card-soft: #f7f9fc;
+    --muted-bg: #eef2f7;
+    --inset: #f2f5f9;
+    --border: #e2e8f0;
+    --border-strong: #c9d4e2;
+
+    /* semantic text */
+    --text: #17293d;
+    --text-bright: #0e1c2c;
+    --text-muted: #5c6f84;
+    --text-faint: #8a9bb0;
+
+    /* semantic accents */
+    --primary: #2563eb;
+    --primary-strong: #1d4ed8;
+    --primary-soft: rgb(37 99 235 / 8%);
+    --on-primary: #ffffff;
+    --success: #0e9f6e;
+    --success-soft: rgb(14 159 110 / 10%);
+    --warning: #b45309;
+    --warning-soft: rgb(217 119 6 / 12%);
+    --danger: #dc2626;
+    --danger-soft: rgb(220 38 38 / 10%);
+
+    /* elevation */
+    --shadow-card: 0 1px 2px rgb(16 24 40 / 5%), 0 1px 3px rgb(16 24 40 / 7%);
+    --shadow-pop: 0 8px 24px rgb(16 24 40 / 12%);
+
+    /* legacy family aliases (do not use in new code) */
+    --range-background: var(--page);
+    --range-foreground: var(--text);
+    --range-card: var(--card);
+    --range-card-foreground: var(--text);
+    --range-sidebar: var(--sidebar);
+    --range-muted: var(--muted-bg);
+    --range-muted-foreground: var(--text-muted);
+    --range-accent: var(--muted-bg);
+    --range-border: var(--border);
+    --range-primary: var(--primary);
+    --range-primary-foreground: var(--on-primary);
+    --range-blue: var(--primary-strong);
+    --range-green: var(--success);
+    --range-gold: var(--warning);
+    --range-red: var(--danger);
+    --range-warning: var(--warning);
+
     --range-radius: 2px;
     --range-serif: 'Source Han Serif SC', 'Noto Serif SC', Georgia, serif;
     --range-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+html[data-theme='dark'] {
+    color-scheme: dark;
+
+    --page: #050d15;
+    --sidebar: #081420;
+    --card: #0a1622;
+    --card-soft: #0d1b29;
+    --muted-bg: #10202f;
+    --inset: #020d14;
+    --border: #1c3448;
+    --border-strong: #2a5a72;
+
+    --text: #d7e9f2;
+    --text-bright: #f4fbff;
+    --text-muted: #91a9b5;
+    --text-faint: #5f7889;
+
+    --primary: #8ecbff;
+    --primary-strong: #77bcff;
+    --primary-soft: rgb(142 203 255 / 10%);
+    --on-primary: #04121c;
+    --success: #65f5e3;
+    --success-soft: rgb(101 245 227 / 10%);
+    --warning: #ffd267;
+    --warning-soft: rgb(255 210 103 / 12%);
+    --danger: #ff746c;
+    --danger-soft: rgb(255 116 108 / 12%);
+
+    --shadow-card: none;
+    --shadow-pop: 0 8px 24px rgb(1 5 10 / 60%);
 }
 
 @theme {
@@ -151,11 +227,6 @@ html {
     }
 }
 
-body {
-    font-size: 1.17rem;
-    line-height: 1.5;
-}
-
 body,
 html,
 #root {
@@ -168,8 +239,9 @@ html,
 
 body {
     overflow-x: hidden;
-    color: var(--range-foreground);
-    background: var(--range-background);
+    color: var(--text);
+    background: var(--page);
+    transition: background-color 160ms ease, color 160ms ease;
 }
 
 #app {
