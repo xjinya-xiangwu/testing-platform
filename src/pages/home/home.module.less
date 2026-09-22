@@ -1,9 +1,13 @@
 .home {
+    position: relative;
     align-items: center;
     background:
         radial-gradient(circle at 12% 14%, rgb(37 99 235 / 8%), transparent 36%),
         radial-gradient(circle at 88% 86%, rgb(124 58 237 / 6%), transparent 34%),
+        linear-gradient(var(--page-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--page-grid) 1px, transparent 1px),
         var(--page);
+    background-size: auto, auto, 36px 36px, 36px 36px, auto;
     color: var(--text);
     display: flex;
     justify-content: center;
@@ -43,7 +47,7 @@
         margin-bottom: 28px;
     }
 
-    button {
+    section button {
         background: var(--primary);
         border: 1px solid var(--primary);
         border-radius: 8px;
@@ -59,6 +63,32 @@
         &:hover {
             background: var(--primary-strong);
         }
+    }
+}
+
+.themeToggle {
+    position: absolute;
+    top: 20px;
+    right: 22px;
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    box-shadow: var(--shadow-card);
+    font-size: 15px;
+    cursor: pointer;
+    transition:
+        color 140ms ease,
+        border-color 140ms ease;
+
+    &:hover {
+        color: var(--primary);
+        border-color: var(--primary);
     }
 }
 

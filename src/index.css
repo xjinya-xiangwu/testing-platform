@@ -11,7 +11,10 @@
     color-scheme: light;
 
     /* semantic surfaces */
-    --page: #f3f5f9;
+    --page: #f4f6fa;
+    --page-glow-a: rgb(37 99 235 / 9%);
+    --page-glow-b: rgb(124 58 237 / 5%);
+    --page-grid: rgb(15 23 42 / 5.5%);
     --sidebar: #ffffff;
     --card: #ffffff;
     --card-soft: #f7f9fc;
@@ -69,6 +72,9 @@ html[data-theme='dark'] {
     color-scheme: dark;
 
     --page: #050d15;
+    --page-glow-a: rgb(41 165 190 / 10%);
+    --page-glow-b: rgb(89 190 222 / 5%);
+    --page-grid: rgb(89 190 222 / 4.5%);
     --sidebar: #081420;
     --card: #0a1622;
     --card-soft: #0d1b29;
@@ -240,7 +246,15 @@ html,
 body {
     overflow-x: hidden;
     color: var(--text);
-    background: var(--page);
+    /* Layered page texture: two soft corner glows over a faint grid, on the page base. */
+    background:
+        radial-gradient(circle at 12% -10%, var(--page-glow-a), transparent 44%),
+        radial-gradient(circle at 90% 112%, var(--page-glow-b), transparent 42%),
+        linear-gradient(var(--page-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--page-grid) 1px, transparent 1px),
+        var(--page);
+    background-attachment: fixed;
+    background-size: auto, auto, 36px 36px, 36px 36px, auto;
     transition: background-color 160ms ease, color 160ms ease;
 }
 

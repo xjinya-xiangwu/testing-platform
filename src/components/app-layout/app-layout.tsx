@@ -81,18 +81,22 @@ const AppLayout = ({ user }: AppLayoutProps) => {
                     ))}
                 </nav>
                 <div className={style.sidebarFooter}>
+                    <button
+                        type="button"
+                        className={style.themeToggle}
+                        onClick={toggleTheme}
+                        aria-label={translate(theme === 'dark' ? 'theme.switchLight' : 'theme.switchDark')}
+                        title={translate(theme === 'dark' ? 'theme.switchLight' : 'theme.switchDark')}
+                    >
+                        {theme === 'dark' ? '☀' : '☾'}
+                    </button>
                     <div className={style.account}>
                         <span>{accountInitial}</span>
                         <div>
                             <b>{accountName}</b>
-                            <div className={style.accountActions}>
-                                <button type="button" onClick={toggleTheme} aria-label={translate(theme === 'dark' ? 'theme.switchLight' : 'theme.switchDark')} title={translate(theme === 'dark' ? 'theme.switchLight' : 'theme.switchDark')}>
-                                    {theme === 'dark' ? '☀' : '☾'}
-                                </button>
-                                <button type="button" onClick={loginOut}>
-                                    {translate('loginout')}
-                                </button>
-                            </div>
+                            <button type="button" className={style.logoutButton} onClick={loginOut}>
+                                {translate('loginout')}
+                            </button>
                         </div>
                     </div>
                 </div>

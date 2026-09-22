@@ -179,8 +179,8 @@
     }
 
     .sidebarFooter {
-        align-items: center;
-        padding: 8px;
+        flex-direction: column;
+        padding: 8px 4px;
     }
 
     .account div {
@@ -227,11 +227,37 @@
 
 .sidebarFooter {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    align-items: center;
     padding: 10px 12px;
     margin-top: auto;
     border-top: 1px solid var(--border);
+}
+
+.themeToggle {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    box-shadow: var(--shadow-card);
+    font-size: 15px;
+    cursor: pointer;
+    transition:
+        color 140ms ease,
+        border-color 140ms ease,
+        transform 140ms ease;
+
+    &:hover {
+        color: var(--primary);
+        border-color: var(--primary);
+        transform: rotate(12deg);
+    }
 }
 
 .account {
@@ -270,22 +296,17 @@
     }
 }
 
-.accountActions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+.logoutButton {
+    padding: 2px 0;
+    color: var(--text-muted);
+    background: transparent;
+    border: 0;
+    font-size: 11px;
+    text-align: left;
+    cursor: pointer;
 
-    button {
-        padding: 2px 0;
-        color: var(--text-muted);
-        background: transparent;
-        border: 0;
-        font-size: 11px;
-        cursor: pointer;
-
-        &:hover {
-            color: var(--primary);
-        }
+    &:hover {
+        color: var(--danger);
     }
 }
 
