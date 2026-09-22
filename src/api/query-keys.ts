@@ -49,4 +49,10 @@ export const QUERY_KEYS = {
         all: ['gateway-sessions'] as const,
         list: (query: Readonly<{ providerId: string | null; result: string }>) => [...QUERY_KEYS.gatewaySessions.all, 'list', query] as const,
     },
+    questionBank: {
+        all: ['question-bank'] as const,
+        snapshot: () => [...QUERY_KEYS.questionBank.all, 'snapshot'] as const,
+        overview: () => [...QUERY_KEYS.questionBank.all, 'overview'] as const,
+        samples: (versionId: string, query: Readonly<{ domainLabeled?: 'labeled' | 'unlabeled'; page: number }>) => [...QUERY_KEYS.questionBank.all, 'samples', versionId, query] as const,
+    },
 } as const;

@@ -37,6 +37,28 @@ const GATEWAY_REQUIRED_KEYS = [
     'gateway.keys.columns.purpose',
     'gateway.sessions.title',
 ] as const;
+const QUESTION_BANK_REQUIRED_KEYS = [
+    'questionBank.title',
+    'questionBank.subtitleExternal',
+    'questionBank.tabs.catalog',
+    'questionBank.tabs.catalogExternal',
+    'questionBank.tabs.labels',
+    'questionBank.tabs.sampling',
+    'questionBank.tabs.samplingExternal',
+    'questionBank.tabs.environments',
+    'questionBank.tabs.transfer',
+    'questionBank.tabs.transferExternal',
+    'questionBank.tabs.datasets',
+    'questionBank.myDatasets.title',
+    'questionBank.myDatasets.isolationNote',
+    'questionBank.overview.envLogical',
+    'questionBank.catalog.publishDialog.description',
+    'questionBank.labels.gate.blocked',
+    'questionBank.sampling.preview.reproducible',
+    'questionBank.env.precheck.writeBack',
+    'questionBank.transfer.import.format',
+    'questionBank.transfer.export.sanitizeNote',
+] as const;
 
 describe('range locale contract', () => {
     it('keeps the Chinese and English dictionaries in sync', () => {
@@ -74,6 +96,11 @@ describe('range locale contract', () => {
     });
 
     it.each(GATEWAY_REQUIRED_KEYS)('defines %s in both languages', (key) => {
+        expect(ZH).toHaveProperty(key);
+        expect(EN).toHaveProperty(key);
+    });
+
+    it.each(QUESTION_BANK_REQUIRED_KEYS)('defines %s in both languages', (key) => {
         expect(ZH).toHaveProperty(key);
         expect(EN).toHaveProperty(key);
     });

@@ -1,4 +1,5 @@
 import { GATEWAY_ZH } from '@/locale/gateway';
+import { QUESTION_BANK_ZH } from '@/locale/question-bank';
 
 export const ZH = {
     login: '登录',
@@ -1113,6 +1114,7 @@ export const ZH = {
     'training.errors.terminateNotAllowed': '任务不存在、无权操作或当前任务不可终止。',
     'training.errors.terminateCompleted': '已完成的训练任务不可终止。',
     ...GATEWAY_ZH,
+    ...QUESTION_BANK_ZH,
     'err.networkError': '网络异常',
     'err.timeout': '网络超时',
     'err.overdue': '当前用户身份过期，如有需要请重新登录',

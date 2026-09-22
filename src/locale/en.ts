@@ -1,4 +1,5 @@
 import { GATEWAY_EN } from '@/locale/gateway';
+import { QUESTION_BANK_EN } from '@/locale/question-bank';
 
 export const EN = {
     login: 'Login',
@@ -1113,6 +1114,7 @@ export const EN = {
     'training.errors.terminateNotAllowed': 'The task does not exist, is not accessible, or cannot be terminated.',
     'training.errors.terminateCompleted': 'A completed training task cannot be terminated.',
     ...GATEWAY_EN,
+    ...QUESTION_BANK_EN,
     'err.networkError': 'Network Error',
     'err.timeout': 'Timeout',
     'err.overdue': 'The current user identity has expired, please log in again if necessary',
