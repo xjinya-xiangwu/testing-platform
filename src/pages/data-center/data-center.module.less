@@ -887,3 +887,475 @@ select {
         grid-template-columns: 1fr;
     }
 }
+/* ------------------- catalog redesign (OpenDataLab style) ------------------- */
+
+.qbCatalogLayout {
+    display: grid;
+    grid-template-columns: 232px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+}
+.qbFilterRail {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+}
+.qbFilterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.qbFilterCaption {
+    color: var(--text-faint);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+}
+.qbFilterOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.qbFilterOption,
+.qbFilterOptionActive {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    min-height: 28px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    text-align: left;
+}
+.qbFilterOption {
+    color: var(--text-muted);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+
+    &:hover {
+        color: var(--text);
+        background: var(--muted-bg);
+    }
+}
+.qbFilterOptionActive {
+    color: var(--primary);
+    background: var(--primary-soft);
+    font-weight: 600;
+
+    i {
+        background: var(--primary);
+    }
+}
+.qbFilterOption i {
+    width: 8px;
+    height: 8px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--border-strong);
+}
+.qbFilterClear {
+    min-height: 30px;
+    padding: 4px 10px;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px dashed var(--border-strong);
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+
+    &:hover {
+        color: var(--danger);
+        border-color: var(--danger);
+    }
+}
+.qbCatalogMain {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+.qbCardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+}
+.qbDatasetCard {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 14px 15px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+    transition: border-color 140ms ease, transform 140ms ease;
+
+    &:hover {
+        border-color: var(--border-strong);
+        transform: translateY(-1px);
+    }
+
+    header {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        strong {
+            display: block;
+            color: var(--text-bright);
+            font-size: 14px;
+        }
+
+        small {
+            color: var(--text-faint);
+            font-family: var(--range-mono);
+            font-size: 9px;
+        }
+    }
+}
+.qbDatasetDesc {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: 11px;
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.qbDatasetTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+.qbTagChip,
+.qbTagChipMuted {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+}
+.qbTagChip {
+    color: var(--on-primary);
+    background: var(--primary);
+}
+.qbTagChipMuted {
+    color: var(--text-muted);
+    background: var(--muted-bg);
+    border: 1px solid var(--border);
+}
+.qbChipDirectionDiscovery {
+    background: var(--primary);
+}
+.qbChipDirectionReproduction {
+    background: var(--success);
+}
+.qbChipDirectionExploitation {
+    background: var(--warning);
+}
+.qbChipDirectionRepair {
+    background: #7c5cd6;
+}
+.qbDatasetStats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 2px 0;
+
+    > div {
+        padding: 7px 9px;
+        background: var(--card-soft);
+        border-radius: 6px;
+    }
+
+    dt {
+        color: var(--text-faint);
+        font-size: 9px;
+    }
+
+    dd {
+        margin: 2px 0 0;
+        color: var(--primary);
+        font-family: var(--range-mono);
+        font-size: 14px;
+        font-weight: 600;
+    }
+}
+.qbDatasetCard footer {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: 9px;
+    border-top: 1px solid var(--border);
+
+    span {
+        display: block;
+        color: var(--text);
+        font-family: var(--range-mono);
+        font-size: 10px;
+    }
+
+    small {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-faint);
+        font-size: 9px;
+    }
+}
+
+/* ------------------ labeling workbench (Label Studio style) ----------------- */
+
+.qbWorkbenchGate {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    gap: 12px;
+    align-items: center;
+    padding: 9px 12px;
+    background: var(--card-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    > .qbProgressTrack {
+        flex: 1 1 160px;
+    }
+
+    > span {
+        color: var(--text-muted);
+        font-family: var(--range-mono);
+        font-size: 10px;
+    }
+}
+.qbWorkbenchGrid {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr) 250px;
+    gap: 12px;
+    align-items: stretch;
+}
+.qbWorkbenchQueue {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    background: var(--card-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+.qbQueueList {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    max-height: 430px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+.qbQueueItem,
+.qbQueueItemActive {
+    display: grid;
+    grid-template-columns: 10px minmax(0, 1fr);
+    gap: 4px 8px;
+    align-items: center;
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 6px;
+    text-align: left;
+}
+.qbQueueItem {
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+
+    &:hover {
+        background: var(--muted-bg);
+    }
+
+    small {
+        overflow: hidden;
+        grid-column: 2;
+        color: var(--text-faint);
+        font-size: 9px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+.qbQueueItemActive {
+    color: var(--text);
+    background: var(--card);
+    border: 1px solid var(--primary);
+
+    small {
+        grid-column: 2;
+        color: var(--primary);
+        font-size: 9px;
+    }
+}
+.qbQueueName {
+    overflow: hidden;
+    color: var(--text-bright);
+    font-family: var(--range-mono);
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.qbStatusDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+.qbDotLabeled {
+    background: var(--success);
+}
+.qbDotSuggested {
+    background: var(--primary);
+}
+.qbDotUnlabeled {
+    background: var(--border-strong);
+}
+.qbWorkbenchPager {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+}
+.qbWorkbenchCanvas {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    > header {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+
+        strong {
+            color: var(--text-bright);
+            font-family: var(--range-mono);
+            font-size: 15px;
+        }
+    }
+}
+.qbMetaGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 8px;
+    margin: 0;
+
+    > div {
+        padding: 8px 10px;
+        background: var(--card-soft);
+        border-radius: 6px;
+    }
+
+    dt {
+        color: var(--text-faint);
+        font-family: var(--range-mono);
+        font-size: 9px;
+    }
+
+    dd {
+        margin: 3px 0 0;
+        overflow: hidden;
+        color: var(--text);
+        font-size: 11px;
+        text-overflow: ellipsis;
+
+        code {
+            color: var(--text-muted);
+            font-family: var(--range-mono);
+            font-size: 10px;
+        }
+    }
+}
+.qbWorkbenchFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+.qbWorkbenchPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: var(--card-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    h5 {
+        margin: 0;
+        color: var(--text-bright);
+        font-size: 12px;
+    }
+}
+.qbDomainGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.qbDomainOption,
+.qbDomainOptionActive {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    text-align: left;
+}
+.qbDomainOption {
+    color: var(--text-muted);
+    background: var(--card);
+    border: 1px solid var(--border);
+    cursor: pointer;
+
+    strong {
+        color: var(--text);
+        font-size: 11px;
+    }
+
+    small {
+        color: var(--text-faint);
+        font-size: 9px;
+    }
+
+    &:hover:not(:disabled) {
+        border-color: var(--border-strong);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+}
+.qbDomainOptionActive {
+    color: var(--primary);
+    background: var(--primary-soft);
+    border: 1px solid var(--primary);
+
+    strong {
+        color: var(--primary);
+    }
+
+    small {
+        color: var(--text-muted);
+    }
+}
+.qbWorkbenchActions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}

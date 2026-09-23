@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+    applySampleLabel,
     buildManifestHash,
     cancelPrecheck,
     computeCandidates,
@@ -31,6 +32,7 @@ import {
     type SamplingPreview,
     type SamplingRequest,
     type SamplingScope,
+    type TargetDomain,
     type VersionDiffRow,
 } from '@/api/question-bank';
 import { QUERY_KEYS } from '@/api/query-keys';
@@ -110,6 +112,14 @@ export const useConfirmLabelSuggestions = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (input: { versionId: string; sampleIds: string[] }) => confirmLabelSuggestions(input.versionId, input.sampleIds),
+        onSuccess: () => refreshQuestionBank(queryClient),
+    });
+};
+
+export const useApplySampleLabel = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (input: { versionId: string; sampleId: string; domain: TargetDomain | null }) => applySampleLabel(input.versionId, input.sampleId, input.domain),
         onSuccess: () => refreshQuestionBank(queryClient),
     });
 };

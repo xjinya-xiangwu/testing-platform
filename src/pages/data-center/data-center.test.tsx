@@ -15,11 +15,11 @@ const renderDataCenter = (admin: boolean) =>
         '/data',
     );
 
-const ADMIN_TABS = ['总览', '题库目录', '标签中心', '抽样策略', '环境与判分', '导入导出'] as const;
+const ADMIN_TABS = ['总览', '题库目录', '标签中心', '抽样策略', '导入导出'] as const;
 const EXTERNAL_TABS = ['我的数据集', '可用题库', '我的抽样策略', '导出申请'] as const;
 
 describe('DataCenter question bank', () => {
-    it('renders the six admin tabs and the overview four-count board for administrators', async () => {
+    it('renders the five admin tabs and the overview four-count board for administrators', async () => {
         renderDataCenter(true);
 
         expect(screen.getByRole('heading', { name: '数据中心' })).toBeInTheDocument();
@@ -67,6 +67,21 @@ describe('DataCenter question bank', () => {
         expect(screen.queryByText('内部题库草稿')).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: '审核发布' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: '下线版本' })).not.toBeInTheDocument();
+    });
+
+    it('renders the redesigned catalog with filter rail and dataset cards (admin view)', async () => {
+        const user = userEvent.setup();
+        renderDataCenter(true);
+
+        await user.click(screen.getByRole('tab', { name: '题库目录' }));
+        expect(await screen.findByText('目标领域')).toBeInTheDocument();
+        expect(screen.getAllByText('任务规模').length).toBeGreaterThan(0);
+
+        // Direction filter narrows the card grid, then clear-filters appears.
+        await user.click(screen.getByRole('button', { name: '修复' }));
+        expect(screen.getAllByText('PatchEval Verified').length).toBeGreaterThan(0);
+        expect(screen.queryByText('ExploitGym')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: '清除筛选' })).toBeInTheDocument();
     });
 
     it('keeps platform plans out of the external sampling view', async () => {
@@ -123,19 +138,27 @@ describe('DataCenter question bank', () => {
         expect(screen.getByRole('link', { name: '去靶场中心创建评测 →' })).toHaveAttribute('href', '/tasks?type=code');
     });
 
-    it('exposes the labeling workbench with the domain gate for the unlabeled draft (admin view)', async () => {
+    it('exposes the labeling workbench with queue, canvas and label picker (admin view)', async () => {
         const user = userEvent.setup();
         renderDataCenter(true);
 
         await user.click(screen.getByRole('tab', { name: '标签中心' }));
-        expect(await screen.findByText('标注工作台')).toBeInTheDocument();
-        expect(screen.getByText('L1 系统词表')).toBeInTheDocument();
-        expect(screen.getAllByText('闸门关闭 · 按领域筛选禁用').length).toBeGreaterThan(0);
+        expect(await screen.findByText('选择主领域')).toBeInTheDocument();
+        expect(screen.getByText('标注工作台')).toBeInTheDocument();
+        expect(screen.getByText('保存标注')).toBeInTheDocument();
 
-        // Switch the workbench target to the unlabeled draft: the suggest action enables.
-        await user.click(screen.getByRole('button', { name: /内部题库草稿/ }));
-        expect(await screen.findByRole('button', { name: 'AI 预标注全部未标注' })).toBeEnabled();
-        expect(screen.getByRole('button', { name: '确认本页建议' })).toBeEnabled();
+        // Switch the workbench target to the unlabeled draft via the version selector:
+        // the gate closes and the AI pre-annotate action enables.
+        await user.selectOptions(screen.getByRole('combobox', { name: '目标版本' }), 'ver-internal-draft');
+        expect((await screen.findAllByText('闸门关闭 · 按领域筛选禁用')).length).toBeGreaterThan(0);
+        expect(screen.getByRole('button', { name: 'AI 预标注全部未标注' })).toBeEnabled();
+
+        // Pick an unlabeled sample in the queue, choose a domain in the picker, save.
+        const queueButtons = await screen.findAllByRole('button', { name: /EXPLOIT|INTERNAL/ });
+        await user.click(queueButtons[0]);
+        expect(screen.getByRole('button', { name: '保存标注' })).toBeDisabled();
+        await user.click(screen.getByRole('button', { name: '云原生与基础设施 Docker / runc / K8s' }));
+        expect(screen.getByRole('button', { name: '保存标注' })).toBeEnabled();
     });
 
     it('surfaces review-feedback label corrections with adopt/reject for admins only', async () => {

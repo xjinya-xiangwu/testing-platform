@@ -8,14 +8,13 @@ import useTranslate from '@/hooks/useTranslate';
 import DataOverviewPanel from '@/pages/data-center/components/data-overview-panel';
 import MyDatasetsPanel from '@/pages/data-center/components/my-datasets-panel';
 import QuestionCatalogPanel from '@/pages/data-center/components/question-catalog-panel';
-import QuestionEnvironmentPanel from '@/pages/data-center/components/question-environment-panel';
 import QuestionLabelPanel from '@/pages/data-center/components/question-label-panel';
 import QuestionSamplingPanel from '@/pages/data-center/components/question-sampling-panel';
 import QuestionTransferPanel from '@/pages/data-center/components/question-transfer-panel';
 import style from '@/pages/data-center/data-center.module.less';
 
 type ViewRole = 'admin' | 'external';
-type QuestionBankTab = 'overview' | 'catalog' | 'labels' | 'sampling' | 'environments' | 'transfer' | 'datasets';
+type QuestionBankTab = 'overview' | 'catalog' | 'labels' | 'sampling' | 'transfer' | 'datasets';
 
 interface TabConfig {
     id: QuestionBankTab;
@@ -33,7 +32,6 @@ const ADMIN_TABS: readonly TabConfig[] = [
     { id: 'catalog', labelKey: 'questionBank.tabs.catalog' },
     { id: 'labels', labelKey: 'questionBank.tabs.labels' },
     { id: 'sampling', labelKey: 'questionBank.tabs.sampling' },
-    { id: 'environments', labelKey: 'questionBank.tabs.environments' },
     { id: 'transfer', labelKey: 'questionBank.tabs.transfer' },
 ];
 
@@ -117,8 +115,6 @@ const DataCenter = () => {
                         <QuestionLabelPanel translate={translate} isAdmin snapshot={snapshot} />
                     ) : activeTab === 'sampling' ? (
                         <QuestionSamplingPanel translate={translate} variant={isAdmin ? 'admin' : 'external'} snapshot={snapshot} />
-                    ) : activeTab === 'environments' && isAdmin ? (
-                        <QuestionEnvironmentPanel translate={translate} isAdmin snapshot={snapshot} />
                     ) : activeTab === 'datasets' && !isAdmin ? (
                         <MyDatasetsPanel translate={translate} snapshot={snapshot} />
                     ) : activeTab === 'transfer' ? (

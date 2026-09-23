@@ -14,7 +14,7 @@
     --page: #f4f6fa;
     --page-glow-a: rgb(37 99 235 / 9%);
     --page-glow-b: rgb(124 58 237 / 5%);
-    --page-grid: rgb(15 23 42 / 5.5%);
+    --page-grid: rgb(37 99 235 / 8%);
     --sidebar: #ffffff;
     --card: #ffffff;
     --card-soft: #f7f9fc;
@@ -74,7 +74,7 @@ html[data-theme='dark'] {
     --page: #050d15;
     --page-glow-a: rgb(41 165 190 / 10%);
     --page-glow-b: rgb(89 190 222 / 5%);
-    --page-grid: rgb(89 190 222 / 4.5%);
+    --page-grid: rgb(89 190 222 / 6%);
     --sidebar: #081420;
     --card: #0a1622;
     --card-soft: #0d1b29;
@@ -254,7 +254,7 @@ body {
         linear-gradient(90deg, var(--page-grid) 1px, transparent 1px),
         var(--page);
     background-attachment: fixed;
-    background-size: auto, auto, 36px 36px, 36px 36px, auto;
+    background-size: auto, auto, 32px 32px, 32px 32px, auto;
     transition: background-color 160ms ease, color 160ms ease;
 }
 

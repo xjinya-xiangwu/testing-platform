@@ -963,6 +963,25 @@ export const suggestDomains = async (versionId: string) => {
     return { suggested: updated };
 };
 
+/** Workbench single-sample labeling (Label Studio style): set or clear the
+ * primary domain of one sample. Published versions are immutable — the caller
+ * shows the read-only note instead. */
+export const applySampleLabel = async (versionId: string, sampleId: string, domain: TargetDomain | null) => {
+    await wait();
+    const version = store.versions.find((item) => item.id === versionId);
+    const sample = store.samples.find((item) => item.id === sampleId && item.versionId === versionId);
+    if (!version || !sample) throw new Error('sample not found');
+    if (version.lifecycle === 'published') throw new Error('published versions are immutable');
+    sample.domain = domain;
+    if (domain) delete store.labelSuggestions[sampleId];
+    const gate = getDomainGate(versionId);
+    if ((version.lifecycle === 'draft' || version.lifecycle === 'structured') && gate.missing === 0) {
+        version.lifecycle = 'labeled';
+    }
+    pushEvent(store, domain ? '单题标注' : '清除标注', sampleId, `领域=${domain ?? '已清除'} · 覆盖率 ${(gate.ratio * 100).toFixed(1)}%`);
+    return { ...sample, gate };
+};
+
 /** Review 回流: adopt or reject a label correction. Adopting never rewrites a
  * published version — the fix is recorded for the next release instead. */
 export const decideLabelCorrection = async (correctionId: string, decision: 'applied' | 'rejected') => {

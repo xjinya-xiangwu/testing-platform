@@ -1,30 +1,47 @@
 import { useMemo, useState } from 'react';
-import type { QuestionSet, QuestionSetVersion } from '@/api/question-bank';
-import { DEMO_PROJECT_ID, isVersionAuthorized } from '@/api/question-bank';
+import type { EvaluationDirection, QuestionSetVersion, TargetDomain } from '@/api/question-bank';
+import { DEMO_PROJECT_ID, diffVersions, isVersionAuthorized } from '@/api/question-bank';
 import { usePublishVersion, useQuestionBankSnapshot, useRetireVersion } from '@/hooks/useQuestionBank';
 import useTranslate from '@/hooks/useTranslate';
-import { Dialog, FieldRow, LIFECYCLE_ORDER, StatusBadge, directionLabelKey, domainLabelKey } from '@/pages/data-center/components/question-bank-shared';
-import { versionDiff } from '@/hooks/useQuestionBank';
+import { Dialog, DIRECTION_ORDER, DOMAIN_ORDER, FieldRow, LIFECYCLE_ORDER, StatusBadge, directionLabelKey, domainLabelKey } from '@/pages/data-center/components/question-bank-shared';
 import style from '@/pages/data-center/data-center.module.less';
 
 type Translate = ReturnType<typeof useTranslate>;
 
-type CatalogFilter = 'all' | 'benchmark' | 'custom';
+type CatalogTypeFilter = 'all' | 'benchmark' | 'custom';
+type CatalogSort = 'default' | 'tasks' | 'recent';
+type CatalogStatusFilter = 'all' | 'published' | 'verified' | 'wip';
 
 const lifecycleTone = (lifecycle: QuestionSetVersion['lifecycle']): 'ready' | 'neutral' | 'accent' | 'pending' => (lifecycle === 'published' ? 'ready' : lifecycle === 'retired' ? 'neutral' : lifecycle === 'verified' ? 'accent' : 'pending');
 
+const directionChipClass: Record<EvaluationDirection, string> = {
+    vulnerability_discovery: style.qbChipDirectionDiscovery,
+    vulnerability_reproduction: style.qbChipDirectionReproduction,
+    vulnerability_exploitation: style.qbChipDirectionExploitation,
+    vulnerability_repair: style.qbChipDirectionRepair,
+};
+
 interface CatalogPanelProps {
     translate: Translate;
-    /** admin = full catalog with lifecycle management; external = read-only published-only view */
+    /** admin = full catalog with lifecycle management; external = read-only authorized view */
     variant: 'admin' | 'external';
     snapshot: ReturnType<typeof useQuestionBankSnapshot>['data'];
 }
 
+/**
+ * Question-bank catalog, redesigned after OpenDataLab's dataset square: a filter
+ * rail (type / direction / domain / lifecycle) beside a card grid where each set
+ * is a dataset-style card with description, capability tags, scale stats and its
+ * latest version line. Version detail / publish / retire live in the dialog.
+ */
 const QuestionCatalogPanel = ({ translate, variant, snapshot }: CatalogPanelProps) => {
     const isAdmin = variant === 'admin';
-    const [filter, setFilter] = useState<CatalogFilter>('all');
+    const [typeFilter, setTypeFilter] = useState<CatalogTypeFilter>('all');
+    const [directionFilter, setDirectionFilter] = useState<EvaluationDirection[]>([]);
+    const [domainFilter, setDomainFilter] = useState<TargetDomain[]>([]);
+    const [statusFilter, setStatusFilter] = useState<CatalogStatusFilter>('all');
     const [query, setQuery] = useState('');
-    const [selectedSetId, setSelectedSetId] = useState<string | null>(null);
+    const [sort, setSort] = useState<CatalogSort>('default');
     const [detailVersionId, setDetailVersionId] = useState<string | null>(null);
     const [confirmAction, setConfirmAction] = useState<{ mode: 'publish' | 'retire'; version: QuestionSetVersion } | null>(null);
 
@@ -33,41 +50,62 @@ const QuestionCatalogPanel = ({ translate, variant, snapshot }: CatalogPanelProp
 
     const sets = useMemo(() => snapshot?.sets ?? [], [snapshot?.sets]);
     const versions = useMemo(() => snapshot?.versions ?? [], [snapshot?.versions]);
-    const gates = snapshot?.gates ?? [];
+    const gates = useMemo(() => snapshot?.gates ?? [], [snapshot?.gates]);
 
-    const visibleSets = useMemo(() => {
-        // External authorization rule (PRD §7.2): published AND platform-internal
-        // OR owned by this project — project-scoped sets from other projects never
-        // appear, even at metadata level.
-        const roleSets = isAdmin ? sets : sets.filter((set) => versions.some((version) => version.setId === set.id && isVersionAuthorized(version, set, DEMO_PROJECT_ID)));
+    const setCards = useMemo(() => {
+        return sets
+            .filter((set) => (isAdmin ? true : versions.some((version) => version.setId === set.id && isVersionAuthorized(version, set, DEMO_PROJECT_ID))))
+            .map((set) => {
+                const setVersions = versions.filter((version) => version.setId === set.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+                const latest = setVersions.find((version) => (isAdmin ? true : version.lifecycle === 'published')) ?? setVersions[0] ?? null;
+                const gate = latest ? gates.find((item) => item.versionId === latest.id) ?? null : null;
+                return { set, latest, versionCount: setVersions.length, gate };
+            })
+            .filter((card) => card.latest !== null);
+    }, [gates, isAdmin, sets, versions]);
+
+    const filteredCards = useMemo(() => {
         const keyword = query.trim().toLocaleLowerCase();
-        return roleSets.filter((set) => {
-            if (filter !== 'all' && set.type !== filter) return false;
+        const result = setCards.filter(({ set, latest }) => {
+            if (typeFilter !== 'all' && set.type !== typeFilter) return false;
+            if (directionFilter.length > 0 && !set.directions.some((direction) => directionFilter.includes(direction))) return false;
+            if (domainFilter.length > 0 && !(set.supportedDomains ?? []).some((domain) => domainFilter.includes(domain))) return false;
+            if (isAdmin && statusFilter !== 'all') {
+                const lifecycle = latest?.lifecycle;
+                if (statusFilter === 'published' && lifecycle !== 'published') return false;
+                if (statusFilter === 'verified' && lifecycle !== 'verified') return false;
+                if (statusFilter === 'wip' && lifecycle !== 'draft' && lifecycle !== 'structured' && lifecycle !== 'labeled') return false;
+            }
             if (!keyword) return true;
-            return set.name.toLocaleLowerCase().includes(keyword) || set.description.toLocaleLowerCase().includes(keyword) || set.directions.some((direction) => translate(directionLabelKey(direction)).includes(keyword));
+            return (
+                set.name.toLocaleLowerCase().includes(keyword) ||
+                set.code.toLocaleLowerCase().includes(keyword) ||
+                set.description.toLocaleLowerCase().includes(keyword) ||
+                set.directions.some((direction) => translate(directionLabelKey(direction)).includes(keyword)) ||
+                (set.supportedDomains ?? []).some((domain) => translate(domainLabelKey(domain)).includes(keyword))
+            );
         });
-    }, [filter, isAdmin, query, sets, translate, versions]);
+        if (sort === 'tasks') result.sort((a, b) => (b.latest?.counts.fullTaskCount ?? 0) - (a.latest?.counts.fullTaskCount ?? 0));
+        if (sort === 'recent') result.sort((a, b) => (b.latest?.createdAt ?? '').localeCompare(a.latest?.createdAt ?? ''));
+        return result;
+    }, [isAdmin, domainFilter, directionFilter, query, setCards, sort, statusFilter, translate, typeFilter]);
 
-    const selectedSet = selectedSetId ? sets.find((set) => set.id === selectedSetId) ?? null : null;
-    // External users only see published versions in the timeline — drafts and
-    // verified-awaiting-publish versions stay admin-only.
-    const setVersions = selectedSet
-        ? versions
-              .filter((version) => version.setId === selectedSet.id && (isAdmin || isVersionAuthorized(version, selectedSet, DEMO_PROJECT_ID)))
-              .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-        : [];
+    const toggleDirection = (direction: EvaluationDirection) =>
+        setDirectionFilter((current) => (current.includes(direction) ? current.filter((item) => item !== direction) : [...current, direction]));
+    const toggleDomain = (domain: TargetDomain) =>
+        setDomainFilter((current) => (current.includes(domain) ? current.filter((item) => item !== domain) : [...current, domain]));
+    const hasActiveFilters = typeFilter !== 'all' || directionFilter.length > 0 || domainFilter.length > 0 || (isAdmin && statusFilter !== 'all') || query.trim().length > 0;
+
     const detailVersion = detailVersionId ? versions.find((version) => version.id === detailVersionId) ?? null : null;
     const detailSet = detailVersion ? sets.find((set) => set.id === detailVersion.setId) ?? null : null;
     const detailGate = detailVersion ? gates.find((gate) => gate.versionId === detailVersion.id) : null;
-    // Version diff (M1): compare against the next-older version of the same set,
-    // regardless of lifecycle, so a fresh release diffs against its retired predecessor.
     const detailDiff =
         detailVersion && detailSet
             ? (() => {
                   const older = versions
                       .filter((version) => version.setId === detailVersion.setId && version.id !== detailVersion.id && version.createdAt < detailVersion.createdAt)
                       .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
-                  return older ? versionDiff(detailVersion, older) : null;
+                  return older ? diffVersions(detailVersion, older) : null;
               })()
             : null;
 
@@ -81,6 +119,69 @@ const QuestionCatalogPanel = ({ translate, variant, snapshot }: CatalogPanelProp
         setDetailVersionId(null);
     };
 
+    const renderFilterRail = () => (
+        <aside className={style.qbFilterRail} aria-label={translate('questionBank.catalog.rail.title')}>
+            <div className={style.qbFilterGroup}>
+                <span className={style.qbFilterCaption}>{translate('questionBank.catalog.filter.type')}</span>
+                <div className={style.qbFilterOptions}>
+                    {(['all', 'benchmark', 'custom'] as const).map((value) => (
+                        <button key={value} type="button" className={typeFilter === value ? style.qbFilterOptionActive : style.qbFilterOption} onClick={() => setTypeFilter(value)}>
+                            {translate(value === 'all' ? 'questionBank.catalog.filter.all' : value === 'benchmark' ? 'questionBank.catalog.filter.benchmark' : 'questionBank.catalog.filter.custom')}
+                        </button>
+                    ))}
+                </div>
+            </div>
+            <div className={style.qbFilterGroup}>
+                <span className={style.qbFilterCaption}>{translate('questionBank.catalog.filter.directions')}</span>
+                <div className={style.qbFilterOptions}>
+                    {DIRECTION_ORDER.map((direction) => (
+                        <button key={direction} type="button" className={directionFilter.includes(direction) ? style.qbFilterOptionActive : style.qbFilterOption} onClick={() => toggleDirection(direction)}>
+                            <i className={directionChipClass[direction]} aria-hidden="true" />
+                            {translate(directionLabelKey(direction))}
+                        </button>
+                    ))}
+                </div>
+            </div>
+            <div className={style.qbFilterGroup}>
+                <span className={style.qbFilterCaption}>{translate('questionBank.catalog.filter.domains')}</span>
+                <div className={style.qbFilterOptions}>
+                    {DOMAIN_ORDER.filter((domain) => domain !== 'other' || isAdmin).map((domain) => (
+                        <button key={domain} type="button" className={domainFilter.includes(domain) ? style.qbFilterOptionActive : style.qbFilterOption} onClick={() => toggleDomain(domain)}>
+                            {translate(domainLabelKey(domain))}
+                        </button>
+                    ))}
+                </div>
+            </div>
+            {isAdmin ? (
+                <div className={style.qbFilterGroup}>
+                    <span className={style.qbFilterCaption}>{translate('questionBank.catalog.filter.status')}</span>
+                    <div className={style.qbFilterOptions}>
+                        {(['all', 'published', 'verified', 'wip'] as const).map((value) => (
+                            <button key={value} type="button" className={statusFilter === value ? style.qbFilterOptionActive : style.qbFilterOption} onClick={() => setStatusFilter(value)}>
+                                {translate(value === 'all' ? 'questionBank.catalog.filter.all' : value === 'published' ? 'questionBank.catalog.lifecycle.published' : value === 'verified' ? 'questionBank.catalog.lifecycle.verified' : 'questionBank.catalog.lifecycle.draft')}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            ) : null}
+            {hasActiveFilters ? (
+                <button
+                    type="button"
+                    className={style.qbFilterClear}
+                    onClick={() => {
+                        setTypeFilter('all');
+                        setDirectionFilter([]);
+                        setDomainFilter([]);
+                        setStatusFilter('all');
+                        setQuery('');
+                    }}
+                >
+                    {translate('questionBank.catalog.filter.clear')}
+                </button>
+            ) : null}
+        </aside>
+    );
+
     return (
         <div className={style.qbPanel}>
             <header className={style.qbSectionHeader}>
@@ -90,83 +191,82 @@ const QuestionCatalogPanel = ({ translate, variant, snapshot }: CatalogPanelProp
                 </div>
             </header>
 
-            <div className={style.qbToolbar}>
-                <div className={style.qbChipRow} role="group" aria-label={translate('questionBank.catalog.filter.type')}>
-                    {(['all', 'benchmark', 'custom'] as const).map((value) => (
-                        <button key={value} type="button" className={filter === value ? style.qbChipActive : style.qbChip} onClick={() => setFilter(value)}>
-                            {translate(value === 'all' ? 'questionBank.catalog.filter.all' : value === 'benchmark' ? 'questionBank.catalog.filter.benchmark' : 'questionBank.catalog.filter.custom')}
-                        </button>
-                    ))}
-                </div>
-                <input type="search" className={style.qbSearch} placeholder={translate('questionBank.catalog.filter.searchPlaceholder')} aria-label={translate('questionBank.catalog.filter.search')} value={query} onChange={(event) => setQuery(event.target.value)} />
-                <span className={style.qbCount}>{translate('questionBank.catalog.setsCount', { count: visibleSets.length })}</span>
-            </div>
+            <div className={style.qbCatalogLayout}>
+                {renderFilterRail()}
+                <div className={style.qbCatalogMain}>
+                    <div className={style.qbToolbar}>
+                        <input type="search" className={style.qbSearch} placeholder={translate('questionBank.catalog.filter.searchPlaceholder')} aria-label={translate('questionBank.catalog.filter.search')} value={query} onChange={(event) => setQuery(event.target.value)} />
+                        <label className={style.qbInlineLabel}>
+                            <span>{translate('questionBank.catalog.sort.label')}</span>
+                            <select value={sort} onChange={(event) => setSort(event.target.value as CatalogSort)}>
+                                <option value="default">{translate('questionBank.catalog.sort.default')}</option>
+                                <option value="tasks">{translate('questionBank.catalog.sort.tasks')}</option>
+                                <option value="recent">{translate('questionBank.catalog.sort.recent')}</option>
+                            </select>
+                        </label>
+                        <span className={style.qbCount}>{translate('questionBank.catalog.resultCount', { count: filteredCards.length })}</span>
+                    </div>
 
-            <div className={style.qbCatalogGrid}>
-                <section className={style.qbCard} aria-label={translate('questionBank.catalog.title')}>
-                    <ul className={style.qbSetList}>
-                        {visibleSets.map((set: QuestionSet) => {
-                            const setVersionsAll = versions.filter((version) => version.setId === set.id);
-                            const latest = [...setVersionsAll].sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
-                            const gate = gates.find((item) => item.versionId === latest?.id);
-                            return (
-                                <li key={set.id}>
-                                    <button type="button" className={selectedSetId === set.id ? style.qbSetItemActive : style.qbSetItem} onClick={() => setSelectedSetId(set.id)}>
+                    {filteredCards.length === 0 ? (
+                        <p className={style.qbEmptyLine}>{translate('questionBank.labels.workbench.empty')}</p>
+                    ) : (
+                        <div className={style.qbCardGrid}>
+                            {filteredCards.map(({ set, latest, versionCount, gate }) => (
+                                <article key={set.id} className={style.qbDatasetCard}>
+                                    <header>
                                         <div>
                                             <strong>{set.name}</strong>
-                                            <span>{set.type === 'benchmark' ? translate('questionBank.catalog.filter.benchmark') : translate('questionBank.catalog.filter.custom')}</span>
+                                            <small>{set.code}</small>
                                         </div>
-                                        <div className={style.qbSetItemMeta}>
-                                            {latest ? <StatusBadge tone={lifecycleTone(latest.lifecycle)}>{translate(`questionBank.catalog.lifecycle.${latest.lifecycle}`)}</StatusBadge> : null}
-                                            {gate && gate.missing > 0 ? <small>{translate('questionBank.catalog.gate.closed', { missing: gate.missing, total: gate.total })}</small> : null}
-                                        </div>
-                                        <p>{set.directions.map((direction) => translate(directionLabelKey(direction))).join(' / ')}</p>
-                                        {!isAdmin && set.supportedDomains && set.supportedDomains.length > 0 ? (
-                                            <div className={style.qbSetItemMeta}>
-                                                <small>{translate('questionBank.catalog.supportedDomains')}</small>
-                                                {set.supportedDomains.slice(0, 3).map((domain) => (
-                                                    <span key={domain} className={style.qbChipStatic}>
-                                                        {translate(domainLabelKey(domain))}
-                                                    </span>
-                                                ))}
-                                                {set.supportedDomains.length > 3 ? <small>+{set.supportedDomains.length - 3}</small> : null}
-                                            </div>
-                                        ) : null}
-                                    </button>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </section>
-
-                <section className={style.qbCard} aria-label={translate('questionBank.catalog.versions')}>
-                    <header>
-                        <h3>{translate('questionBank.catalog.versions')}</h3>
-                        {selectedSet ? <span>{selectedSet.name}</span> : null}
-                    </header>
-                    {selectedSet ? (
-                        <ul className={style.qbVersionList}>
-                            {setVersions.map((version) => (
-                                <li key={version.id}>
-                                    <div className={style.qbVersionRow}>
-                                        <div>
-                                            <strong>{version.releaseVersion}</strong>
-                                            <small>{version.sourceRef}</small>
-                                        </div>
-                                        <div className={style.qbVersionActions}>
-                                            <StatusBadge tone={lifecycleTone(version.lifecycle)}>{translate(`questionBank.catalog.lifecycle.${version.lifecycle}`)}</StatusBadge>
-                                            <button type="button" className={style.qbTextButton} onClick={() => setDetailVersionId(version.id)}>
-                                                {translate('questionBank.catalog.versionDetail')}
-                                            </button>
-                                        </div>
+                                        <StatusBadge tone={lifecycleTone(latest!.lifecycle)}>{translate(`questionBank.catalog.lifecycle.${latest!.lifecycle}`)}</StatusBadge>
+                                    </header>
+                                    <p className={style.qbDatasetDesc}>{set.description}</p>
+                                    <div className={style.qbDatasetTags}>
+                                        {set.directions.map((direction) => (
+                                            <span key={direction} className={`${style.qbTagChip} ${directionChipClass[direction]}`}>
+                                                {translate(directionLabelKey(direction))}
+                                            </span>
+                                        ))}
+                                        {(set.supportedDomains ?? []).slice(0, 3).map((domain) => (
+                                            <span key={domain} className={style.qbTagChipMuted}>
+                                                {translate(domainLabelKey(domain))}
+                                            </span>
+                                        ))}
+                                        {(set.supportedDomains?.length ?? 0) > 3 ? <span className={style.qbTagChipMuted}>+{(set.supportedDomains?.length ?? 0) - 3}</span> : null}
                                     </div>
-                                </li>
+                                    <dl className={style.qbDatasetStats}>
+                                        <div>
+                                            <dt>{translate('questionBank.catalog.card.tasks')}</dt>
+                                            <dd>{latest!.counts.fullTaskCount.toLocaleString()}</dd>
+                                        </div>
+                                        <div>
+                                            <dt>{translate('questionBank.catalog.card.environments')}</dt>
+                                            <dd>{latest!.envCounts.logicalEnvCount.toLocaleString()}</dd>
+                                        </div>
+                                        <div>
+                                            <dt>{translate('questionBank.catalog.card.runs')}</dt>
+                                            <dd>{latest!.referencedRuns}</dd>
+                                        </div>
+                                    </dl>
+                                    <footer>
+                                        <div>
+                                            <span>
+                                                {translate('questionBank.catalog.card.latest')} · {latest!.releaseVersion}
+                                            </span>
+                                            <small>
+                                {versionCount} 个版本
+                                                {gate && gate.missing > 0 ? ` · ${translate('questionBank.catalog.gate.closed', { missing: gate.missing, total: gate.total })}` : ''}
+                                            </small>
+                                        </div>
+                                        <button type="button" className={style.qbGhostButton} onClick={() => setDetailVersionId(latest!.id)}>
+                                            {translate('questionBank.catalog.versionDetail')}
+                                        </button>
+                                    </footer>
+                                </article>
                             ))}
-                        </ul>
-                    ) : (
-                        <p className={style.qbEmptyLine}>{translate('questionBank.sampling.preview.pickPlan')}</p>
+                        </div>
                     )}
-                </section>
+                </div>
             </div>
 
             {detailVersion && detailSet ? (
@@ -189,17 +289,11 @@ const QuestionCatalogPanel = ({ translate, variant, snapshot }: CatalogPanelProp
                             <code>{detailVersion.manifestHash.slice(0, 27)}…</code>
                         </FieldRow>
                         <FieldRow label={translate('questionBank.catalog.fields.fullTaskCount')}>{detailVersion.counts.fullTaskCount.toLocaleString()}</FieldRow>
-                        <FieldRow label={translate('questionBank.catalog.fields.projectOrRepo')}>{detailVersion.counts.projectOrRepoCount || '—'}</FieldRow>
-                        <FieldRow label={translate('questionBank.catalog.fields.groundTruth')}>{detailVersion.counts.groundTruthCount.toLocaleString()}</FieldRow>
                         <FieldRow label={translate('questionBank.catalog.fields.envLogical')}>{detailVersion.envCounts.logicalEnvCount.toLocaleString()}</FieldRow>
-                        <FieldRow label={translate('questionBank.catalog.fields.envStateRefs')}>{detailVersion.envCounts.imageStateRefs.toLocaleString()}</FieldRow>
                         <FieldRow label={translate('questionBank.catalog.fields.envUnique')}>{detailVersion.envCounts.uniqueImageDigestCount.toLocaleString()}</FieldRow>
-                        <FieldRow label={translate('questionBank.catalog.fields.envWorkspace')}>{detailVersion.envCounts.workspaceCount.toLocaleString()}</FieldRow>
+                        <FieldRow label={translate('questionBank.catalog.fields.groundTruth')}>{detailVersion.counts.groundTruthCount.toLocaleString()}</FieldRow>
                         <FieldRow label={translate('questionBank.catalog.fields.primaryMetric')}>{detailVersion.metrics.primaryMetric}</FieldRow>
-                        <FieldRow label={translate('questionBank.catalog.fields.denominator')}>{detailVersion.metrics.denominatorPolicy}</FieldRow>
-                        <FieldRow label={translate('questionBank.catalog.fields.license')}>{detailVersion.license}</FieldRow>
                         <FieldRow label={translate('questionBank.catalog.fields.referencedRuns')}>{detailVersion.referencedRuns}</FieldRow>
-                        <FieldRow label={translate('questionBank.catalog.directions')}>{detailSet.directions.map((direction) => translate(directionLabelKey(direction))).join(' / ')}</FieldRow>
                     </dl>
                     <div className={style.qbReadinessRow}>
                         {(['data', 'env', 'grader'] as const).map((key) => {
@@ -210,9 +304,7 @@ const QuestionCatalogPanel = ({ translate, variant, snapshot }: CatalogPanelProp
                                 </StatusBadge>
                             );
                         })}
-                        {detailGate && detailGate.missing > 0 ? (
-                            <StatusBadge tone="danger">{translate('questionBank.catalog.gate.closed', { missing: detailGate.missing, total: detailGate.total })}</StatusBadge>
-                        ) : null}
+                        {detailGate && detailGate.missing > 0 ? <StatusBadge tone="danger">{translate('questionBank.catalog.gate.closed', { missing: detailGate.missing, total: detailGate.total })}</StatusBadge> : null}
                     </div>
                     {detailDiff ? (
                         <>
