@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { Outlet, Route, Routes } from 'react-router-dom';
@@ -67,6 +67,9 @@ describe('DataCenter question bank', () => {
         expect(screen.queryByText('内部题库草稿')).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: '审核发布' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: '下线版本' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: '新建题库' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: '管理' })).not.toBeInTheDocument();
+        expect(screen.getAllByRole('button', { name: '版本详情' }).length).toBeGreaterThan(0);
     });
 
     it('renders the redesigned catalog with filter rail and dataset cards (admin view)', async () => {
@@ -159,6 +162,41 @@ describe('DataCenter question bank', () => {
         expect(screen.getByRole('button', { name: '保存标注' })).toBeDisabled();
         await user.click(screen.getByRole('button', { name: '云原生与基础设施 Docker / runc / K8s' }));
         expect(screen.getByRole('button', { name: '保存标注' })).toBeEnabled();
+    });
+
+    it('gives admins full set management: create, edit, version list and guarded delete', async () => {
+        const user = userEvent.setup();
+        renderDataCenter(true);
+
+        await user.click(screen.getByRole('tab', { name: '题库目录' }));
+
+        // Published sets with run references are protected from deletion.
+        await user.click(within(screen.getByText('ExploitGym').closest('article')!).getByRole('button', { name: '管理' }));
+        const manageDialog = await screen.findByRole('dialog');
+        expect(within(manageDialog).getByText('版本管理')).toBeInTheDocument();
+        expect(within(manageDialog).getByRole('button', { name: '删除题库' })).toBeDisabled();
+        expect(within(manageDialog).getByRole('button', { name: '编辑信息' })).toBeInTheDocument();
+        await user.click(within(manageDialog).getByRole('button', { name: 'close' }));
+
+        // 增: create a new set; it lands as DRAFT awaiting import.
+        await user.click(screen.getByRole('button', { name: '新建题库' }));
+        const createDialog = screen.getAllByRole('dialog').at(-1)!;
+        await user.type(within(createDialog).getByLabelText('题库名称'), '回归测试题库');
+        await user.click(within(createDialog).getByRole('button', { name: '新建题库' }));
+        await waitFor(() => expect(screen.queryAllByRole('dialog')).toHaveLength(0));
+        expect((await screen.findAllByText('回归测试题库')).length).toBeGreaterThan(0);
+
+        // The fresh draft set is deletable.
+        const createdCard = screen.getAllByText('回归测试题库').map((node) => node.closest('article')).find(Boolean) as HTMLElement;
+        await user.click(within(createdCard).getByRole('button', { name: '管理' }));
+        const draftDialog = await screen.findByRole('dialog');
+        expect(within(draftDialog).getByRole('button', { name: '删除题库' })).toBeEnabled();
+
+        // 删: confirm and the card disappears.
+        await user.click(within(draftDialog).getByRole('button', { name: '删除题库' }));
+        const confirmDialog = await screen.findByRole('dialog', { name: '确认删除题库' });
+        await user.click(within(confirmDialog).getByRole('button', { name: '删除题库' }));
+        await waitFor(() => expect(screen.queryAllByText('回归测试题库')).toHaveLength(0));
     });
 
     it('surfaces review-feedback label corrections with adopt/reject for admins only', async () => {

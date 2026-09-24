@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     applySampleLabel,
     buildManifestHash,
+    createQuestionSet,
+    createSetVersion,
     cancelPrecheck,
     computeCandidates,
     confirmLabelSuggestions,
@@ -9,6 +11,8 @@ import {
     createSamplingPlan,
     decideExportRequest,
     decideLabelCorrection,
+    deleteQuestionSet,
+    deleteSetVersion,
     diffVersions,
     downloadExport,
     freezeSampling,
@@ -20,11 +24,13 @@ import {
     previewSampling,
     publishVersion,
     retireVersion,
+    updateQuestionSet,
     revokeExport,
     setPlanStatus,
     startImportJob,
     startPrecheck,
     suggestDomains,
+    type EvaluationDirection,
     type ImportJob,
     type QuestionBankSample,
     type QuestionSetVersion,
@@ -120,6 +126,46 @@ export const useApplySampleLabel = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (input: { versionId: string; sampleId: string; domain: TargetDomain | null }) => applySampleLabel(input.versionId, input.sampleId, input.domain),
+        onSuccess: () => refreshQuestionBank(queryClient),
+    });
+};
+
+export const useCreateQuestionSet = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (input: { name: string; code: string; description: string; type: 'benchmark' | 'custom'; directions: EvaluationDirection[] }) => createQuestionSet(input),
+        onSuccess: () => refreshQuestionBank(queryClient),
+    });
+};
+
+export const useUpdateQuestionSet = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (input: { setId: string; name: string; description: string }) => updateQuestionSet(input.setId, { name: input.name, description: input.description }),
+        onSuccess: () => refreshQuestionBank(queryClient),
+    });
+};
+
+export const useDeleteQuestionSet = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (setId: string) => deleteQuestionSet(setId),
+        onSuccess: () => refreshQuestionBank(queryClient),
+    });
+};
+
+export const useCreateSetVersion = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (input: { setId: string; releaseVersion: string; sourceRef: string }) => createSetVersion(input.setId, { releaseVersion: input.releaseVersion, sourceRef: input.sourceRef }),
+        onSuccess: () => refreshQuestionBank(queryClient),
+    });
+};
+
+export const useDeleteSetVersion = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (versionId: string) => deleteSetVersion(versionId),
         onSuccess: () => refreshQuestionBank(queryClient),
     });
 };

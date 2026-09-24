@@ -982,6 +982,128 @@ export const applySampleLabel = async (versionId: string, sampleId: string, doma
     return { ...sample, gate };
 };
 
+/* ------------------------- question set management -------------------------- */
+
+const DELETABLE_LIFECYCLES: VersionLifecycle[] = ['draft', 'retired'];
+
+export const isSetDeletable = (setId: string) => {
+    const versions = store.versions.filter((item) => item.setId === setId);
+    if (versions.length === 0) return true;
+    return versions.every((version) => DELETABLE_LIFECYCLES.includes(version.lifecycle)) && versions.every((version) => version.referencedRuns === 0);
+};
+
+export const isVersionDeletable = (version: QuestionSetVersion) => version.lifecycle === 'draft' && version.referencedRuns === 0;
+
+/** Admin create (增): register a new question set with an empty DRAFT version.
+ * Samples arrive later through the import pipeline. */
+export const createQuestionSet = async (input: { name: string; code: string; description: string; type: QuestionSetType; directions: EvaluationDirection[] }) => {
+    await wait();
+    if (store.sets.some((set) => set.code === input.code)) throw new Error('duplicate code');
+    const id = `set-${++seq}`;
+    const set: QuestionSet = {
+        id,
+        code: input.code,
+        name: input.name,
+        type: input.type,
+        source: '平台自建',
+        ownerProjectId: null,
+        directions: input.directions,
+        description: input.description,
+        nativeMetric: '待定',
+        supportedDomains: [],
+    };
+    const version: QuestionSetVersion = {
+        id: `ver-${id}`,
+        setId: id,
+        releaseVersion: 'v0.1-draft',
+        sourceRef: 'manual-registration',
+        manifestHash: buildManifestHash(id),
+        createdAt: nowIso(),
+        releasedAt: null,
+        lifecycle: 'draft',
+        counts: { fullTaskCount: 0, projectOrRepoCount: 0, groundTruthCount: 0 },
+        envCounts: { logicalEnvCount: 0, imageStateRefs: 0, uniqueImageDigestCount: 0, workspaceCount: 0 },
+        metrics: { primaryMetric: '待定', aggregation: '按样本分母逐题计分', denominatorPolicy: '发布前试算' },
+        readiness: { dataReady: false, environmentReady: false, graderReady: false, lastVerifiedAt: null },
+        license: '平台内部授权',
+        usageScope: 'internal',
+        referencedRuns: 0,
+    };
+    store.sets.push(set);
+    store.versions.push(version);
+    pushEvent(store, '题库创建', set.name, `${set.type} · 方向=${set.directions.join('/')} · 进入 DRAFT，等待导入题目`);
+    return { set: { ...set }, version: { ...version } };
+};
+
+/** Admin update (改): set metadata only — versioned content stays immutable. */
+export const updateQuestionSet = async (setId: string, input: { name: string; description: string }) => {
+    await wait();
+    const set = store.sets.find((item) => item.id === setId);
+    if (!set) throw new Error('set not found');
+    const previousName = set.name;
+    set.name = input.name;
+    set.description = input.description;
+    pushEvent(store, '题库信息更新', set.name, previousName === set.name ? '描述已更新' : `名称 ${previousName} → ${set.name}，描述已更新`);
+    return { ...set };
+};
+
+/** Admin delete (删): guarded — every version must be draft/retired with no run references. */
+export const deleteQuestionSet = async (setId: string) => {
+    await wait();
+    const set = store.sets.find((item) => item.id === setId);
+    if (!set) throw new Error('set not found');
+    if (!isSetDeletable(setId)) throw new Error('set is not deletable');
+    const removedVersions = store.versions.filter((item) => item.setId === setId).length;
+    store.sets = store.sets.filter((item) => item.id !== setId);
+    store.versions = store.versions.filter((item) => item.setId !== setId);
+    store.samples = store.samples.filter((item) => !item.versionId.startsWith(`ver-${setId}`));
+    store.environments = store.environments.filter((item) => !item.versionId.startsWith(`ver-${setId}`));
+    pushEvent(store, '题库删除', set.name, `移除题库及 ${removedVersions} 个版本（草稿/已下线，无运行引用）`);
+    return { setId };
+};
+
+/** Version management: register a new empty DRAFT version on an existing set. */
+export const createSetVersion = async (setId: string, input: { releaseVersion: string; sourceRef: string }) => {
+    await wait();
+    const set = store.sets.find((item) => item.id === setId);
+    if (!set) throw new Error('set not found');
+    if (store.versions.some((item) => item.setId === setId && item.releaseVersion === input.releaseVersion)) throw new Error('duplicate release version');
+    const version: QuestionSetVersion = {
+        id: `ver-${setId}-${++seq}`,
+        setId,
+        releaseVersion: input.releaseVersion,
+        sourceRef: input.sourceRef || 'manual-registration',
+        manifestHash: buildManifestHash(`${setId}:${input.releaseVersion}`),
+        createdAt: nowIso(),
+        releasedAt: null,
+        lifecycle: 'draft',
+        counts: { fullTaskCount: 0, projectOrRepoCount: 0, groundTruthCount: 0 },
+        envCounts: { logicalEnvCount: 0, imageStateRefs: 0, uniqueImageDigestCount: 0, workspaceCount: 0 },
+        metrics: { primaryMetric: '待定', aggregation: '按样本分母逐题计分', denominatorPolicy: '发布前试算' },
+        readiness: { dataReady: false, environmentReady: false, graderReady: false, lastVerifiedAt: null },
+        license: set.type === 'custom' ? '厂商授权 · 项目内使用' : '平台内部授权',
+        usageScope: 'internal',
+        referencedRuns: 0,
+    };
+    store.versions.push(version);
+    pushEvent(store, '版本创建', `${set.name} ${version.releaseVersion}`, '新 DRAFT 版本，等待导入题目与环境');
+    return { ...version };
+};
+
+export const deleteSetVersion = async (versionId: string) => {
+    await wait();
+    const version = store.versions.find((item) => item.id === versionId);
+    if (!version) throw new Error('version not found');
+    if (!isVersionDeletable(version)) throw new Error('version is not deletable');
+    const siblings = store.versions.filter((item) => item.setId === version.setId);
+    if (siblings.length <= 1) throw new Error('cannot delete the only version — delete the set instead');
+    store.versions = store.versions.filter((item) => item.id !== versionId);
+    store.samples = store.samples.filter((item) => item.versionId !== versionId);
+    store.environments = store.environments.filter((item) => item.versionId !== versionId);
+    pushEvent(store, '版本删除', `${version.releaseVersion}`, '草稿版本及空题目数据已移除');
+    return { versionId };
+};
+
 /** Review 回流: adopt or reject a label correction. Adopting never rewrites a
  * published version — the fix is recorded for the next release instead. */
 export const decideLabelCorrection = async (correctionId: string, decision: 'applied' | 'rejected') => {
