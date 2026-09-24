@@ -10,7 +10,7 @@ import { IS_DEMO_MODE } from '@/config/demo-mode';
  * (/question-sets, /sampling-plans/{id}/preview, /precheck-jobs, /imports, /exports).
  */
 
-export type EvaluationDirection = 'vulnerability_discovery' | 'vulnerability_reproduction' | 'vulnerability_exploitation' | 'vulnerability_repair';
+export type EvaluationDirection = 'vulnerability_discovery' | 'vulnerability_exploitation' | 'vulnerability_repair';
 
 export type TargetDomain = 'web_application' | 'userspace_software' | 'browser_engine' | 'operating_system' | 'cloud_infrastructure' | 'network_protocol' | 'other';
 
@@ -335,7 +335,6 @@ const cwePool = ['CWE-787', 'CWE-79', 'CWE-89', 'CWE-416', 'CWE-125', 'CWE-190',
 const languagePool = ['C', 'C++', 'Python', 'JavaScript', 'Go', 'Java'];
 const difficultyByDirection: Record<EvaluationDirection, string[]> = {
     vulnerability_discovery: ['L0', 'L1', 'L2', 'L3'],
-    vulnerability_reproduction: ['L1', 'L2', 'L3'],
     vulnerability_exploitation: ['T1', 'T2', 'T3', 'T4', 'T5'],
     vulnerability_repair: ['R1', 'R2', 'R3'],
 };
@@ -411,7 +410,7 @@ const VERSION_SPECS: VersionSeedSpec[] = [
 const SET_SPECS: { id: string; code: string; name: string; type: QuestionSetType; source: string; ownerProjectId: string | null; directions: EvaluationDirection[]; description: string; nativeMetric: string }[] = [
     { id: 'exploitgym', code: 'EXPLOIT-GYM', name: 'ExploitGym', type: 'benchmark', source: '官方', ownerProjectId: null, directions: ['vulnerability_exploitation'], description: 'Userspace、V8 与 Kernel 目标的漏洞利用评测目录，task×mitigation×trial 粒度。', nativeMetric: 'Exploit Count / mitigation split' },
     { id: 'exploitbench', code: 'EXPLOIT-BENCH', name: 'ExploitBench', type: 'benchmark', source: '官方', ownerProjectId: null, directions: ['vulnerability_exploitation'], description: 'V8 漏洞能力阶梯与固定种子场景，environment×seed 粒度。', nativeMetric: 'T5–T1 / 16 位 capability' },
-    { id: 'cybergym', code: 'CYBER-GYM', name: 'CyberGym', type: 'benchmark', source: '官方', ownerProjectId: null, directions: ['vulnerability_discovery', 'vulnerability_reproduction'], description: '漏洞发现与复现任务，含 vulnerable/fixed 状态引用。', nativeMetric: 'L0–L3 / 提交成功率' },
+    { id: 'cybergym', code: 'CYBER-GYM', name: 'CyberGym', type: 'benchmark', source: '官方', ownerProjectId: null, directions: ['vulnerability_discovery'], description: '漏洞发现任务，含 vulnerable/fixed 状态引用。', nativeMetric: 'L0–L3 / 提交成功率' },
     { id: 'realvuln', code: 'REAL-VULN', name: 'RealVuln v2', type: 'benchmark', source: '官方', ownerProjectId: null, directions: ['vulnerability_discovery'], description: '仓库工作区与 scanner runtime 的漏洞发现评测，repo×trial+finding 粒度。', nativeMetric: 'TP / FP / FN / F3' },
     { id: 'patcheval', code: 'PATCH-EVAL', name: 'PatchEval Verified', type: 'benchmark', source: '官方', ownerProjectId: null, directions: ['vulnerability_repair'], description: '固定目标镜像与独立 evaluator 的 CVE 修复评测。', nativeMetric: 'PASS / MODEL_INCORRECT' },
     { id: 'internal-draft', code: 'INTERNAL-DRAFT', name: '内部题库草稿', type: 'custom', source: '项目自建', ownerProjectId: null, directions: ['vulnerability_discovery', 'vulnerability_exploitation'], description: '云原生与基础设施方向的内部积累题库，等待标注与环境验证。', nativeMetric: '待定' },
@@ -444,10 +443,10 @@ const TEMPLATE_SPECS: EnvironmentTemplate[] = [
 const GRADER_SPECS: Grader[] = [
     { id: 'grader-exploit', name: 'Exploit Validator', kind: 'service', version: 'v2.3', contract: 'flag + on_target 证据', directions: ['vulnerability_exploitation'], nativeMetric: 'flag_captured', compatibleVersionIds: ['ver-exploitgym'] },
     { id: 'grader-tier', name: 'Tier Grader', kind: 'script', version: 'v1.7', contract: 'capability_bitmap', directions: ['vulnerability_exploitation'], nativeMetric: 'highest_tier', compatibleVersionIds: ['ver-exploitbench'] },
-    { id: 'grader-submission', name: 'Submission Grader', kind: 'service', version: 'v3.0', contract: 'PoC + vul/fix exit code', directions: ['vulnerability_discovery', 'vulnerability_reproduction'], nativeMetric: 'submission_success', compatibleVersionIds: ['ver-cybergym'] },
+    { id: 'grader-submission', name: 'Submission Grader', kind: 'service', version: 'v3.0', contract: 'PoC + vul/fix exit code', directions: ['vulnerability_discovery'], nativeMetric: 'submission_success', compatibleVersionIds: ['ver-cybergym'] },
     { id: 'grader-finding', name: 'Finding Grader', kind: 'llm_judge', version: 'v0.9-beta', contract: 'matched_findings', directions: ['vulnerability_discovery'], nativeMetric: 'TP/FP/FN', compatibleVersionIds: ['ver-realvuln'] },
     { id: 'grader-fixrun', name: 'fix-run.sh evaluator', kind: 'script', version: 'v2.0', contract: 'patch + 回归测试', directions: ['vulnerability_repair'], nativeMetric: 'PASS / MODEL_INCORRECT', compatibleVersionIds: ['ver-patcheval'] },
-    { id: 'grader-platform', name: '平台通用判分器', kind: 'builtin', version: 'v1.4', contract: 'expected_output_contract', directions: ['vulnerability_discovery', 'vulnerability_reproduction', 'vulnerability_exploitation', 'vulnerability_repair'], nativeMetric: '通用', compatibleVersionIds: ['ver-custom-web', 'ver-internal-draft'] },
+    { id: 'grader-platform', name: '平台通用判分器', kind: 'builtin', version: 'v1.4', contract: 'expected_output_contract', directions: ['vulnerability_discovery', 'vulnerability_exploitation', 'vulnerability_repair'], nativeMetric: '通用', compatibleVersionIds: ['ver-custom-web', 'ver-internal-draft'] },
 ];
 
 const envVersionId = (setId: string) => `ver-${setId}`;

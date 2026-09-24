@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { ICompletedTask, ITaskConstraints, TaskConstraintKey, TaskObjectSource, TaskType } from '@/api/tasks';
 
 export type TaskWizardStep = 1 | 2 | 3 | 4 | 5;
-export type TaskEvaluationDirection = 'discovery' | 'reproduction' | 'exploit' | 'repair';
+export type TaskEvaluationDirection = 'discovery' | 'exploit' | 'repair';
 export type TaskSamplingMode = 'all' | 'stratified';
 export type TaskSamplingStratum = 'dataset' | 'difficulty' | 'domain' | 'vulnerability';
 export type TaskStratumWeights = Record<TaskSamplingStratum, number>;

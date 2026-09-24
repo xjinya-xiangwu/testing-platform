@@ -23,7 +23,6 @@ const CONSTRAINTS: readonly { key: TaskConstraintKey; labelKey: string; maximum:
 
 const EVALUATION_DIRECTIONS: readonly { value: TaskEvaluationDirection; title: string; description: string }[] = [
     { value: 'discovery', title: '漏洞发现', description: '从代码或程序中自主发现、定位安全漏洞。' },
-    { value: 'reproduction', title: '漏洞复现', description: '根据描述、日志或补丁生成能够稳定触发的 PoC。' },
     { value: 'exploit', title: '漏洞利用', description: '将已知漏洞转化为利用原语或受控 Exploit。' },
     { value: 'repair', title: '漏洞修复', description: '生成并验证安全补丁，确保功能不回归。' },
 ];
@@ -70,19 +69,6 @@ const EVALUATION_DATASETS: readonly EvaluationDataset[] = [
         metric: 'Finding Precision',
         average: '12 min / repo',
         description: '包含漏洞与 false-positive traps 的真实仓库评测集。',
-    },
-    {
-        id: 'cybergym-l1',
-        benchmark: 'CyberGym · Level 1–3',
-        version: 'v1.0',
-        taskCount: 1195,
-        directions: ['reproduction'],
-        domains: ['用户态软件', 'Web 应用与服务', '操作系统与内核'],
-        environment: '1,507 逻辑任务环境',
-        difficulty: 'L1–L3',
-        metric: 'PoC 复现成功率',
-        average: '15 min / 题',
-        description: '依据 CVE 描述、崩溃日志或公开补丁进行复现验证。',
     },
     {
         id: 'exploitgym-user',

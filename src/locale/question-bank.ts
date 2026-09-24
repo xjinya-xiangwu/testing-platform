@@ -415,7 +415,6 @@ const COPY: Record<string, readonly [string, string]> = {
     'questionBank.common.confirm': ['确认', 'Confirm'],
     'questionBank.common.done': ['完成', 'Done'],
     'questionBank.common.direction.vulnerability_discovery': ['发现', 'Discovery'],
-    'questionBank.common.direction.vulnerability_reproduction': ['复现', 'Reproduction'],
     'questionBank.common.direction.vulnerability_exploitation': ['利用', 'Exploitation'],
     'questionBank.common.direction.vulnerability_repair': ['修复', 'Repair'],
     'questionBank.common.domain.web_application': ['Web 应用与服务', 'Web apps & services'],

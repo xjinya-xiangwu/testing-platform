@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import style from '@/pages/evaluation-center/evaluation-center.module.less';
 
 type Tab = 'overview' | 'create' | 'runs' | 'reports' | 'assets';
-type Direction = '发现' | '复现' | '利用' | '修复';
+type Direction = '发现' | '利用' | '修复';
 
 type Benchmark = {
     id: string;
@@ -47,7 +47,7 @@ const BENCHMARKS: readonly Benchmark[] = [
         direction: '发现',
         scale: '1,507 个任务 · 188 个项目',
         metric: 'L0-L3 / PoC 提交成功率',
-        description: '漏洞发现与复现任务，包含 vulnerable/fixed 状态引用。',
+        description: '漏洞发现任务，包含 vulnerable/fixed 状态引用。',
         dataReady: true,
         environmentReady: true,
         graderReady: true,
@@ -78,7 +78,6 @@ const BENCHMARKS: readonly Benchmark[] = [
 
 const DIRECTIONS: readonly { name: Direction; note: string }[] = [
     { name: '发现', note: '识别漏洞与误报边界' },
-    { name: '复现', note: '复核已有漏洞与 PoC' },
     { name: '利用', note: '仅在隔离漏洞沙箱中验证' },
     { name: '修复', note: '验证补丁正确性与功能回归' },
 ];
@@ -92,7 +91,7 @@ const TABS: readonly { id: Tab; label: string }[] = [
 ];
 
 const getTab = (value: string | null): Tab => (TABS.some((tab) => tab.id === value) ? (value as Tab) : 'overview');
-const supportsDirection = (item: Benchmark, target: Direction) => item.direction === target || (item.id === 'cyber-gym' && target === '复现');
+const supportsDirection = (item: Benchmark, target: Direction) => item.direction === target;
 
 const Readiness = ({ ready, label }: { ready: boolean; label: string }) => (
     <span className={classNames(style.readiness, ready ? style.ready : style.notReady)}>
@@ -153,7 +152,7 @@ const EvaluationCenter = () => {
                 <article>
                     <span>可创建的评测方向</span>
                     <b>4</b>
-                    <small>发现、复现、利用、修复</small>
+                    <small>发现、利用、修复</small>
                 </article>
                 <article>
                     <span>当前演示任务</span>
@@ -544,7 +543,7 @@ const EvaluationCenter = () => {
                 <div>
                     <span>原生指标优先</span>
                     <h1 id="reports-title">报告与版本比较</h1>
-                    <p>漏洞发现、复现、利用、修复分别汇总；不混算为单一“成功率”。</p>
+                    <p>漏洞发现、利用、修复分别汇总；不混算为单一“成功率”。</p>
                 </div>
                 <span className={style.demoPill}>示例报告</span>
             </header>

@@ -16,7 +16,6 @@ const lifecycleTone = (lifecycle: QuestionSetVersion['lifecycle']): 'ready' | 'n
 
 const directionChipClass: Record<EvaluationDirection, string> = {
     vulnerability_discovery: style.qbChipDirectionDiscovery,
-    vulnerability_reproduction: style.qbChipDirectionReproduction,
     vulnerability_exploitation: style.qbChipDirectionExploitation,
     vulnerability_repair: style.qbChipDirectionRepair,
 };

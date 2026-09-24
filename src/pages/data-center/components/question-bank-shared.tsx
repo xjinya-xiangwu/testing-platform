@@ -9,7 +9,7 @@ export const domainLabelKey = (domain: TargetDomain) => `questionBank.common.dom
 
 export const DOMAIN_ORDER: TargetDomain[] = ['web_application', 'userspace_software', 'browser_engine', 'operating_system', 'cloud_infrastructure', 'network_protocol', 'other'];
 
-export const DIRECTION_ORDER: EvaluationDirection[] = ['vulnerability_discovery', 'vulnerability_reproduction', 'vulnerability_exploitation', 'vulnerability_repair'];
+export const DIRECTION_ORDER: EvaluationDirection[] = ['vulnerability_discovery', 'vulnerability_exploitation', 'vulnerability_repair'];
 
 export const LIFECYCLE_ORDER: VersionLifecycle[] = ['draft', 'structured', 'labeled', 'verified', 'published', 'retired'];
 
